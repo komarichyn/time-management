@@ -7,16 +7,9 @@ public class Task {
     private int id;
     private String name;
     private String description;
-    private String inputDate;
-    LocalDate date = LocalDate.parse(inputDate);
-    private enum Status {
-        ToDo,
-        InProgress,
-        Complate
-    }
+    private LocalDate date;
     ArrayList<String> comment = new ArrayList<String>();
-    Task subTask = new Task();
-    //The last one is field for attached filed, but I don't know which type must be this field
+    private Task task;
 
     public int getId() {
         return id;
@@ -42,14 +35,6 @@ public class Task {
         this.description = description;
     }
 
-    public String getInputDate() {
-        return inputDate;
-    }
-
-    public void setInputDate(String inputDate) {
-        this.inputDate = inputDate;
-    }
-
     public LocalDate getDate() {
         return date;
     }
@@ -66,11 +51,11 @@ public class Task {
         this.comment = comment;
     }
 
-    public Task getSubTask() {
-        return subTask;
+    public Task getTask() {
+        return task;
     }
 
-    public void setSubTask(Task subTask) {
-        this.subTask = subTask;
+    public void setTask(Task task) {
+        this.task = task;
     }
 }
