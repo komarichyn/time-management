@@ -1,4 +1,4 @@
-package com.nazar;
+package com.jc.tm;
 
 public class MainTest {
 }

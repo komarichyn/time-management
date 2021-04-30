@@ -1,14 +1,17 @@
-package database;
+package com.jc.tm.database.entity;
+
+import com.jc.tm.database.Status;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Task {
     private int id;
     private String name;
     private String description;
-    private LocalDate date;
-    ArrayList<String> comment = new ArrayList<String>();
+    private LocalDate created;
+    List<String> comments;
+    private Status status;
     private Task task;
 
     public int getId() {
@@ -35,20 +38,20 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getCreated() {
+        return created;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setCreated(LocalDate created) {
+        this.created = created;
     }
 
-    public ArrayList<String> getComment() {
-        return comment;
+    public List<String> getComments() {
+        return comments;
     }
 
-    public void setComment(ArrayList<String> comment) {
-        this.comment = comment;
+    public void setComments(List<String> comments) {
+        this.comments = comments;
     }
 
     public Task getTask() {
@@ -57,5 +60,13 @@ public class Task {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
