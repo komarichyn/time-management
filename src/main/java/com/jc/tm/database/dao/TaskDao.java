@@ -11,10 +11,10 @@ public interface TaskDao {
     void updateTask(Task task);
 
     //select task
-    Task selectTask(int id);
+    Task getTaskById(int id);
 
     //select all task
-    void selectAllTask();
+    void allTask();
 
     //delete task
     void deleteTask(Task task);

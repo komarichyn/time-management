@@ -24,12 +24,12 @@ public class TaskDaoImpl implements TaskDao{
     }
 
     @Override
-    public Task selectTask(int id) {
+    public Task getTaskById(int id) {
         return null;
     }
 
     @Override
-    public void selectAllTask() {
+    public void allTask() {
         String queryString = "SELECT * FROM task";
         connection = Jdbc.getConnection();
         try {

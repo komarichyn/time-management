@@ -11,7 +11,7 @@ import com.jc.tm.database.dao.TaskDaoImpl;
 public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        TaskDao tasks = new TaskDaoImpl();
+        TaskDao taskDao = new TaskDaoImpl();
 
         System.out.println("What you want to do?"
                 + "\n1. Create task."
@@ -28,7 +28,6 @@ public class Main {
             case 2:
                 break;
             case 3:
-                tasks.selectAllTask();
                 break;
             case 4:
                 break;
