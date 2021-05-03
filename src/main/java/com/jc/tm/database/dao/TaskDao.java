@@ -2,8 +2,6 @@ package com.jc.tm.database.dao;
 
 import com.jc.tm.database.entity.Task;
 
-import java.util.List;
-
 public interface TaskDao {
 
     //create or insert task
@@ -16,7 +14,7 @@ public interface TaskDao {
     Task selectTask(int id);
 
     //select all task
-    List<Task> selectAllTask();
+    void selectAllTask();
 
     //delete task
     void deleteTask(Task task);
