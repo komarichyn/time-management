@@ -11,7 +11,6 @@ import com.jc.tm.database.dao.TaskDaoImpl;
 public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        TaskDao taskDao = new TaskDaoImpl();
 
         System.out.println("What you want to do?"
                 + "\n1. Create task."

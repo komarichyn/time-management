@@ -2,20 +2,21 @@ package com.jc.tm.database.dao;
 
 import com.jc.tm.database.entity.Task;
 
-public interface TaskDao {
+import java.util.List;
 
-    //create or insert task
-    void insetTask(Task task);
+public interface TaskDao extends BaseDao<Task> {
+    @Override
+    void insert(Task task);
 
-    //update task
-    void updateTask(Task task);
+    @Override
+    void update(Task task);
 
-    //select task
-    Task getTaskById(int id);
+    @Override
+    Task getById(int id);
 
-    //select all task
-    void allTask();
+    @Override
+    List<Task> getAll();
 
-    //delete task
-    void deleteTask(Task task);
+    @Override
+    boolean delete(Task task);
 }
