@@ -6,27 +6,17 @@ import java.util.List;
 
 public interface TaskDao extends BaseDao<Task> {
     @Override
-    default void insert(Task task) {
-
-    }
+    void insert(Task task);
 
     @Override
-    default void update(Task task) {
-
-    }
+    void update(Task task);
 
     @Override
-    default Task getById(int id) {
-        return null;
-    }
+    Task getById(int id);
 
     @Override
-    default List<Task> getAll() {
-        return null;
-    }
+    List<Task> getAll();
 
     @Override
-    default void delete(Task task) {
-
-    }
+    boolean delete(Task task);
 }

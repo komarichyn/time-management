@@ -19,5 +19,5 @@ public interface BaseDao<E> {
     List<E> getAll();
 
     //delete
-    void delete(E e);
+    boolean delete(E e);
 }
