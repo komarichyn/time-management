@@ -5,8 +5,6 @@ import com.jc.tm.helper.LoadPropertiesHelper;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-//fixme remove unused import
-import java.util.Properties;
 
 public class Jdbc {
     public static Connection getConnection() {
@@ -21,13 +19,9 @@ public class Jdbc {
 
         try {
             connection = DriverManager.getConnection(getUrl(host, port, name), user, pass);
-            //fixme add more detail for output
-            System.err.println("Connected");
+            System.out.println("Connected with database " + name);
         } catch (SQLException e) {
-            //fixme do not use printstacktrace, it is not usefull to read infroamtion from console
-            e.printStackTrace();
-            //fixme add more detail for output
-            System.err.println("Not connected");
+            System.out.println(e.getMessage());
         }
         return connection;
     }
