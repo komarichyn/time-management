@@ -22,10 +22,7 @@ public class LoadPropertiesHelper {
     }
 
     public Properties loadProperties() {
-        //classpath location
         String rootPath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
-        //working directory location
-        //String rootPath = Path.of("").toAbsolutePath().toString();
         String appPropsPath = rootPath + APPLICATION_CONF;
         var properties = new Properties();
         FileInputStream stream = null;
@@ -42,7 +39,7 @@ public class LoadPropertiesHelper {
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 }
             }
         }
