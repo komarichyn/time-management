@@ -6,5 +6,6 @@ package com.jc.tm.database;
 public enum Status {
     TODO,
     IN_PROGRESS,
-    COMPLETE
+    COMPLETE,
+    PAUSE
 }
