@@ -1,12 +1,13 @@
 package com.jc.tm.database.entity;
 
 import lombok.Data;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class Comment {
     private Long id;
+    private Long task_id;
     private String text;
-    private LocalDate created;
-    private Task task;
+    private LocalDateTime created;
+
 }
