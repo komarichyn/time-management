@@ -6,7 +6,7 @@ import java.util.List;
 public interface CommentDao extends BaseDao<Comment> {
 
     @Override
-    void insert(Comment comment);
+    Long insert(Comment comment);
 
     @Override
     void update(Comment comment);

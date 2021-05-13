@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TaskDao extends BaseDao<Task> {
     @Override
-    void insert(Task task);
+    Long insert(Task task);
 
     @Override
     void update(Task task);
