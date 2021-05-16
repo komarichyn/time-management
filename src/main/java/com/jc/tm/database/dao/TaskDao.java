@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface TaskDao extends BaseDao<Task> {
     @Override
-    Long insert(Task task);
+    void insert(Task task);
 
     @Override
     void update(Task task);
 
     @Override
-    Task getById(int id);
+    Task getById(Long id);
 
     @Override
     List<Task> getAll();

@@ -1,22 +1,24 @@
 package com.jc.tm.database.dao;
 
 import com.jc.tm.database.entity.Comment;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public interface CommentDao extends BaseDao<Comment> {
 
     @Override
-    Long insert(Comment comment);
+    void insert(Comment comment) throws SQLException;
 
     @Override
-    void update(Comment comment);
+    void update(Comment comment) throws SQLException;
 
     @Override
-    Comment getById(int id);
+    Comment getById(Long id) throws SQLException;
 
     @Override
-    List<Comment> getAll();
+    List<Comment> getAll() throws SQLException;
 
     @Override
-    boolean delete(Comment comment);
+    boolean delete(Comment comment) throws SQLException;
 }
