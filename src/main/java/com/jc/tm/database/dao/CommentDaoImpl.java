@@ -21,16 +21,21 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public void insert(Comment comment) throws SQLException {
         PreparedStatement preparedStatement = null;
+        connection.setAutoCommit(false);
+        Savepoint savepointOne = connection.setSavepoint("SavepointOne");
         try {
             preparedStatement = connection.prepareStatement(INSERT);
             preparedStatement.setLong(1, comment.getTaskId());
             preparedStatement.setString(2, comment.getText());
             preparedStatement.setTimestamp(3, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
             preparedStatement.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
             //gonna log this later
             System.out.println(e.getMessage());
-            connection.rollback();
+            //log this later too
+            System.out.println("SQLException. Executing rollback to savepoint...");
+            connection.rollback(savepointOne);
         } finally {
             if (preparedStatement != null) {
                 preparedStatement.close();
@@ -71,7 +76,7 @@ public class CommentDaoImpl implements CommentDao {
             preparedStatement = connection.prepareStatement(GET_BY_ID);
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 comment.setId(resultSet.getLong(ID));
                 comment.setTaskId(resultSet.getLong(TASK_ID));
                 comment.setText(resultSet.getString(TEXT));
