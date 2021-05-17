@@ -14,10 +14,10 @@ public interface BaseDao<E> {
     void update(E e) throws SQLException;
 
     //get
-    E getById(int id) throws SQLException;
+    E getById(Long id) throws SQLException;
 
     //get all
-    List<E> getAll();
+    List<E> getAll() throws SQLException;
 
     //delete
     boolean delete(E e) throws SQLException;

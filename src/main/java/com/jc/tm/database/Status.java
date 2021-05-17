@@ -4,8 +4,18 @@ package com.jc.tm.database;
  * status of for task
  */
 public enum Status {
-    TODO,
-    IN_PROGRESS,
-    COMPLETE,
-    PAUSE
+    TODO("TODO"),
+    IN_PROGRESS("IN_PROGRESS"),
+    COMPLETE("COMPLETE"),
+    PAUSE("PAUSE");
+
+    private String fieldName;
+    Status(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public String toString() {
+        return fieldName;
+    }
 }
+

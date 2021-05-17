@@ -12,7 +12,7 @@ public interface CommentDao extends BaseDao<Comment> {
     void update(Comment comment);
 
     @Override
-    Comment getById(int id);
+    Comment getById(Long id);
 
     @Override
     List<Comment> getAll();
