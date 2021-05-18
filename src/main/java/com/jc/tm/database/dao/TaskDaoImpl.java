@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * this TaskDaoImpl class realize all CRUD methods for task
+ */
 public class TaskDaoImpl implements TaskDao{
 
     //field for log
@@ -21,11 +24,12 @@ public class TaskDaoImpl implements TaskDao{
     private static final String SELECT_BY_ID_TASK = "select id, name, description, due_Dates, status from task where id = ?";
     private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
 
-    private static final String _id = "id";
-    private static final String _name = "name";
-    private static final String _description = "description";
-    private static final String _dueDates = "due_Dates";
-    private static final String _status = "status";
+    //name of sql fields
+    private static final String _ID = "id";
+    private static final String _NAME = "name";
+    private static final String _DESCRIPTION = "description";
+    private static final String _DUEDATES = "due_Dates";
+    private static final String _STATUS = "status";
 
     Connection connection = Jdbc.getConnection();
 
@@ -59,21 +63,19 @@ public class TaskDaoImpl implements TaskDao{
     @Override
     public Task getById(Long id) throws SQLException {
         Task task = new Task();
-        PreparedStatement preparedStatement = null;
 
+        PreparedStatement preparedStatement = null;
         preparedStatement = connection.prepareStatement(SELECT_BY_ID_TASK);
         preparedStatement.setLong(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
 
-
         while(resultSet.next()) {
             //Display values
-            task.setId(resultSet.getLong(_id));
-            task.setName(resultSet.getString(_name));
-            task.setDescription(resultSet.getString(_description));
-            task.setCreated(resultSet.getDate(_dueDates).toLocalDate());
-            task.setStatus(Status.valueOf(resultSet.getString(_status)));
-
+            task.setId(resultSet.getLong(_ID));
+            task.setName(resultSet.getString(_NAME));
+            task.setDescription(resultSet.getString(_DESCRIPTION));
+            task.setCreated(resultSet.getDate(_DUEDATES).toLocalDate());
+            task.setStatus(Status.valueOf(resultSet.getString(_STATUS)));
         }
         preparedStatement.execute();
         return task;
@@ -87,22 +89,16 @@ public class TaskDaoImpl implements TaskDao{
         preparedStatement = connection.prepareStatement(SELECT_ALL_TASK);
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        /*Statement statement = null;
-        statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(SELECT_ALL_TASK);*/
-
         while(resultSet.next()) {
-            System.err.println("While loop start");
             //Display values
             Task task = new Task();
-            task.setId(resultSet.getLong(_id));
-            task.setName(resultSet.getString(_name));
-            task.setDescription(resultSet.getString(_description));
-            task.setCreated(resultSet.getDate(_dueDates).toLocalDate());
-            task.setStatus(Status.valueOf(resultSet.getString(_status)));
+            task.setId(resultSet.getLong(_ID));
+            task.setName(resultSet.getString(_NAME));
+            task.setDescription(resultSet.getString(_DESCRIPTION));
+            task.setCreated(resultSet.getDate(_DUEDATES).toLocalDate());
+            task.setStatus(Status.valueOf(resultSet.getString(_STATUS)));
 
             taskList.add(task);
-            System.err.println("While loop end");
         }
         return taskList;
     }
