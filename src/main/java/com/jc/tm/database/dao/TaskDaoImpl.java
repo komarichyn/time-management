@@ -34,9 +34,9 @@ public class TaskDaoImpl implements TaskDao{
     Connection connection = Jdbc.getConnection();
 
     @Override
-    public void insert(Task task) throws SQLException {
+    public Long insert(Task task) throws SQLException {
         PreparedStatement preparedStatement = null;
-
+        Long id = null;
         preparedStatement = connection.prepareStatement(INSERT_TASK);
         preparedStatement.setLong(1, task.getId());
         preparedStatement.setString(2, task.getName());
@@ -47,6 +47,7 @@ public class TaskDaoImpl implements TaskDao{
         preparedStatement.executeUpdate();
 
         Jdbc.closeConnection(connection);
+        return id;
     }
 
     @Override
