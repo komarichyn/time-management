@@ -45,6 +45,8 @@ public class TaskDaoImpl implements TaskDao{
         preparedStatement.setString(5, task.getStatus().toString());
 
         preparedStatement.executeUpdate();
+
+        Jdbc.closeConnection(connection);
     }
 
     @Override
@@ -58,6 +60,8 @@ public class TaskDaoImpl implements TaskDao{
         preparedStatement.setLong(4, task.getId());
 
         preparedStatement.executeUpdate();
+
+        Jdbc.closeConnection(connection);
     }
 
     @Override
@@ -78,6 +82,8 @@ public class TaskDaoImpl implements TaskDao{
             task.setStatus(Status.valueOf(resultSet.getString(_STATUS)));
         }
         preparedStatement.execute();
+
+        Jdbc.closeConnection(connection);
         return task;
     }
 
@@ -100,6 +106,7 @@ public class TaskDaoImpl implements TaskDao{
 
             taskList.add(task);
         }
+        Jdbc.closeConnection(connection);
         return taskList;
     }
 
@@ -112,6 +119,7 @@ public class TaskDaoImpl implements TaskDao{
         preparedStatement.setLong(1, task.getId());
         rowDeleted = preparedStatement.executeUpdate() > 0;
 
+        Jdbc.closeConnection(connection);
         return rowDeleted;
     }
 }
