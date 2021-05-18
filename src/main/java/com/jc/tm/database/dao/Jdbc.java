@@ -5,8 +5,12 @@ import com.jc.tm.helper.LoadPropertiesHelper;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class Jdbc {
+    static Logger LOGGER = Logger.getLogger(Jdbc.class.getName());
+
     public static Connection getConnection() {
         Connection connection = null;
         var propertiesHelper = LoadPropertiesHelper.getInstance();
@@ -35,5 +39,20 @@ public class Jdbc {
         builder.append("/");
         builder.append(dbName);
         return builder.toString();
+    }
+
+    public static void closeConnection(Connection connection){
+        try {
+            if (connection != null) {
+                connection.close();
+                if (connection.isClosed()) {
+                    LOGGER.info("Connection closed");
+                } else {
+                    LOGGER.info("Connection not closed");
+                }
+            }
+        } catch (SQLException throwables) {
+            LOGGER.log(Level.WARNING, "Exception", throwables);
+        }
     }
 }
