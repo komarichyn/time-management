@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Task {
-    private int id;
+    private Long id;
     private String name;
     private String description;
     private LocalDate created;
@@ -14,11 +14,24 @@ public class Task {
     private Status status;
     private Task task;
 
-    public int getId() {
+    @Override
+    public String toString() {
+        return "\nTask{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", created=" + created +
+//                ", comments=" + comments +
+                ", status=" + status +
+//                ", task=" + task +
+                '}';
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
