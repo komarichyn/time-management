@@ -1,15 +1,11 @@
 package com.jc.tm.database.dao;
 
 import com.jc.tm.database.entity.Comment;
-import com.jc.tm.database.entity.Task;
 import com.jc.tm.helper.DatabaseHelper;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import static java.sql.Timestamp.valueOf;
@@ -19,8 +15,7 @@ import static java.sql.Timestamp.valueOf;
  */
 @Slf4j
 public class CommentDaoImpl implements CommentDao {
-    //field for log
-    public static final Logger LOGGER = Logger.getLogger(CommentDaoImpl.class.getName());
+
     //name of sql fields
     private static final String _ID = "ID";
     private static final String __TASK_ID = "TASK_ID";
@@ -107,7 +102,7 @@ public class CommentDaoImpl implements CommentDao {
         try (var preparedStatement = connection.prepareStatement(GET_ALL)) {
             var resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Comment comment = new Comment();
+                var comment = new Comment();
                 comment.setId(resultSet.getLong(_ID));
                 comment.setTaskId(resultSet.getLong(__TASK_ID));
                 comment.setText(resultSet.getString(_TEXT));
