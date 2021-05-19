@@ -1,6 +1,5 @@
 package com.jc.tm;
 
-import com.jc.tm.database.dao.Jdbc;
 
 /**
  * this main class for launch a whole application
@@ -8,6 +7,6 @@ import com.jc.tm.database.dao.Jdbc;
 public class Main {
 
     public static void main(String[] args) {
-        Jdbc.getConnection();
+
     }
 }
