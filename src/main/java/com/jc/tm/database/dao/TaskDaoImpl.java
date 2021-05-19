@@ -37,23 +37,27 @@ public class TaskDaoImpl implements TaskDao {
   DatabaseHelper dbHelper = DatabaseHelper.getInstance();
 
   @Override
-  public void insert(Task task) throws SQLException {
+  public Task insert(Task task) throws SQLException {
     log.debug("insert new task:{}", task);
     var connection = dbHelper.getConnection();
 
-    try (var preparedStatement = connection.prepareStatement(INSERT_TASK)) {
-//      preparedStatement.setLong(1, task.getId());//shoudl be generated automaticly
+    try (var preparedStatement = connection.prepareStatement(INSERT_TASK, Statement.RETURN_GENERATED_KEYS)) {
       preparedStatement.setString(2, task.getName());
       preparedStatement.setString(3, task.getDescription());
       preparedStatement.setDate(4, Date.valueOf(task.getCreated()));
       preparedStatement.setString(5, task.getStatus().toString());
 
       preparedStatement.executeUpdate();
-      log.debug("new task was saved");
+      ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+      if (generatedKeys.next()) {
+        task.setId(generatedKeys.getLong(1));
+      }
+      log.debug("new task {} was saved", task);
 
     } finally {
       dbHelper.closeConnection(connection);
     }
+    return task;
   }
 
   @Override
