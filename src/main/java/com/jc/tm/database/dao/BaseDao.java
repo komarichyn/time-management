@@ -6,7 +6,7 @@ import java.util.List;
 public interface BaseDao<E> {
 
     //create or insert
-    Long insert(E e) throws SQLException;
+    E insert(E e) throws SQLException;
 
     //update
     void update(E e) throws SQLException;

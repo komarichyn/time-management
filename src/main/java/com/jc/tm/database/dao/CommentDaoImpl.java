@@ -9,6 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static java.sql.Timestamp.valueOf;
 
+/**
+ * this CommentDaoImpl class realize all CRUD methods for task
+ */
 public class CommentDaoImpl implements CommentDao {
     //field for log
     public static final Logger LOGGER = Logger.getLogger(CommentDaoImpl.class.getName());
@@ -25,7 +28,7 @@ public class CommentDaoImpl implements CommentDao {
     private static final String DELETE = "DELETE FROM COMMENT WHERE ID = ? ";
 
     @Override
-    public Long insert(Comment comment) throws SQLException {
+    public Comment insert(Comment comment) throws SQLException{
         Connection connection = Jdbc.getConnection();
         PreparedStatement preparedStatement = null;
         Long createdCommentId = null;
@@ -39,6 +42,7 @@ public class CommentDaoImpl implements CommentDao {
             if (generatedKeys.next()) {
                 createdCommentId = generatedKeys.getLong(1);
             }
+            comment.setId(createdCommentId);
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Problems with creating comment : ", e);
         } finally {
@@ -47,7 +51,7 @@ public class CommentDaoImpl implements CommentDao {
             }
             Jdbc.closeConnection(connection);
         }
-        return createdCommentId;
+        return comment;
     }
 
     @Override
