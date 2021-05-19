@@ -1,16 +1,12 @@
 version: '3'
 
 services:
-  mariadb:
-    image: mariadb:latest
+  mysqldb:
+    image: mysql:latest
     restart: 'always'
-    volumes:
-      - ./mysql/data:/var/lib/mysql/data
-      - ./mysql/logs:/var/lib/mysql/logs
-      - ./mysql/conf:/etc/mysql
     ports:
       - "3306:3306"
     expose:
       - "3306"
     env_file:
-      - mysql/conf/local-variables.env
+      - conf/local-variables.env
