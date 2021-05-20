@@ -5,22 +5,29 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
+import lombok.extern.slf4j.Slf4j;
 
 //made this class as singleton
+@Slf4j
 public class LoadPropertiesHelper {
     private static final String APPLICATION_CONF = "application.properties";
+
     private static LoadPropertiesHelper helper;
 
     private LoadPropertiesHelper() {
     }
 
-    public static final LoadPropertiesHelper getInstance() {
+    public static LoadPropertiesHelper getInstance() {
         if (helper == null) {
             helper = new LoadPropertiesHelper();
         }
         return helper;
     }
 
+    /**
+     * load properties
+     * @return loaded properties or null if some error happened
+     */
     public Properties loadProperties() {
         String rootPath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
         String appPropsPath = rootPath + APPLICATION_CONF;
@@ -30,16 +37,19 @@ public class LoadPropertiesHelper {
             stream = new FileInputStream(appPropsPath);
             properties.load(stream);
         } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+            log.error("File not found:{} ", appPropsPath);
+            log.error(e.getMessage(), e);
+            return null;
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Something went wrong during reading file " + APPLICATION_CONF);
+            log.error("Something went wrong during reading file {} by path {}", APPLICATION_CONF, rootPath);
+            log.error(e.getMessage(), e);
+            return null;
         } finally {
             if (stream != null) {
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    System.out.println(e.getMessage());
+                    log.error(e.getMessage(), e);
                 }
             }
         }
