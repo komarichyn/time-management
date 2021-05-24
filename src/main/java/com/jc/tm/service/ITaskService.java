@@ -1,6 +1,7 @@
 package com.jc.tm.service;
 
 import com.jc.tm.database.Status;
+import com.jc.tm.database.entity.Comment;
 import com.jc.tm.database.entity.Task;
 
 import java.time.LocalDate;
@@ -67,11 +68,11 @@ public interface ITaskService {
     public Collection<Task> loadTasksByAskPriority(PaginationDto page);
 
 
-//    public Task addComment(Long taskId, Comment newComment);
-//    public Task addCommnet(Task task, Comment newComment);
-//    public Comment removeComment(Long id);
-//    public Commnet removeComment(Comment comment);
-//    public Comment updateComment(Comment freshComment);
+    public Task addComment(Long taskId, Comment newComment);
+    public Task addCommnet(Task task, Comment newComment);
+    public Comment removeComment(Long id);
+    public Comment removeComment(Comment comment);
+    public Comment updateComment(Comment freshComment);
     public Task setDueDate(Task task, LocalDateTime time);
     public Task setDueDate(Long taskId, LocalDateTime time);
     public Task updateDueDate(Task task, LocalDateTime time);
