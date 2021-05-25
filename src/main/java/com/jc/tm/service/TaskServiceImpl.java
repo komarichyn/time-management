@@ -5,11 +5,16 @@ import com.jc.tm.database.dao.CommentDao;
 import com.jc.tm.database.dao.TaskDao;
 import com.jc.tm.database.entity.Comment;
 import com.jc.tm.database.entity.Task;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+/**
+ * this TaskServiceImpl class cooperate with DAO of Task and Comments
+ */
+@Slf4j
 public class TaskServiceImpl implements ITaskService {
 
     private TaskDao taskDao;
@@ -21,66 +26,54 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task saveTask(Task newTask) {
+    public Task saveTask(Task newTask) throws SQLException {
+        log.debug("saveTask input values:{}", newTask);
         Task insetredTask = null;
-        try {
-             insetredTask = taskDao.insert(newTask);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        insetredTask = taskDao.insert(newTask);
         return insetredTask;
     }
 
     @Override
-    public Task removeTask(Long id) {
+    public Task removeTask(Long id) throws SQLException {
+        log.debug("removeTask input values:{}", id);
         var task = getTask(id);
-        try {
+        if (task == null) {
+            return null;
+        } else {
             taskDao.delete(task);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
         return task;
     }
 
     @Override
-    public Task removeTask(Task task) {
-        try {
-            taskDao.delete(task);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return task;
+    public Task removeTask(Task task) throws SQLException {
+        log.debug("removeTask input task:{}", task);
+        return this.removeTask(task.getId());
     }
 
     @Override
-    public Task updateTask(Task freshTask) {
-        try {
+    public Task updateTask(Task freshTask) throws SQLException {
+        log.debug("updateTask input values:{}", freshTask);
+        if (freshTask == null) {
+            return null;
+        } else {
             taskDao.update(freshTask);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
         return freshTask;
     }
 
     @Override
-    public Task getTask(Long id) {
+    public Task getTask(Long id) throws SQLException {
+        log.debug("getTask input values:{}", id);
         Task taskById = null;
-        try {
-            taskById = taskDao.getById(id);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        taskById = taskDao.getById(id);
         return taskById;
     }
 
     @Override
-    public Task getTask(Task task) {
-        try {
-            taskDao.getAll();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return task;
+    public Task getTask(Task task) throws SQLException {
+        log.debug("getTask input values:{}", task);
+        return this.getTask(task.getId());
     }
 
     @Override
@@ -104,45 +97,44 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task addComment(Long taskId, Comment newComment) {
+    public Task addComment(Long taskId, Comment newComment) throws SQLException {
+        log.debug("addComment input values: task id {}, newComment {}", taskId, newComment);
         var task = getTask(taskId);
-        return addCommnet(task, newComment);
+        return this.addCommnet(task, newComment);
     }
 
     @Override
-    public Task addCommnet(Task task, Comment newComment) {
-//        commentDao.insert()
-        return null;
+    public Task addCommnet(Task task, Comment newComment) throws SQLException {
+        log.debug("addComment input values: task {}, new Comment {}", task, newComment);
+        return this.removeTask(task.getId());
     }
 
     @Override
-    public Comment removeComment(Long id) {
-/*        var comment = null;
-        try {
-            comment = commentDao.getById(id);
+    public Comment removeComment(Long id) throws SQLException {
+        log.debug("removeComment input values:{}", id);
+        Comment comment;
+        comment = commentDao.getById(id);
+        if (comment == null) {
+            return null;
+        } else {
             commentDao.delete(comment);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }*/
-        return null;
-    }
-
-    @Override
-    public Comment removeComment(Comment comment) {
-        try {
-            commentDao.delete(comment);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
         return comment;
     }
 
     @Override
-    public Comment updateComment(Comment freshComment) {
-        try {
+    public Comment removeComment(Comment comment) throws SQLException {
+        log.debug("removeComment input values:{}", comment);
+        return this.removeComment(comment.getId());
+    }
+
+    @Override
+    public Comment updateComment(Comment freshComment) throws SQLException {
+        log.debug("updateComment input values:{}", freshComment);
+        if (freshComment == null) {
+            return null;
+        } else {
             commentDao.update(freshComment);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
         return freshComment;
     }
@@ -154,9 +146,10 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task setDueDate(Long taskId, LocalDateTime time) {
+    public Task setDueDate(Long taskId, LocalDateTime time) throws SQLException {
+        log.debug("setDueDate input values: taskId {}, new time {}", taskId, time);
         var task = getTask(taskId);
-        return setDueDate(task, time);
+        return this.setDueDate(task, time);
     }
 
     @Override
