@@ -28,7 +28,7 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task saveTask(Task newTask) throws SQLException {
         log.debug("saveTask input values:{}", newTask);
-        Task insetredTask = null;
+        Task insetredTask;
         insetredTask = taskDao.insert(newTask);
         return insetredTask;
     }
@@ -38,8 +38,10 @@ public class TaskServiceImpl implements ITaskService {
         log.debug("removeTask input values:{}", id);
         var task = getTask(id);
         if (task == null) {
+            log.debug("Task was not found");
             return null;
         } else {
+            log.debug("Task was add:{}", task);
             taskDao.delete(task);
         }
         return task;
@@ -55,8 +57,10 @@ public class TaskServiceImpl implements ITaskService {
     public Task updateTask(Task freshTask) throws SQLException {
         log.debug("updateTask input values:{}", freshTask);
         if (freshTask == null) {
+            log.debug("This task {} not found", freshTask);
             return null;
         } else {
+            log.debug("This task {} was update", freshTask);
             taskDao.update(freshTask);
         }
         return freshTask;
@@ -100,13 +104,22 @@ public class TaskServiceImpl implements ITaskService {
     public Task addComment(Long taskId, Comment newComment) throws SQLException {
         log.debug("addComment input values: task id {}, newComment {}", taskId, newComment);
         var task = getTask(taskId);
+        if (task == null) {
+            log.debug("Task was not found");
+            return null;
+        } else {
+            log.debug("Task was found:{}", task);
+        }
         return this.addCommnet(task, newComment);
     }
 
     @Override
     public Task addCommnet(Task task, Comment newComment) throws SQLException {
         log.debug("addComment input values: task {}, new Comment {}", task, newComment);
-        return this.removeTask(task.getId());
+        //this method can't be task.addComment(newComment);
+        taskDao.update(task);
+        commentDao.update(newComment);
+        return null;
     }
 
     @Override
@@ -132,8 +145,10 @@ public class TaskServiceImpl implements ITaskService {
     public Comment updateComment(Comment freshComment) throws SQLException {
         log.debug("updateComment input values:{}", freshComment);
         if (freshComment == null) {
+            log.debug("New comment not found");
             return null;
         } else {
+            log.debug("UpdateComment {} was update", freshComment);
             commentDao.update(freshComment);
         }
         return freshComment;
@@ -141,7 +156,6 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public Task setDueDate(Task task, LocalDateTime time) {
-
         return null;
     }
 
