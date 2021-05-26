@@ -20,8 +20,7 @@ public class TaskDaoImpl implements TaskDao {
   public static final Logger LOGGER = Logger.getLogger(TaskDaoImpl.class.getName());
 
   //sql commands
-  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, due_Dates, status) " +
-      "values (NULL, ?, ?, ?, ?)";
+  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, due_Dates, status) values (NULL, ?, ?, ?, ?)";
   private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, due_Dates = ? where id = ?";
   private static final String SELECT_ALL_TASK = "SELECT id, name, description, due_Dates, status FROM TASK";
   private static final String SELECT_BY_ID_TASK = "select id, name, description, due_Dates, status from task where id = ?";
@@ -42,10 +41,10 @@ public class TaskDaoImpl implements TaskDao {
     var connection = dbHelper.getConnection();
 
     try (var preparedStatement = connection.prepareStatement(INSERT_TASK, Statement.RETURN_GENERATED_KEYS)) {
-      preparedStatement.setString(2, task.getName());
-      preparedStatement.setString(3, task.getDescription());
-      preparedStatement.setDate(4, Date.valueOf(task.getCreated()));
-      preparedStatement.setString(5, task.getStatus().toString());
+      preparedStatement.setString(1, task.getName());
+      preparedStatement.setString(2, task.getDescription());
+      preparedStatement.setDate(3, Date.valueOf(task.getCreated()));
+      preparedStatement.setString(4, task.getStatus().toString());
 
       preparedStatement.executeUpdate();
       ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
