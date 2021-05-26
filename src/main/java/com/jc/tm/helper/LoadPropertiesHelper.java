@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 
-//made this class as singleton
 @Slf4j
 public class LoadPropertiesHelper {
     private static final String APPLICATION_CONF = "application.properties";
@@ -32,26 +31,16 @@ public class LoadPropertiesHelper {
         String rootPath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
         String appPropsPath = rootPath + APPLICATION_CONF;
         var properties = new Properties();
-        FileInputStream stream = null;
-        try {
-            stream = new FileInputStream(appPropsPath);
+        try(var stream = new FileInputStream(appPropsPath)){
             properties.load(stream);
         } catch (FileNotFoundException e) {
             log.error("File not found:{} ", appPropsPath);
             log.error(e.getMessage(), e);
             return null;
         } catch (IOException e) {
-            log.error("Something went wrong during reading file {} by path {}", APPLICATION_CONF, rootPath);
+            log.error("Something went wrong during reading the file {} by path {}", APPLICATION_CONF, rootPath);
             log.error(e.getMessage(), e);
             return null;
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
         }
         return properties;
     }
