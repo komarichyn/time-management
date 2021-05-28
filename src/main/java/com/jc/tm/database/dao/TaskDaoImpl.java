@@ -16,14 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TaskDaoImpl implements TaskDao {
 
-  //field for log
-  public static final Logger LOGGER = Logger.getLogger(TaskDaoImpl.class.getName());
-
   //sql commands
-  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, due_Dates, status) values (NULL, ?, ?, ?, ?)";
-  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, due_Dates = ? where id = ?";
-  private static final String SELECT_ALL_TASK = "SELECT id, name, description, due_Dates, status FROM TASK";
-  private static final String SELECT_BY_ID_TASK = "select id, name, description, due_Dates, status from task where id = ?";
+  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, due_date, status) values (NULL, ?, ?, ?, ?)";
+  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, due_date = ? where id = ?";
+  private static final String SELECT_ALL_TASK = "SELECT id, name, description, due_date, status FROM task";
+  private static final String SELECT_BY_ID_TASK = "select id, name, description, due_date, status from task where id = ?";
   private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
 
   //name of sql fields
@@ -33,7 +30,11 @@ public class TaskDaoImpl implements TaskDao {
   private static final String _DUEDATES = "due_Dates";
   private static final String _STATUS = "status";
 
-  DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+  private DatabaseHelper dbHelper;
+
+  public TaskDaoImpl(DatabaseHelper dbHelper) {
+    this.dbHelper = dbHelper;
+  }
 
   @Override
   public Task insert(Task task) throws SQLException {

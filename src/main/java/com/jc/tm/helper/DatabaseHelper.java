@@ -1,15 +1,17 @@
 package com.jc.tm.helper;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DatabaseHelper {
+
+  private static final String _NAME = "db.driver-name";
+  private static final String _USER = "db.user";
+  private static final String _PWD = "db.password";
+  private static final String _URL = "db.url";
 
   private static DatabaseHelper helper;
 
@@ -28,10 +30,10 @@ public class DatabaseHelper {
     Connection connection = null;
     var propertiesHelper = LoadPropertiesHelper.getInstance();
     var properties = propertiesHelper.loadProperties();
-    String driver = properties.getProperty("db.driver-name");
-    String user = properties.getProperty("db.user");
-    String pass = properties.getProperty("db.password");
-    String url = properties.getProperty("db.url");
+    String driver = properties.getProperty(_NAME);
+    String user = properties.getProperty(_USER);
+    String pass = properties.getProperty(_PWD);
+    String url = properties.getProperty(_URL);
 
     try {
       Class.forName(driver);

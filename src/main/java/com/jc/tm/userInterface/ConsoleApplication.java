@@ -2,6 +2,7 @@ package com.jc.tm.userInterface;
 
 import com.jc.tm.database.dao.CommentDaoImpl;
 import com.jc.tm.database.dao.TaskDaoImpl;
+import com.jc.tm.helper.DatabaseHelper;
 import lombok.extern.slf4j.Slf4j;
 import java.util.Scanner;
 
@@ -13,8 +14,8 @@ public class ConsoleApplication {
 
     public ConsoleApplication() {
         this.sc = new Scanner(System.in);
-        this.commentConsoleMenu = new CommentConsoleMenu(sc, new CommentDaoImpl());
-        this.taskConsoleMenu = new TaskConsoleMenu(sc, new TaskDaoImpl());
+        this.commentConsoleMenu = new CommentConsoleMenu(sc, new CommentDaoImpl(DatabaseHelper.getInstance()));
+        this.taskConsoleMenu = new TaskConsoleMenu(sc, new TaskDaoImpl(DatabaseHelper.getInstance()));
     }
 
     //start method

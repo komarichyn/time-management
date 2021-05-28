@@ -18,17 +18,21 @@ public class CommentDaoImpl implements CommentDao {
 
     //name of sql fields
     private static final String _ID = "ID";
-    private static final String __TASK_ID = "TASK_ID";
+    private static final String _TASK_ID = "TASK_ID";
     private static final String _TEXT = "TEXT";
     private static final String _CREATED = "CREATED";
     //sql commands
-    private static final String INSERT = "INSERT INTO COMMENT(ID, TASK_ID, TEXT, CREATED) VALUES (NULL, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO COMMENT(ID, TASK_ID, TEXT, CREATED) VALUES (NULL, ?, ?, ?)create table COMMENT(	ID int null,	TASK_ID int null,	TEXT int null,	CREATED int null);";
     private static final String UPDATE = "UPDATE COMMENT SET TEXT = ?, CREATED = ? WHERE ID = ?";
     private static final String GET_BY_ID = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT WHERE ID = ? ";
     private static final String GET_ALL = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT";
     private static final String DELETE = "DELETE FROM COMMENT WHERE ID = ? ";
 
-    private DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+    private DatabaseHelper dbHelper;
+
+    public CommentDaoImpl(DatabaseHelper dbHelper) {
+        this.dbHelper = dbHelper;
+    }
 
     @Override
     public Comment insert(Comment comment) throws SQLException{
@@ -82,7 +86,7 @@ public class CommentDaoImpl implements CommentDao {
             if (resultSet.next()) {
                 var comment = new Comment();
                 comment.setId(resultSet.getLong(_ID));
-                comment.setTaskId(resultSet.getLong(__TASK_ID));
+                comment.setTaskId(resultSet.getLong(_TASK_ID));
                 comment.setText(resultSet.getString(_TEXT));
                 comment.setCreated(resultSet.getTimestamp(_CREATED).toLocalDateTime());
                 return comment;
@@ -104,7 +108,7 @@ public class CommentDaoImpl implements CommentDao {
             while (resultSet.next()) {
                 var comment = new Comment();
                 comment.setId(resultSet.getLong(_ID));
-                comment.setTaskId(resultSet.getLong(__TASK_ID));
+                comment.setTaskId(resultSet.getLong(_TASK_ID));
                 comment.setText(resultSet.getString(_TEXT));
                 comment.setCreated(resultSet.getTimestamp(_CREATED).toLocalDateTime());
                 commentList.add(comment);
