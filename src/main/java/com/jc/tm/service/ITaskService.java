@@ -74,7 +74,7 @@ public interface ITaskService {
     public Comment removeComment(Long id) throws SQLException;
     public Comment removeComment(Comment comment) throws SQLException;
     public Comment updateComment(Comment freshComment) throws SQLException;
-    public Task setDueDate(Task task, LocalDateTime time);
+    public Task setDueDate(Task task, LocalDateTime time) throws SQLException;
     public Task setDueDate(Long taskId, LocalDateTime time) throws SQLException;
     public Task updateDueDate(Task task, LocalDateTime time);
     public Task updateDueDate(Long taskId, LocalDateTime time);

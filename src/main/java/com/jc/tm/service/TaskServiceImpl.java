@@ -36,10 +36,10 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task removeTask(Long id) throws SQLException {
         log.debug("removeTask input values:{}", id);
-        var task = getTask(id);
+        var task = this.getTask(id);
         if (task == null) {
-            log.debug("Task was not found");
-            return null;
+            log.error("Task with id {} not found", id);
+            throw new NullPointerException();
         } else {
             log.debug("Task was add:{}", task);
             taskDao.delete(task);
@@ -56,9 +56,10 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task updateTask(Task freshTask) throws SQLException {
         log.debug("updateTask input values:{}", freshTask);
-        if (freshTask == null) {
-            log.debug("This task {} not found", freshTask);
-            return null;
+        var oldTask = this.getTask(freshTask);
+        if (oldTask == null) {
+            log.error("This task {} not found", freshTask);
+            throw new NullPointerException();
         } else {
             log.debug("This task {} was update", freshTask);
             taskDao.update(freshTask);
@@ -69,8 +70,13 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task getTask(Long id) throws SQLException {
         log.debug("getTask input values:{}", id);
-        Task taskById = null;
-        taskById = taskDao.getById(id);
+        Task taskById;
+        if (id == null) {
+            log.error("Id {} not found", id);
+            throw new NullPointerException();
+        } else {
+            taskById = taskDao.getById(id);
+        }
         return taskById;
     }
 
@@ -82,7 +88,7 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public Collection<Task> loadTasks() {
-        return null;
+        return this.loadTasks(new PaginationDto());
     }
 
     @Override
@@ -105,8 +111,8 @@ public class TaskServiceImpl implements ITaskService {
         log.debug("addComment input values: task id {}, newComment {}", taskId, newComment);
         var task = getTask(taskId);
         if (task == null) {
-            log.debug("Task was not found");
-            return null;
+            log.error("Task with id {} not found", taskId);
+            throw new NullPointerException();
         } else {
             log.debug("Task was found:{}", task);
         }
@@ -116,10 +122,10 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task addCommnet(Task task, Comment newComment) throws SQLException {
         log.debug("addComment input values: task {}, new Comment {}", task, newComment);
-        //this method can't be task.addComment(newComment);
+        task.getComments().add(newComment);
         taskDao.update(task);
         commentDao.update(newComment);
-        return null;
+        return task;
     }
 
     @Override
@@ -128,7 +134,8 @@ public class TaskServiceImpl implements ITaskService {
         Comment comment;
         comment = commentDao.getById(id);
         if (comment == null) {
-            return null;
+            log.error("Comment with id {} not found", id);
+            throw new NullPointerException();
         } else {
             commentDao.delete(comment);
         }
@@ -145,8 +152,8 @@ public class TaskServiceImpl implements ITaskService {
     public Comment updateComment(Comment freshComment) throws SQLException {
         log.debug("updateComment input values:{}", freshComment);
         if (freshComment == null) {
-            log.debug("New comment not found");
-            return null;
+            log.error("New comment {} not found", freshComment);
+            throw new NullPointerException();
         } else {
             log.debug("UpdateComment {} was update", freshComment);
             commentDao.update(freshComment);
@@ -155,15 +162,22 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task setDueDate(Task task, LocalDateTime time) {
-        return null;
+    public Task setDueDate(Task task, LocalDateTime time) throws SQLException {
+        return this.setDueDate(task.getId(), time);
     }
 
     @Override
     public Task setDueDate(Long taskId, LocalDateTime time) throws SQLException {
         log.debug("setDueDate input values: taskId {}, new time {}", taskId, time);
         var task = getTask(taskId);
-        return this.setDueDate(task, time);
+        if (task == null) {
+            log.error("Task with id {} not found", taskId);
+            throw new NullPointerException();
+        } else {
+            task.setDueDate(time);
+            this.updateTask(task);
+        }
+        return task;
     }
 
     @Override

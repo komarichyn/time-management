@@ -5,9 +5,9 @@ import com.jc.tm.database.entity.Task;
 
 import com.jc.tm.helper.DatabaseHelper;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,10 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 public class TaskDaoImpl implements TaskDao {
 
   //sql commands
-  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, due_date, status) values (NULL, ?, ?, ?, ?)";
-  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, due_date = ? where id = ?";
-  private static final String SELECT_ALL_TASK = "SELECT id, name, description, due_date, status FROM task";
-  private static final String SELECT_BY_ID_TASK = "select id, name, description, due_date, status from task where id = ?";
+  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, created, status) values (NULL, ?, ?, ?, ?)";
+  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, created = ? where id = ?";
+  private static final String SELECT_ALL_TASK = "SELECT id, name, description, created, status FROM task";
+  private static final String SELECT_BY_ID_TASK = "select id, name, description, created, status from task where id = ?";
   private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
 
   //name of sql fields
@@ -44,7 +44,7 @@ public class TaskDaoImpl implements TaskDao {
     try (var preparedStatement = connection.prepareStatement(INSERT_TASK, Statement.RETURN_GENERATED_KEYS)) {
       preparedStatement.setString(1, task.getName());
       preparedStatement.setString(2, task.getDescription());
-      preparedStatement.setDate(3, Date.valueOf(task.getCreated()));
+      preparedStatement.setDate(3, Date.valueOf(String.valueOf(task.getCreated())));
       preparedStatement.setString(4, task.getStatus().toString());
 
       preparedStatement.executeUpdate();
@@ -68,7 +68,7 @@ public class TaskDaoImpl implements TaskDao {
     try (var preparedStatement = connection.prepareStatement(UPDATE_TASK)) {
       preparedStatement.setString(1, task.getName());
       preparedStatement.setString(2, task.getDescription());
-      preparedStatement.setDate(3, Date.valueOf(task.getCreated()));
+      preparedStatement.setDate(3, Date.valueOf(String.valueOf(task.getCreated())));
       preparedStatement.setLong(4, task.getId());
 
       preparedStatement.executeUpdate();
@@ -141,7 +141,7 @@ public class TaskDaoImpl implements TaskDao {
     task.setId(resultSet.getLong(_ID));
     task.setName(resultSet.getString(_NAME));
     task.setDescription(resultSet.getString(_DESCRIPTION));
-    task.setCreated(resultSet.getDate(_DUEDATES).toLocalDate());
+    task.setCreated(LocalDateTime.from(resultSet.getDate(_DUEDATES).toLocalDate()));
     task.setStatus(Status.valueOf(resultSet.getString(_STATUS)));
     return task;
   }
