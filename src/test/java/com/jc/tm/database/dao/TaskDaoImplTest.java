@@ -6,7 +6,7 @@ import com.jc.tm.database.Status;
 import com.jc.tm.database.entity.Task;
 import com.jc.tm.helper.DatabaseHelper;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class TaskDaoImplTest {
 
   private Task generateTask(){
     Task task = new Task();
-    task.setCreated(LocalDate.now());
+    task.setCreated(LocalDateTime.now());
     task.setDescription("some description");
     task.setName("Task name");
     task.setStatus(Status.TODO);
