@@ -22,7 +22,7 @@ public class CommentDaoImpl implements CommentDao {
     private static final String _TEXT = "TEXT";
     private static final String _CREATED = "CREATED";
     //sql commands
-    private static final String INSERT = "INSERT INTO COMMENT(ID, TASK_ID, TEXT, CREATED) VALUES (NULL, ?, ?, ?)create table COMMENT(	ID int null,	TASK_ID int null,	TEXT int null,	CREATED int null);";
+    private static final String INSERT = "INSERT INTO COMMENT(ID, TASK_ID, TEXT, CREATED) VALUES (NULL, ?, ?, ?)";
     private static final String UPDATE = "UPDATE COMMENT SET TEXT = ?, CREATED = ? WHERE ID = ?";
     private static final String GET_BY_ID = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT WHERE ID = ? ";
     private static final String GET_ALL = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT";
