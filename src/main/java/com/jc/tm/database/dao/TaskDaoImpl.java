@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
+import static java.sql.Timestamp.valueOf;
+
 /**
  * this TaskDaoImpl class realize all CRUD methods for task
  */
@@ -27,7 +29,7 @@ public class TaskDaoImpl implements TaskDao {
   private static final String _ID = "id";
   private static final String _NAME = "name";
   private static final String _DESCRIPTION = "description";
-  private static final String _DUEDATES = "due_Dates";
+  private static final String _CREATED = "created";
   private static final String _STATUS = "status";
 
   private DatabaseHelper dbHelper;
@@ -68,7 +70,7 @@ public class TaskDaoImpl implements TaskDao {
     try (var preparedStatement = connection.prepareStatement(UPDATE_TASK)) {
       preparedStatement.setString(1, task.getName());
       preparedStatement.setString(2, task.getDescription());
-      preparedStatement.setDate(3, Date.valueOf(String.valueOf(task.getCreated())));
+      preparedStatement.setTimestamp(3, valueOf(LocalDateTime.now()));
       preparedStatement.setLong(4, task.getId());
 
       preparedStatement.executeUpdate();
@@ -141,7 +143,7 @@ public class TaskDaoImpl implements TaskDao {
     task.setId(resultSet.getLong(_ID));
     task.setName(resultSet.getString(_NAME));
     task.setDescription(resultSet.getString(_DESCRIPTION));
-    task.setCreated(LocalDateTime.from(resultSet.getDate(_DUEDATES).toLocalDate()));
+    task.setCreated(LocalDateTime.from(resultSet.getTimestamp(_CREATED).toLocalDateTime()));
     task.setStatus(Status.valueOf(resultSet.getString(_STATUS)));
     return task;
   }

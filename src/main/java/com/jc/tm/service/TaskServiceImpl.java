@@ -124,7 +124,7 @@ public class TaskServiceImpl implements ITaskService {
         log.debug("addComment input values: task {}, new Comment {}", task, newComment);
         task.getComments().add(newComment);
         taskDao.update(task);
-        commentDao.update(newComment);
+        commentDao.insert(newComment);
         return task;
     }
 

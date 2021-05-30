@@ -1,5 +1,7 @@
 package com.jc.tm.ui;
 
+import com.jc.tm.service.ITaskService;
+import com.jc.tm.ui.subMenu.CommentSubMenu;
 import com.jc.tm.ui.console.MyConsole;
 import com.jc.tm.ui.console.MyDevice;
 
@@ -8,6 +10,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TaskConsole {
     MyDevice console = MyConsole.defaultTextDevice();
     AtomicBoolean start = new AtomicBoolean(Boolean.TRUE);
+    private ITaskService service;
+    private CommentSubMenu commentSubMenu;
+
+    public TaskConsole(ITaskService service) {
+        this.service = service;
+        commentSubMenu = new CommentSubMenu(console,service);
+    }
 
     public void start() {
         console.clear();
@@ -18,7 +27,7 @@ public class TaskConsole {
             console.printf("you choose %s%n", menuNum);
             chooseMainMenu(menuNum);
         }
-       // drawMenu();
+        // drawMenu();
     }
 
     //menu
@@ -100,16 +109,17 @@ public class TaskConsole {
     private void chooseCommentSubMenu(String numberStr) {
         switch (numberStr) {
             case "1": {
+                commentSubMenu.createComment();
                 break;
             }
             case "2": {
+                commentSubMenu.updateComment();
                 break;
             }
             case "0": {
                 console.clear();
-                console.clear();
                 drawMenu();
-                chooseMainMenu(console.readLine());
+                chooseMainMenu(console.readLine("choose menu number..."));
                 break;
             }
             default: {
