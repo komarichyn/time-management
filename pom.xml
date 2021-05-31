@@ -58,6 +58,31 @@
                 <version>2.21.0</version>
             </plugin>
             <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.jc.tm.Main</mainClass>
+                        </manifest>
+                    </archive>
+<!--                    <descriptors>-->
+<!--                        <descriptor>src/assembly/src.xml</descriptor>-->
+<!--                    </descriptors>-->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
@@ -94,15 +119,14 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
-                                    <includes>
+                                    <!--<includes>
                                         <include>**/*.properties</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>src/main/resources/images</directory>
-                                    <includes>
-                                        <include>**/*.png</include>
-                                    </includes>
+                                        <include>**/MANIFEST.MF</include>
+                                    </includes>-->
+                                    <excludes>
+                                        <exclude>flyway.conf</exclude>
+                                        <exclude>db/migration/**</exclude>
+                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>
