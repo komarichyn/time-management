@@ -15,7 +15,7 @@ public class TaskConsole {
 
     public TaskConsole(ITaskService service) {
         this.service = service;
-        commentSubMenu = new CommentSubMenu(console,service);
+        commentSubMenu = new CommentSubMenu(console, service);
     }
 
     public void start() {
@@ -115,6 +115,10 @@ public class TaskConsole {
             case "2": {
                 commentSubMenu.updateComment();
                 break;
+            }
+            case "5": {
+                console.clear();
+                commentSubMenu.removeComment();
             }
             case "0": {
                 console.clear();

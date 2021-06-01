@@ -44,4 +44,14 @@ public class CommentSubMenu {
             console.printf("wrong input ");
         }
     }
+
+    public void removeComment() {
+        console.printf("Enter comment id to delete: ");
+        Long id = Long.parseLong(console.readLine());
+        try {
+            service.removeComment(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
