@@ -141,6 +141,10 @@ public class TaskConsole {
                 commentSubMenu.updateComment();
                 break;
             }
+            case "5": {
+                console.clear();
+                commentSubMenu.removeComment();
+            }
             case "0": {
                 console.clear();
                 drawMenu();

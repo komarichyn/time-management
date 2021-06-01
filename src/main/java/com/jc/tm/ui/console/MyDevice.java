@@ -20,8 +20,9 @@ public abstract class MyDevice {
   public void clear() throws ConsoleException {
     try {
       final String os = System.getProperty("os.name");
+      String[] cls = new String[] {"cmd.exe", "/c", "cls"};
       if (os.contains("Windows")) {
-        Runtime.getRuntime().exec("cls");
+        Runtime.getRuntime().exec(cls);
       } else {
         Runtime.getRuntime().exec("clear");
       }
