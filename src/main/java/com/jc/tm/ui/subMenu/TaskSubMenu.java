@@ -4,12 +4,15 @@ import com.jc.tm.database.Status;
 import com.jc.tm.database.entity.Task;
 import com.jc.tm.service.ITaskService;
 import com.jc.tm.ui.console.MyDevice;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 
+@Slf4j
 public class TaskSubMenu {
     private MyDevice console;
     private ITaskService service;
+    Task task;
 
     public TaskSubMenu(MyDevice console, ITaskService service) {
         this.console = console;
@@ -17,54 +20,44 @@ public class TaskSubMenu {
     }
 
     public void createTask() {
-        //TODO create log system
-        var task = new Task();
+        log.debug("createTask: in TaskSubMenu");
+        task = new Task();
         console.printf("Please enter your task:%n");
-        console.printf("Enter name: ");
-        String nameTask = console.readLine();
-        task.setName(nameTask);
-        console.printf("Enter description: ");
-        String descriptionTask = console.readLine();
-        task.setDescription(descriptionTask);
-        console.printf("Enter status: ");
-        Status statusTask = Status.valueOf(console.readLine());
-        task.setStatus(statusTask);
+        this.enterData();
         try {
+            log.debug("createTask: task from user {}", task);
             service.saveTask(task);
         } catch (SQLException e) {
+            log.error("createTask: problem with {}", task);
             e.printStackTrace();
         }
     }
 
     public void updateTask() {
-        //TODO create log system
-        var task = new Task();
+        log.debug("updateTask: in TaskSubMenu");
+        task = new Task();
         console.printf("Enter task id to change: ");
         Long taskId = Long.parseLong(console.readLine());
         task.setId(taskId);
-        console.printf("Enter task name to change: ");
-        String nameTask = console.readLine();
-        task.setName(nameTask);
-        console.printf("Enter task description to change: ");
-        String descriptionTask = console.readLine();
-        task.setDescription(descriptionTask);
-        console.printf("Enter task status to change: ");
-        Status statusTask = Status.valueOf(console.readLine());
-        task.setStatus(statusTask);
+        this.enterData();
         try {
+            log.debug("updateTask: task from user {}", task);
             service.updateTask(task);
         } catch (SQLException e) {
+            log.error("updateTask: problem with {}", task);
             e.printStackTrace();
         }
     }
 
     public void getByIdTask() {
-        //TODO create log system
+        log.debug("getByIdTask: in TaskSubMenu");
         console.printf("Enter task id to view: ");
         Long taskId = Long.parseLong(console.readLine());
         try {
+            log.debug("getByIdTask: id from user {}", taskId);
             console.printf(String.valueOf(service.getTask(taskId)));
         } catch (SQLException e) {
+            log.error("getByIdTask: problem with {}", taskId);
             e.printStackTrace();
         }
     }
@@ -74,13 +67,29 @@ public class TaskSubMenu {
     }
 
     public void removeTask() {
-        //TODO create log system
+        log.debug("removeTask: in TaskSubMenu");
         console.printf("Enter task id to delete: ");
         Long taskId = Long.parseLong(console.readLine());
         try {
+            log.debug("removeTask: id from user {}", taskId);
             service.removeTask(taskId);
         } catch (SQLException e) {
+            log.error("removeTask: problem with {}", taskId);
             e.printStackTrace();
         }
+    }
+
+    private void enterData() {
+        log.debug("enterData: data from user");
+        console.printf("Enter name: ");
+        String nameTask = console.readLine();
+        task.setName(nameTask);
+        console.printf("Enter description: ");
+        String descriptionTask = console.readLine();
+        task.setDescription(descriptionTask);
+        console.printf("Enter status: ");
+        Status statusTask = Status.valueOf(console.readLine());
+        task.setStatus(statusTask);
+        log.debug("Name {}, description {}, status {}", nameTask, descriptionTask, statusTask);
     }
 }

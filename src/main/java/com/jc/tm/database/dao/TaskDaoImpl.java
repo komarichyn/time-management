@@ -19,17 +19,17 @@ import static java.sql.Timestamp.valueOf;
 public class TaskDaoImpl implements TaskDao {
 
   //sql commands
-  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, localDate, status) VALUES (NULL, ?, ?, ?, ?)";//Changed from created to localDate
-  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, localDate = ? WHERE id = ?";//I forget status or all is OK?
+  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, localDate, status) VALUES (NULL, ?, ?, ?, ?)";
+  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, localDate = ?, status = ? WHERE id = ?";
   private static final String SELECT_ALL_TASK = "SELECT id, name, description, localDate, status FROM task";
-  private static final String SELECT_BY_ID_TASK = "SELECT id, name, description, localDate, status FROM task WHERE id = ?";//Changed from created to localDate
+  private static final String SELECT_BY_ID_TASK = "SELECT id, name, description, localDate, status FROM task WHERE id = ?";
   private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
 
   //name of sql fields
   private static final String _ID = "id";
   private static final String _NAME = "name";
   private static final String _DESCRIPTION = "description";
-  private static final String _CREATED = "localDate"; //Changed from created to localDate
+  private static final String _CREATED = "localDate";
   private static final String _STATUS = "status";
 
   private DatabaseHelper dbHelper;
@@ -46,7 +46,6 @@ public class TaskDaoImpl implements TaskDao {
     try (var preparedStatement = connection.prepareStatement(INSERT_TASK, Statement.RETURN_GENERATED_KEYS)) {
       preparedStatement.setString(1, task.getName());
       preparedStatement.setString(2, task.getDescription());
-//      preparedStatement.setDate(3, Date.valueOf(String.valueOf(task.getCreated())));
       preparedStatement.setTimestamp(3, valueOf(LocalDateTime.now()));
       preparedStatement.setString(4, task.getStatus().toString());
 
@@ -72,7 +71,8 @@ public class TaskDaoImpl implements TaskDao {
       preparedStatement.setString(1, task.getName());
       preparedStatement.setString(2, task.getDescription());
       preparedStatement.setTimestamp(3, valueOf(LocalDateTime.now()));
-      preparedStatement.setLong(4, task.getId());
+      preparedStatement.setString(4, task.getStatus().toString());
+      preparedStatement.setLong(5, task.getId());
 
       preparedStatement.executeUpdate();
       log.debug("task was updated");
