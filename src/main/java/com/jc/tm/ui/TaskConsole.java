@@ -4,6 +4,7 @@ import com.jc.tm.service.ITaskService;
 import com.jc.tm.ui.subMenu.CommentSubMenu;
 import com.jc.tm.ui.console.MyConsole;
 import com.jc.tm.ui.console.MyDevice;
+import com.jc.tm.ui.subMenu.TaskSubMenu;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -12,18 +13,20 @@ public class TaskConsole {
     AtomicBoolean start = new AtomicBoolean(Boolean.TRUE);
     private ITaskService service;
     private CommentSubMenu commentSubMenu;
+    private TaskSubMenu taskSubMenu;
 
     public TaskConsole(ITaskService service) {
         this.service = service;
         commentSubMenu = new CommentSubMenu(console,service);
+        taskSubMenu = new TaskSubMenu(console, service);
     }
 
     public void start() {
-        console.clear();
+//        console.clear(); TODO later I uncomment this string
         while (start.get()) {
             drawMenu();
             String menuNum = console.readLine("choose menu number...");
-            console.clear();
+//            console.clear(); TODO later I uncomment this string
             console.printf("you choose %s%n", menuNum);
             chooseMainMenu(menuNum);
         }
@@ -49,6 +52,15 @@ public class TaskConsole {
         console.printf("  0. Back%n");
     }
 
+    private void drawUpdateTaskMenu() {
+        console.printf("-------MENU UPDATE TASK-------%n");
+        console.printf("  1. Update name%n");
+        console.printf("  2. Update description%n");
+        console.printf("  3. Update date%n");
+        console.printf("  4. Update status%n");
+        console.printf("  5. Back%n");
+    }
+
     private void drawSubMenuComment() {
         console.printf("-------MENU COMMENT-------%n");
         console.printf("  1. Create comment%n");
@@ -62,19 +74,19 @@ public class TaskConsole {
     private void chooseMainMenu(String numberStr) {
         switch (numberStr) {
             case "1": {
-                console.clear();
+//                console.clear(); TODO later I uncomment this string
                 drawSubMenuTask();
                 chooseTaskSubMenu(console.readLine("choose menu number..."));
                 break;
             }
             case "2": {
-                console.clear();
+//                console.clear(); TODO later I uncomment this string
                 drawSubMenuComment();
                 chooseCommentSubMenu(console.readLine("choose menu number..."));
                 break;
             }
             case "0": {
-                console.clear();
+//                console.clear(); TODO later I uncomment this string
                 console.printf("Okay. see you later!%n");
                 start.compareAndSet(true, false);
                 break;
@@ -88,14 +100,27 @@ public class TaskConsole {
     private void chooseTaskSubMenu(String numberStr) {
         switch (numberStr) {
             case "1": {
+                taskSubMenu.createTask();
                 break;
             }
             case "2": {
-
+                taskSubMenu.updateTask();
+                break;
+            }
+            case "3": {
+                taskSubMenu.getByIdTask();
+                break;
+            }
+            case "4": {
+                taskSubMenu.getAllTask();
+                break;
+            }
+            case "5": {
+                taskSubMenu.removeTask();
                 break;
             }
             case "0": {
-                console.clear();
+//                console.clear(); TODO later I uncomment this string
                 drawMenu();
                 chooseMainMenu(console.readLine("choose menu number..."));
                 break;
