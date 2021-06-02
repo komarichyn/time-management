@@ -19,17 +19,17 @@ import static java.sql.Timestamp.valueOf;
 public class TaskDaoImpl implements TaskDao {
 
   //sql commands
-  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, localDate, status) VALUES (NULL, ?, ?, ?, ?)";
-  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, localDate = ?, status = ? WHERE id = ?";
-  private static final String SELECT_ALL_TASK = "SELECT id, name, description, localDate, status FROM task";
-  private static final String SELECT_BY_ID_TASK = "SELECT id, name, description, localDate, status FROM task WHERE id = ?";
+  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, created, status) VALUES (NULL, ?, ?, ?, ?)";
+  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, created = ?, status = ? WHERE id = ?";
+  private static final String SELECT_ALL_TASK = "SELECT id, name, description, created, status FROM task";
+  private static final String SELECT_BY_ID_TASK = "SELECT id, name, description, created, status FROM task WHERE id = ?";
   private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
 
   //name of sql fields
   private static final String _ID = "id";
   private static final String _NAME = "name";
   private static final String _DESCRIPTION = "description";
-  private static final String _CREATED = "localDate";
+  private static final String _CREATED = "created";
   private static final String _STATUS = "status";
 
   private DatabaseHelper dbHelper;

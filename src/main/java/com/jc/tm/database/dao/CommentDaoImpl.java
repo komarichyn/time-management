@@ -20,12 +20,12 @@ public class CommentDaoImpl implements CommentDao {
     private static final String _ID = "ID";
     private static final String _TASK_ID = "TASK_ID";
     private static final String _TEXT = "TEXT";
-    private static final String _CREATED = "LOCALDATE";
+    private static final String _CREATED = "CREATED";
     //sql commands
-    private static final String INSERT = "INSERT INTO COMMENT(ID, TASK_ID, TEXT, LOCALDATE) VALUES (NULL, ?, ?, ?)";
-    private static final String UPDATE = "UPDATE COMMENT SET TEXT = ?, LOCALDATE = ? WHERE ID = ?";
-    private static final String GET_BY_ID = "SELECT ID, TASK_ID, TEXT, LOCALDATE FROM COMMENT WHERE ID = ? ";
-    private static final String GET_ALL = "SELECT ID, TASK_ID, TEXT, LOCALDATE FROM COMMENT";
+    private static final String INSERT = "INSERT INTO COMMENT(ID, TASK_ID, TEXT, CREATED) VALUES (NULL, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE COMMENT SET TEXT = ?, CREATED = ? WHERE ID = ?";
+    private static final String GET_BY_ID = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT WHERE ID = ? ";
+    private static final String GET_ALL = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT";
     private static final String DELETE = "DELETE FROM COMMENT WHERE ID = ? ";
 
     private DatabaseHelper dbHelper;
