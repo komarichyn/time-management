@@ -28,17 +28,17 @@ public class LoadPropertiesHelper {
      * @return loaded properties or null if some error happened
      */
     public Properties loadProperties() {
-        String rootPath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
-        String appPropsPath = rootPath + APPLICATION_CONF;
+//        String rootPath = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("")).getPath();
+//        String appPropsPath = rootPath + APPLICATION_CONF;
         var properties = new Properties();
-        try(var stream = new FileInputStream(appPropsPath)){
+        try(var stream = this.getClass().getClassLoader().getResourceAsStream(APPLICATION_CONF)){
             properties.load(stream);
         } catch (FileNotFoundException e) {
-            log.error("File not found:{} ", appPropsPath);
+            log.error("File not found:{} ", APPLICATION_CONF);
             log.error(e.getMessage(), e);
             return null;
         } catch (IOException e) {
-            log.error("Something went wrong during reading the file {} by path {}", APPLICATION_CONF, rootPath);
+            log.error("Something went wrong during reading the file {} by path {}", APPLICATION_CONF, "classpath");
             log.error(e.getMessage(), e);
             return null;
         }
