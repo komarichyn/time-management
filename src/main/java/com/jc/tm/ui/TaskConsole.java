@@ -27,23 +27,19 @@ public class TaskConsole {
                 drawMenu();
                 chooseTaskMenu(console.readLine("Choose menu number: "));
             } else {
-                taskSubMenu.getByIdTask();
-//                taskSubMenu.getAllTask(page);
-                String userChoose = console.readLine("Your choose");
+                taskSubMenu.getAllTask(page);
+                String userChoose = console.readLine("Your choose: ");
+                /*String userChoose = console.readLine("Keys to use program: " +
+                        "> - next five tasks, " +
+                        "< - previous five tasks, " +
+                        "2 - menu, " +
+                        "9 - exit%n" +
+                        "Your choose ");*/
                 console.clear();
                 userChoose(userChoose);
                 programStart++;
             }
-            /*String menuNum = console.readLine("Keys:%n" +
-                    "> - next five tasks%n" +
-                    "< - previous five tasks%n" +
-                    "2 - menu%n" +
-                    "9 - exit");*/
-            /*String userChoose = console.readLine("Your choose");
-            console.clear();
-            userChoose(userChoose);*/
         }
-//         drawMenu();
     }
 
     //menu
@@ -68,15 +64,22 @@ public class TaskConsole {
     private void userChoose(String numberStr) {
         switch (numberStr) {
             case "<": {
-                console.clear();
+                if (page == 0) {
+                    System.err.println("First page");
+                    programStart--;
+                    break;
+                }
+//                console.clear();
                 taskSubMenu.getAllTask(page);
+                console.clear();
                 page = page - 5;
                 programStart--;
                 break;
             }
             case ">": {
-                console.clear();
+//                console.clear();
                 taskSubMenu.getAllTask(page);
+                console.clear();
                 page = page + 5;
                 programStart--;
                 break;
@@ -84,6 +87,7 @@ public class TaskConsole {
             case "2": {
                 console.clear();
                 drawMenu();
+                page = 0;
                 chooseTaskMenu(console.readLine("Choose menu number: "));
                 break;
             }
@@ -112,15 +116,24 @@ public class TaskConsole {
             }
             case "3": {
                 taskSubMenu.getByIdTask();
+                console.readLine();
+                console.clear();
                 break;
             }
             case "4": {
+                console.clear();
                 taskSubMenu.getAllTask(page);
                 userChoose(console.readLine("Your choose 2: "));
                 break;
             }
             case "5": {
                 taskSubMenu.removeTask();
+                break;
+            }
+            case "9": {
+                console.clear();
+                console.printf("Okay. see you later!%n");
+                start.compareAndSet(true, false);
                 break;
             }
             default: {

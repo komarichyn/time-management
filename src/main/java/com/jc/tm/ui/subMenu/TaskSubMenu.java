@@ -60,6 +60,7 @@ public class TaskSubMenu {
         log.debug("getByIdTask: in TaskSubMenu");
         console.printf("Enter task id to view: ");
         Long taskId = Long.parseLong(console.readLine());
+        console.clear();
         try {
             log.debug("getByIdTask: id from user {}", taskId);
             console.printf(String.valueOf(service.getTask(taskId)));
@@ -81,7 +82,7 @@ public class TaskSubMenu {
                 taskList.add(buildTask(resultSet));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Error in SQL syntax");
         } finally {
             dbHelper.closeConnection(connection);
         }
