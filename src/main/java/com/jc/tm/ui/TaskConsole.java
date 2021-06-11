@@ -27,14 +27,13 @@ public class TaskConsole {
                 drawMenu();
                 chooseTaskMenu(console.readLine("Choose menu number: "));
             } else {
-                taskSubMenu.getAllTask(page);
-                String userChoose = console.readLine("Your choose: ");
-                /*String userChoose = console.readLine("Keys to use program: " +
+                taskSubMenu.getFiveDueDateTasks(page);
+                String userChoose = console.readLine("Keys to use program: " +
                         "> - next five tasks, " +
                         "< - previous five tasks, " +
                         "2 - menu, " +
                         "9 - exit%n" +
-                        "Your choose ");*/
+                        "Your choose ");
                 console.clear();
                 userChoose(userChoose);
                 programStart++;
@@ -70,7 +69,7 @@ public class TaskConsole {
                     break;
                 }
 //                console.clear();
-                taskSubMenu.getAllTask(page);
+                taskSubMenu.getFiveDueDateTasks(page);
                 console.clear();
                 page = page - 5;
                 programStart--;
@@ -78,7 +77,7 @@ public class TaskConsole {
             }
             case ">": {
 //                console.clear();
-                taskSubMenu.getAllTask(page);
+                taskSubMenu.getFiveDueDateTasks(page);
                 console.clear();
                 page = page + 5;
                 programStart--;
@@ -122,8 +121,14 @@ public class TaskConsole {
             }
             case "4": {
                 console.clear();
-                taskSubMenu.getAllTask(page);
-                userChoose(console.readLine("Your choose 2: "));
+                taskSubMenu.getFiveDueDateTasks(page);
+
+                userChoose(console.readLine("Keys to use program: " +
+                        "> - next five tasks, " +
+                        "< - previous five tasks, " +
+                        "2 - menu, " +
+                        "9 - exit%n" +
+                        "Your choose 2 "));
                 break;
             }
             case "5": {
