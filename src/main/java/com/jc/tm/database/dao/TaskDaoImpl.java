@@ -8,6 +8,8 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.jc.tm.service.PaginationDto;
 import lombok.extern.slf4j.Slf4j;
 
 import static java.sql.Timestamp.valueOf;
@@ -24,6 +26,7 @@ public class TaskDaoImpl implements TaskDao {
   private static final String SELECT_ALL_TASK = "SELECT id, name, description, created, status FROM task";
   private static final String SELECT_BY_ID_TASK = "SELECT id, name, description, created, status FROM task WHERE id = ?";
   private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
+  private static final String GET_FIVE_DUE_DATE_TASKS = "SELECT * FROM task WHERE due_date > now() order by due_date limit ?,?";
 
   //name of sql fields
   private static final String _ID = "id";
@@ -31,6 +34,7 @@ public class TaskDaoImpl implements TaskDao {
   private static final String _DESCRIPTION = "description";
   private static final String _CREATED = "created";
   private static final String _STATUS = "status";
+  private static final String _DUE_DATE = "due_date";
 
   private DatabaseHelper dbHelper;
 
@@ -139,6 +143,24 @@ public class TaskDaoImpl implements TaskDao {
     }
   }
 
+  @Override
+  public List<Task> getFiveDueDateTasks(PaginationDto paginationDto) throws SQLException {
+    List<Task> dueDateTaskList = new ArrayList<>();
+    var connection = dbHelper.getConnection();
+
+    try (var preparedStatement = connection.prepareStatement(GET_FIVE_DUE_DATE_TASKS)) {
+      preparedStatement.setInt(1,paginationDto.getIndex());
+      preparedStatement.setInt(2,paginationDto.getSize());
+      var resultSet = preparedStatement.executeQuery();
+      while (resultSet.next()) {
+        dueDateTaskList.add(buildTask(resultSet));
+      }
+    } finally {
+      dbHelper.closeConnection(connection);
+    }
+    return dueDateTaskList;
+  }
+
   private Task buildTask(ResultSet resultSet) throws SQLException {
     var task = new Task();
     task.setId(resultSet.getLong(_ID));
@@ -146,6 +168,7 @@ public class TaskDaoImpl implements TaskDao {
     task.setDescription(resultSet.getString(_DESCRIPTION));
     task.setCreated(LocalDateTime.from(resultSet.getTimestamp(_CREATED).toLocalDateTime()));
     task.setStatus(Status.valueOf(resultSet.getString(_STATUS)));
+    task.setDueDate(LocalDateTime.from(resultSet.getTimestamp(_DUE_DATE).toLocalDateTime()));
     return task;
   }
 }
