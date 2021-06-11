@@ -2,7 +2,9 @@ package com.jc.tm.ui.subMenu;
 
 import com.jc.tm.database.Status;
 import com.jc.tm.database.entity.Task;
+import com.jc.tm.helper.DatabaseHelper;
 import com.jc.tm.service.ITaskService;
+import com.jc.tm.service.PaginationDto;
 import com.jc.tm.ui.console.MyDevice;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +15,8 @@ public class TaskSubMenu {
     private MyDevice console;
     private ITaskService service;
     Task task;
+    PaginationDto paginationDto;
+    private DatabaseHelper dbHelper = DatabaseHelper.getInstance(); // TODO DELETE!
 
     public TaskSubMenu(MyDevice console, ITaskService service) {
         this.console = console;
@@ -53,6 +57,7 @@ public class TaskSubMenu {
         log.debug("getByIdTask: in TaskSubMenu");
         console.printf("Enter task id to view: ");
         Long taskId = Long.parseLong(console.readLine());
+        console.clear();
         try {
             log.debug("getByIdTask: id from user {}", taskId);
             console.printf(String.valueOf(service.getTask(taskId)));
@@ -62,8 +67,18 @@ public class TaskSubMenu {
         }
     }
 
-    public void getAllTask() {
-//        TODO create pagination
+    public int getFiveDueDateTasks(int page) {
+        log.debug("getFiveDueDateTasks: in TaskSubMenu");
+        int size = 5;
+        paginationDto = new PaginationDto();
+        paginationDto.setIndex(page);
+        paginationDto.setSize(size);
+        try {
+            service.loadTasks(paginationDto);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
     public void removeTask() {
