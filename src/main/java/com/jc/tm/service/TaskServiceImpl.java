@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * this TaskServiceImpl class cooperate with DAO of Task and Comments
@@ -87,13 +89,18 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Collection<Task> loadTasks() {
+    public Collection<Task> loadTasks() throws SQLException {
         return this.loadTasks(new PaginationDto());
     }
 
     @Override
-    public Collection<Task> loadTasks(PaginationDto page) {
-        return null;
+    public Collection<Task> loadTasks(PaginationDto page) throws SQLException {
+        List<Task> tasks;
+        tasks = taskDao.getFiveDueDateTasks(page);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(tasks.get(i));
+        }
+        return tasks;
     }
 
     @Override

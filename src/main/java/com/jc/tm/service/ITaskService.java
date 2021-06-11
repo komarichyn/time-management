@@ -56,19 +56,16 @@ public interface ITaskService {
      * default call for loading task list. but result will be split on 20 items
      * @return list of tasks
      */
-    public Collection<Task> loadTasks();
+    public Collection<Task> loadTasks() throws SQLException;
 
     /**
      * load task list by custom criteria. data should be loaded by pagination which passes via parameters
      * @param page pagiantion configuraion
      * @return list of tasks
      */
-    public Collection<Task> loadTasks(PaginationDto page);
-
+    public Collection<Task> loadTasks(PaginationDto page) throws SQLException;
     public Collection<Task> loadTasksByDescPriority(PaginationDto page);
     public Collection<Task> loadTasksByAskPriority(PaginationDto page);
-
-
     public Task addComment(Long taskId, Comment newComment) throws SQLException;
     public Task addCommnet(Task task, Comment newComment) throws SQLException;
     public Comment removeComment(Long id) throws SQLException;
