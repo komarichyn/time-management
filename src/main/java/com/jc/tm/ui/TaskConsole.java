@@ -1,15 +1,19 @@
 package com.jc.tm.ui;
 
+import com.jc.tm.database.dao.TaskDaoImpl;
+import com.jc.tm.helper.DatabaseHelper;
 import com.jc.tm.service.ITaskService;
 import com.jc.tm.ui.console.MyConsole;
 import com.jc.tm.ui.console.MyDevice;
 import com.jc.tm.ui.subMenu.TaskSubMenu;
 
+import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskConsole {
     MyDevice console = MyConsole.defaultTextDevice();
     AtomicBoolean start = new AtomicBoolean(Boolean.TRUE);
+    TaskDaoImpl taskDao = new TaskDaoImpl(DatabaseHelper.getInstance());
     private ITaskService service;
     private TaskSubMenu taskSubMenu;
     private int programStart = 0;
@@ -27,16 +31,26 @@ public class TaskConsole {
                 drawMenu();
                 chooseTaskMenu(console.readLine("Choose menu number: "));
             } else {
-                taskSubMenu.getFiveDueDateTasks(page);
-                String userChoose = console.readLine("Keys to use program: " +
-                        "> - next five tasks, " +
-                        "< - previous five tasks, " +
-                        "2 - menu, " +
-                        "9 - exit%n" +
-                        "Your choose ");
-                console.clear();
-                userChoose(userChoose);
-                programStart++;
+                try {
+                    if (taskDao.checkDatabase()) {
+                        drawMenu();
+                        chooseTaskMenu(console.readLine("Choose menu number: "));
+                    }
+                    else {
+                        console.printf(String.valueOf(taskSubMenu.getFiveDueDateTasks(page)));
+                        String userChoose = console.readLine("Keys to use program: " +
+                                "> - next five tasks, " +
+                                "< - previous five tasks, " +
+                                "2 - menu, " +
+                                "9 - exit%n" +
+                                "Your choose ");
+                        console.clear();
+                        userChoose(userChoose);
+                        programStart++;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -49,6 +63,7 @@ public class TaskConsole {
         console.printf("  3. Pull task by id%n");
         console.printf("  4. Pull all tasks%n");
         console.printf("  5. Delete task%n");
+        console.printf("  9. Exit%n");
     }
 
     private void drawUpdateTaskMenu() {
@@ -77,9 +92,9 @@ public class TaskConsole {
             }
             case ">": {
 //                console.clear();
-                taskSubMenu.getFiveDueDateTasks(page);
-                console.clear();
                 page = page + 5;
+//                taskSubMenu.getFiveDueDateTasks(page);
+                console.clear();
                 programStart--;
                 break;
             }
@@ -122,7 +137,6 @@ public class TaskConsole {
             case "4": {
                 console.clear();
                 taskSubMenu.getFiveDueDateTasks(page);
-
                 userChoose(console.readLine("Keys to use program: " +
                         "> - next five tasks, " +
                         "< - previous five tasks, " +
