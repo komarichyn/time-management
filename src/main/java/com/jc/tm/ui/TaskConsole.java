@@ -30,28 +30,28 @@ public class TaskConsole {
             if (programStart > 0) {
                 drawMenu();
                 chooseTaskMenu(console.readLine("Choose menu number: "));
-            } else {
+            } /*else {
                 try {
                     if (taskDao.checkDatabase()) {
                         drawMenu();
                         chooseTaskMenu(console.readLine("Choose menu number: "));
-                    }
+                    }*/
                     else {
-                        console.printf(String.valueOf(taskSubMenu.getFiveDueDateTasks(page)));
-                        String userChoose = console.readLine("Keys to use program: " +
-                                "> - next five tasks, " +
-                                "< - previous five tasks, " +
-                                "2 - menu, " +
-                                "9 - exit%n" +
-                                "Your choose ");
-                        console.clear();
-                        userChoose(userChoose);
-                        programStart++;
+                        if (taskSubMenu.getFiveDueDateTasks(page) == 5) {
+                            programControlKeys();
+                            String userChoose = console.readLine("Your choose ");
+                            console.clear();
+                            userChoose(userChoose);
+                            programStart++;
+                        } else {
+                            drawMenu();
+                            chooseTaskMenu(console.readLine("Choose menu number: "));
+                        }
                     }
-                } catch (SQLException e) {
+                /*} catch (SQLException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
         }
     }
 
@@ -64,6 +64,14 @@ public class TaskConsole {
         console.printf("  4. Pull all tasks%n");
         console.printf("  5. Delete task%n");
         console.printf("  9. Exit%n");
+    }
+
+    private void programControlKeys() {
+        console.printf("Keys to use program: " +
+                "> - next five tasks, " +
+                "< - previous five tasks, " +
+                "2 - menu, " +
+                "9 - exit%n");
     }
 
     private void drawUpdateTaskMenu() {
@@ -112,6 +120,7 @@ public class TaskConsole {
                 break;
             }
             default: {
+                console.clear();
                 console.printf("Wrong data, please try again%n");
                 programStart--;
             }
@@ -137,16 +146,14 @@ public class TaskConsole {
             case "4": {
                 console.clear();
                 taskSubMenu.getFiveDueDateTasks(page);
-                userChoose(console.readLine("Keys to use program: " +
-                        "> - next five tasks, " +
-                        "< - previous five tasks, " +
-                        "2 - menu, " +
-                        "9 - exit%n" +
-                        "Your choose 2 "));
+                programControlKeys();
+                userChoose(console.readLine("Your choose 2 "));
                 break;
             }
             case "5": {
                 taskSubMenu.removeTask();
+                console.readLine();
+                console.clear();
                 break;
             }
             case "9": {
@@ -157,6 +164,8 @@ public class TaskConsole {
             }
             default: {
                 console.printf("Wrong data, please try again%n");
+                console.readLine();
+                console.clear();
             }
         }
     }

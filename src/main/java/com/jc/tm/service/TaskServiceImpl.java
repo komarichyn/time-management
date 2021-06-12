@@ -41,7 +41,8 @@ public class TaskServiceImpl implements ITaskService {
         var task = this.getTask(id);
         if (task == null) {
             log.error("Task with id {} not found", id);
-            throw new NullPointerException();
+//            throw new NullPointerException();
+            return task;
         } else {
             log.debug("Task was add:{}", task);
             taskDao.delete(task);

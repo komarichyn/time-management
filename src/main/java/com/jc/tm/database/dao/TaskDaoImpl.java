@@ -97,11 +97,9 @@ public class TaskDaoImpl implements TaskDao {
     try (var preparedStatement = connection.prepareStatement(SELECT_BY_ID_TASK)) {
       preparedStatement.setLong(1, id);
       var resultSet = preparedStatement.executeQuery();
-
       if (resultSet.next()) {
         return this.buildTask(resultSet);
       }
-
     } finally {
       dbHelper.closeConnection(connection);
     }
@@ -156,9 +154,14 @@ public class TaskDaoImpl implements TaskDao {
       preparedStatement.setInt(1,paginationDto.getIndex());
       preparedStatement.setInt(2,paginationDto.getSize());
       var resultSet = preparedStatement.executeQuery();
-      while (resultSet.next()) {
-        dueDateTaskList.add(buildTask(resultSet));
+      if (resultSet.next() == false) {
+        log.error("Resultset is empty, so database is empty");
+      } else {
+        do {
+          dueDateTaskList.add(buildTask(resultSet));
+        } while (resultSet.next());
       }
+
     } finally {
       dbHelper.closeConnection(connection);
     }
