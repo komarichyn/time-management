@@ -60,7 +60,11 @@ public class TaskSubMenu {
         console.clear();
         try {
             log.debug("getByIdTask: id from user {}", taskId);
-            console.printf(String.valueOf(service.getTask(taskId)));
+            if(service.getTask(taskId) != null) {
+                console.printf(String.valueOf(service.getTask(taskId)));
+            } else {
+                console.printf("Element not found");
+            }
         } catch (SQLException e) {
             log.error("getByIdTask: problem with {}", taskId);
             e.printStackTrace();
@@ -74,7 +78,9 @@ public class TaskSubMenu {
         paginationDto.setIndex(page);
         paginationDto.setSize(size);
         try {
-            service.loadTasks(paginationDto);
+            if (service.loadTasks(paginationDto).isEmpty()){
+                return 0;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -87,7 +93,11 @@ public class TaskSubMenu {
         Long taskId = Long.parseLong(console.readLine());
         try {
             log.debug("removeTask: id from user {}", taskId);
-            service.removeTask(taskId);
+            if(service.removeTask(taskId) != null) {
+                console.printf("Element not found");
+            } else {
+                console.printf("Element not deleted");
+            }
         } catch (SQLException e) {
             log.error("removeTask: problem with {}", taskId);
             e.printStackTrace();

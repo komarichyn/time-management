@@ -21,12 +21,13 @@ import static java.sql.Timestamp.valueOf;
 public class TaskDaoImpl implements TaskDao {
 
   //sql commands
-  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, created, status/*, due_date*/) VALUES (NULL, ?, ?, ?, ?/*, ?*/)";
+  private static final String INSERT_TASK = "INSERT INTO task (id, name, description, created, status, due_date) VALUES (NULL, ?, ?, ?, ?, ?)";
   private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, created = ?, status = ? WHERE id = ?";
   private static final String SELECT_ALL_TASK = "SELECT id, name, description, created, status FROM task";
   private static final String SELECT_BY_ID_TASK = "SELECT id, name, description, created, status, due_date FROM task WHERE id = ?";
   private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
   private static final String GET_FIVE_DUE_DATE_TASKS = "SELECT * FROM task WHERE due_date > now() order by due_date DESC limit ?,?";
+  private static final String CHECK_DATABASE = "select * from task";
 
   //name of sql fields
   private static final String _ID = "id";
@@ -53,6 +54,8 @@ public class TaskDaoImpl implements TaskDao {
       preparedStatement.setTimestamp(3, valueOf(LocalDateTime.now()));
       preparedStatement.setString(4, task.getStatus().toString());
 //      preparedStatement.setTimestamp(5, valueOf(LocalDateTime.now()));
+      preparedStatement.setTimestamp(5, Timestamp.valueOf(task.getDueDate()));
+
 
       preparedStatement.executeUpdate();
       ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -94,11 +97,9 @@ public class TaskDaoImpl implements TaskDao {
     try (var preparedStatement = connection.prepareStatement(SELECT_BY_ID_TASK)) {
       preparedStatement.setLong(1, id);
       var resultSet = preparedStatement.executeQuery();
-
       if (resultSet.next()) {
         return this.buildTask(resultSet);
       }
-
     } finally {
       dbHelper.closeConnection(connection);
     }
@@ -153,13 +154,33 @@ public class TaskDaoImpl implements TaskDao {
       preparedStatement.setInt(1,paginationDto.getIndex());
       preparedStatement.setInt(2,paginationDto.getSize());
       var resultSet = preparedStatement.executeQuery();
-      while (resultSet.next()) {
-        dueDateTaskList.add(buildTask(resultSet));
+      if (resultSet.next() == false) {
+        log.error("Resultset is empty, so database is empty");
+      } else {
+        do {
+          dueDateTaskList.add(buildTask(resultSet));
+        } while (resultSet.next());
       }
+
     } finally {
       dbHelper.closeConnection(connection);
     }
     return dueDateTaskList;
+  }
+
+  public boolean checkDatabase() throws SQLException {
+    var connection = dbHelper.getConnection();
+    boolean emptyDatabase = false;
+    try (var preparedStatement = connection.prepareStatement(CHECK_DATABASE)) {
+      var resultSet = preparedStatement.executeQuery();
+      if (!resultSet.next() ) {
+        log.info("Database is empty");
+        emptyDatabase = true;
+      }
+    } finally {
+      dbHelper.closeConnection(connection);
+    }
+    return emptyDatabase;
   }
 
   private Task buildTask(ResultSet resultSet) throws SQLException {
