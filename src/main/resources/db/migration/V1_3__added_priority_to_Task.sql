@@ -1,0 +1,1 @@
+alter table task add priority varchar(255) not null default 'NORMAL';

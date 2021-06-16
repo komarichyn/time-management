@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.jc.tm.service.PaginationDto;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import static java.sql.Timestamp.valueOf;
 
@@ -22,11 +23,11 @@ public class TaskDaoImpl implements TaskDao {
 
   //sql commands
   private static final String INSERT_TASK = "INSERT INTO task (id, name, description, created, status, due_date) VALUES (NULL, ?, ?, ?, ?, ?)";
-  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, created = ?, status = ? WHERE id = ?";
+  private static final String UPDATE_TASK = "UPDATE task SET name = ?, description = ?, status = ? WHERE id = ?";
   private static final String SELECT_ALL_TASK = "SELECT id, name, description, created, status FROM task";
   private static final String SELECT_BY_ID_TASK = "SELECT id, name, description, created, status, due_date FROM task WHERE id = ?";
   private static final String DELETE_TASK = "DELETE FROM task WHERE id = ?";
-  private static final String GET_FIVE_DUE_DATE_TASKS = "SELECT * FROM task WHERE due_date > now() order by due_date DESC limit ?,?";
+  private static final String GET_FIVE_DUE_DATE_TASKS = "SELECT * FROM task WHERE due_date <= now() order by due_date DESC limit ?,?";
   private static final String CHECK_DATABASE = "select * from task";
 
   //name of sql fields
@@ -43,25 +44,37 @@ public class TaskDaoImpl implements TaskDao {
     this.dbHelper = dbHelper;
   }
 
+  private Long getGeneratedId(PreparedStatement ps) throws SQLException {
+    ResultSet value = ps.getGeneratedKeys();
+    if (value.next()) {
+      return value.getLong(1);
+    }
+    return null;
+  }
+
   @Override
   public Task insert(Task task) throws SQLException {
     log.debug("insert new task:{}", task);
     var connection = dbHelper.getConnection();
 
-    try (var preparedStatement = connection.prepareStatement(INSERT_TASK, Statement.RETURN_GENERATED_KEYS)) {
-      preparedStatement.setString(1, task.getName());
-      preparedStatement.setString(2, task.getDescription());
-      preparedStatement.setTimestamp(3, valueOf(LocalDateTime.now()));
-      preparedStatement.setString(4, task.getStatus().toString());
-//      preparedStatement.setTimestamp(5, valueOf(LocalDateTime.now()));
-      preparedStatement.setTimestamp(5, Timestamp.valueOf(task.getDueDate()));
+    try (var ps = connection.prepareStatement(INSERT_TASK, Statement.RETURN_GENERATED_KEYS)) {
 
-
-      preparedStatement.executeUpdate();
-      ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-      if (generatedKeys.next()) {
-        task.setId(generatedKeys.getLong(1));
+      LocalDateTime currentTime = LocalDateTime.now();
+      Timestamp createdTime = Timestamp.valueOf(currentTime);
+      Timestamp dueTime = createdTime;
+      String status = task.getStatus() != null ? task.getStatus().toString() : Status.TODO.toString();
+      if (task.getDueDate() != null) {
+        dueTime = Timestamp.valueOf(task.getDueDate());
       }
+
+      ps.setString(1, task.getName());
+      ps.setString(2, task.getDescription());
+      ps.setTimestamp(3, createdTime);
+      ps.setString(4, status);
+      ps.setTimestamp(5, dueTime);
+
+      ps.executeUpdate();
+      task.setId(this.getGeneratedId(ps));
       log.debug("new task {} was saved", task);
 
     } finally {
@@ -70,19 +83,20 @@ public class TaskDaoImpl implements TaskDao {
     return task;
   }
 
+
   @Override
   public void update(Task task) throws SQLException {
     log.debug("update task:{}", task);
     var connection = dbHelper.getConnection();
 
-    try (var preparedStatement = connection.prepareStatement(UPDATE_TASK)) {
-      preparedStatement.setString(1, task.getName());
-      preparedStatement.setString(2, task.getDescription());
-      preparedStatement.setTimestamp(3, valueOf(LocalDateTime.now()));
-      preparedStatement.setString(4, task.getStatus().toString());
-      preparedStatement.setLong(5, task.getId());
+    try (var ps = connection.prepareStatement(UPDATE_TASK)) {
 
-      preparedStatement.executeUpdate();
+      ps.setString(1, task.getName());
+      ps.setString(2, task.getDescription());
+      ps.setString(3, task.getStatus().toString());
+      ps.setLong(4, task.getId());
+
+      ps.executeUpdate();
       log.debug("task was updated");
 
     } finally {
@@ -94,11 +108,11 @@ public class TaskDaoImpl implements TaskDao {
   public Task getById(Long id) throws SQLException {
     var connection = dbHelper.getConnection();
 
-    try (var preparedStatement = connection.prepareStatement(SELECT_BY_ID_TASK)) {
-      preparedStatement.setLong(1, id);
-      var resultSet = preparedStatement.executeQuery();
-      if (resultSet.next()) {
-        return this.buildTask(resultSet);
+    try (var ps = connection.prepareStatement(SELECT_BY_ID_TASK)) {
+      ps.setLong(1, id);
+      var rs = ps.executeQuery();
+      if (rs.next()) {
+        return this.buildTask(rs);
       }
     } finally {
       dbHelper.closeConnection(connection);
@@ -112,10 +126,10 @@ public class TaskDaoImpl implements TaskDao {
     List<Task> taskList = new ArrayList<>();
     var connection = dbHelper.getConnection();
 
-    try (var preparedStatement = connection.prepareStatement(SELECT_ALL_TASK)) {
-      var resultSet = preparedStatement.executeQuery();
-      while (resultSet.next()) {
-        taskList.add(buildTask(resultSet));
+    try (var ps = connection.prepareStatement(SELECT_ALL_TASK)) {
+      var rs = ps.executeQuery();
+      while (rs.next()) {
+        taskList.add(buildTask(rs));
       }
     } finally {
       dbHelper.closeConnection(connection);
@@ -129,9 +143,9 @@ public class TaskDaoImpl implements TaskDao {
     log.debug("delete task:{}", task);
     var connection = dbHelper.getConnection();
 
-    try (var preparedStatement = connection.prepareStatement(DELETE_TASK)) {
-      preparedStatement.setLong(1, task.getId());
-      boolean result = preparedStatement.executeUpdate() > 0;
+    try (var ps = connection.prepareStatement(DELETE_TASK)) {
+      ps.setLong(1, task.getId());
+      boolean result = ps.executeUpdate() > 0;
       if (log.isDebugEnabled()) {
         if (result) {
           log.debug("task {} was delete", task);
@@ -146,22 +160,21 @@ public class TaskDaoImpl implements TaskDao {
   }
 
   @Override
-  public List<Task> getFiveDueDateTasks(PaginationDto paginationDto) throws SQLException {
+  public List<Task> getFiveDueDateTasks(PaginationDto pagination) throws SQLException {
     List<Task> dueDateTaskList = new ArrayList<>();
     var connection = dbHelper.getConnection();
 
-    try (var preparedStatement = connection.prepareStatement(GET_FIVE_DUE_DATE_TASKS)) {
-      preparedStatement.setInt(1,paginationDto.getIndex());
-      preparedStatement.setInt(2,paginationDto.getSize());
-      var resultSet = preparedStatement.executeQuery();
-      if (resultSet.next() == false) {
-        log.error("Resultset is empty, so database is empty");
+    try (var ps = connection.prepareStatement(GET_FIVE_DUE_DATE_TASKS)) {
+      ps.setInt(1, pagination.getIndex());
+      ps.setInt(2, pagination.getSize());
+      var rs = ps.executeQuery();
+      if (!rs.next()) {
+        log.warn("Resultset is empty, so database is empty");
       } else {
         do {
-          dueDateTaskList.add(buildTask(resultSet));
-        } while (resultSet.next());
+          dueDateTaskList.add(buildTask(rs));
+        } while (rs.next());
       }
-
     } finally {
       dbHelper.closeConnection(connection);
     }
@@ -171,9 +184,9 @@ public class TaskDaoImpl implements TaskDao {
   public boolean checkDatabase() throws SQLException {
     var connection = dbHelper.getConnection();
     boolean emptyDatabase = false;
-    try (var preparedStatement = connection.prepareStatement(CHECK_DATABASE)) {
-      var resultSet = preparedStatement.executeQuery();
-      if (!resultSet.next() ) {
+    try (var ps = connection.prepareStatement(CHECK_DATABASE)) {
+      var rs = ps.executeQuery();
+      if (!rs.next()) {
         log.info("Database is empty");
         emptyDatabase = true;
       }
@@ -183,14 +196,21 @@ public class TaskDaoImpl implements TaskDao {
     return emptyDatabase;
   }
 
-  private Task buildTask(ResultSet resultSet) throws SQLException {
+  private Task buildTask(ResultSet rs) throws SQLException {
+    Timestamp createdDate = rs.getTimestamp(_CREATED);
+    Timestamp dueDate = rs.getTimestamp(_DUE_DATE);
     var task = new Task();
-    task.setId(resultSet.getLong(_ID));
-    task.setName(resultSet.getString(_NAME));
-    task.setDescription(resultSet.getString(_DESCRIPTION));
-    task.setCreated(LocalDateTime.from(resultSet.getTimestamp(_CREATED).toLocalDateTime()));
-    task.setStatus(Status.valueOf(resultSet.getString(_STATUS)));
-    task.setDueDate(LocalDateTime.from(resultSet.getTimestamp(_DUE_DATE).toLocalDateTime()));
+    task.setId(rs.getLong(_ID));
+    task.setName(rs.getString(_NAME));
+    task.setDescription(rs.getString(_DESCRIPTION));
+    task.setStatus(Status.valueOf(rs.getString(_STATUS)));
+
+    if(createdDate != null){
+      task.setCreated(createdDate.toLocalDateTime());
+    }
+    if(dueDate != null){
+      task.setDueDate(dueDate.toLocalDateTime());
+    }
     return task;
   }
 }

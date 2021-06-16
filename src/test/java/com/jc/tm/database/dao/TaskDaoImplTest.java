@@ -39,18 +39,12 @@ class TaskDaoImplTest {
         return task;
     }
 
-    private PaginationDto generateDto() {
-        PaginationDto dto = new PaginationDto();
-        dto.setIndex(0);
-        dto.setSize(5);
-        return dto;
-    }
 
     @Test
     void getFiveDueDateTasks() {
         List<Task> dueDateTaskList = null ;
         try {
-            dueDateTaskList = dao.getFiveDueDateTasks(generateDto());
+            dueDateTaskList = dao.getFiveDueDateTasks(PaginationDto.DEFAULT);
         } catch (SQLException e) {
             fail(e.getMessage());
             e.printStackTrace();

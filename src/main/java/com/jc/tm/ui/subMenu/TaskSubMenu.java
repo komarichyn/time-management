@@ -73,10 +73,7 @@ public class TaskSubMenu {
 
     public int getFiveDueDateTasks(int page) {
         log.debug("getFiveDueDateTasks: in TaskSubMenu");
-        int size = 5;
-        paginationDto = new PaginationDto();
-        paginationDto.setIndex(page);
-        paginationDto.setSize(size);
+        paginationDto = new PaginationDto(page, 5, 1);
         try {
             if (service.loadTasks(paginationDto).isEmpty()){
                 return 0;
@@ -84,7 +81,7 @@ public class TaskSubMenu {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return size;
+        return paginationDto.getSize();
     }
 
     public void removeTask() {

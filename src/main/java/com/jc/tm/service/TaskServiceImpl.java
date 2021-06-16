@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,8 +18,8 @@ import java.util.List;
 @Slf4j
 public class TaskServiceImpl implements ITaskService {
 
-    private TaskDao taskDao;
-    private CommentDao commentDao;
+    private final TaskDao taskDao;
+    private final CommentDao commentDao;
 
     public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao) {
         this.taskDao = taskDao;
@@ -30,9 +29,9 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task saveTask(Task newTask) throws SQLException {
         log.debug("saveTask input values:{}", newTask);
-        Task insetredTask;
-        insetredTask = taskDao.insert(newTask);
-        return insetredTask;
+        newTask = taskDao.insert(newTask);
+        log.info("new task {} was saved", newTask);
+        return newTask;
     }
 
     @Override
@@ -41,8 +40,7 @@ public class TaskServiceImpl implements ITaskService {
         var task = this.getTask(id);
         if (task == null) {
             log.error("Task with id {} not found", id);
-//            throw new NullPointerException();
-            return task;
+            return null;
         } else {
             log.debug("Task was add:{}", task);
             taskDao.delete(task);
@@ -91,16 +89,16 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public Collection<Task> loadTasks() throws SQLException {
-        return this.loadTasks(new PaginationDto());
+        log.debug("load tasks with default pagination");
+        return this.loadTasks(PaginationDto.DEFAULT);
     }
 
     @Override
     public Collection<Task> loadTasks(PaginationDto page) throws SQLException {
+        log.debug("load task by pagination: {}", page);
         List<Task> tasks;
         tasks = taskDao.getFiveDueDateTasks(page);
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(tasks.get(i));
-        }
+        log.debug("result of call: {}", tasks);
         return tasks;
     }
 
@@ -124,11 +122,11 @@ public class TaskServiceImpl implements ITaskService {
         } else {
             log.debug("Task was found:{}", task);
         }
-        return this.addCommnet(task, newComment);
+        return this.addComment(task, newComment);
     }
 
     @Override
-    public Task addCommnet(Task task, Comment newComment) throws SQLException {
+    public Task addComment(Task task, Comment newComment) throws SQLException {
         log.debug("addComment input values: task {}, new Comment {}", task, newComment);
         task.getComments().add(newComment);
         taskDao.update(task);
@@ -160,8 +158,7 @@ public class TaskServiceImpl implements ITaskService {
     public Comment updateComment(Comment freshComment) throws SQLException {
         log.debug("updateComment input values:{}", freshComment);
         if (freshComment == null) {
-            log.error("New comment {} not found", freshComment);
-            throw new NullPointerException();
+            throw new NullPointerException("Comment cannot be null");
         } else {
             log.debug("UpdateComment {} was update", freshComment);
             commentDao.update(freshComment);
@@ -189,37 +186,84 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task updateDueDate(Task task, LocalDateTime time) {
-        return null;
+    public Task updateDueDate(Task task, LocalDateTime time)  throws SQLException{
+        log.debug("update due date:{} time for task: {}", time, task);
+        if(task == null){
+            throw new NullPointerException("task must not be null");
+        }
+        return this.updateDueDate(task.getId(), time);
     }
 
     @Override
-    public Task updateDueDate(Long taskId, LocalDateTime time) {
-        return null;
+    public Task updateDueDate(Long taskId, LocalDateTime time) throws SQLException{
+        log.debug("update due date:{} time for task id: {}", time, taskId);
+        Task freshTask = this.getTask(taskId);
+        if(freshTask == null){
+            log.error("due date was not updated for task");
+            return null;
+        }
+        freshTask.setDueDate(time);
+        return this.updateTask(freshTask);
     }
 
     @Override
-    public Task setPriority(Task task, Priority priority) {
-        return null;
+    public Task setPriority(Task task, Priority priority) throws SQLException{
+        log.debug("update priority:{}  for task: {}", priority, task);
+        if(task == null){
+            throw new NullPointerException("task must not be null");
+        }
+        Task freshTask = this.getTask(task.getId());
+        if(freshTask == null){
+            log.error("priority was not updated for task");
+            return null;
+        }
+        freshTask.setPriority(priority);
+        return this.updateTask(freshTask);
     }
 
     @Override
-    public Task setParentTask(Task parent, Task current) {
-        return null;
+    public Task setParentTask(Task parent, Task current) throws SQLException{
+        log.debug("update parent task:{}  for task: {}", parent, current);
+        if(current == null){
+            throw new NullPointerException("current task must not be null");
+        }
+        Task freshTask = this.getTask(current.getId());
+        if(freshTask == null){
+            log.error("current task was not found");
+            return null;
+        }
+        if(parent != null){
+            //refresh parent
+            parent = this.getTask(parent);
+        }
+        freshTask.setParent(parent);
+        return this.updateTask(freshTask);
     }
 
     @Override
-    public Task moveTaskToRoot(Task task) {
-        return null;
+    public Task moveTaskToRoot(Task task) throws SQLException{
+        log.debug("move  task:{}  to root", task);
+        return this.setParentTask(null, task);
     }
 
     @Override
-    public Task toPauseState(Task task) {
-        return null;
+    public Task toPauseState(Task task) throws SQLException{
+        log.debug("change state for task:{} to PAUSE", task);
+        return this.setState(task, Status.PAUSE);
     }
 
     @Override
-    public Task setState(Task task, Status newState) {
-        return null;
+    public Task setState(Task task, Status newState) throws SQLException{
+        log.debug("set state:{}  for task: {}", newState, task);
+        if(task == null){
+            throw new NullPointerException("task must not be null");
+        }
+        Task freshTask = this.getTask(task.getId());
+        if(freshTask == null){
+            log.error("state was not updated for task");
+            return null;
+        }
+        freshTask.setStatus(newState);
+        return this.updateTask(freshTask);
     }
 }

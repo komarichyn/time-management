@@ -67,30 +67,30 @@ public interface ITaskService {
     public Collection<Task> loadTasksByDescPriority(PaginationDto page);
     public Collection<Task> loadTasksByAskPriority(PaginationDto page);
     public Task addComment(Long taskId, Comment newComment) throws SQLException;
-    public Task addCommnet(Task task, Comment newComment) throws SQLException;
+    public Task addComment(Task task, Comment newComment) throws SQLException;
     public Comment removeComment(Long id) throws SQLException;
     public Comment removeComment(Comment comment) throws SQLException;
     public Comment updateComment(Comment freshComment) throws SQLException;
     public Task setDueDate(Task task, LocalDateTime time) throws SQLException;
     public Task setDueDate(Long taskId, LocalDateTime time) throws SQLException;
-    public Task updateDueDate(Task task, LocalDateTime time);
-    public Task updateDueDate(Long taskId, LocalDateTime time);
-    public Task setPriority(Task task, Priority priority);
-    public Task setParentTask(Task parent, Task current);
+    public Task updateDueDate(Task task, LocalDateTime time) throws SQLException;
+    public Task updateDueDate(Long taskId, LocalDateTime time) throws SQLException;
+    public Task setPriority(Task task, Priority priority) throws SQLException;
+    public Task setParentTask(Task parent, Task current) throws SQLException;
 
     /**
      * remove link to parent task
      * @param task current task whiich will be moved to root of task list
      * @return updated task
      */
-    public Task moveTaskToRoot(Task task);
+    public Task moveTaskToRoot(Task task)throws SQLException;
 
     /**
      * move task to pause state
      * @param task
      * @return
      */
-    public Task toPauseState(Task task);
+    public Task toPauseState(Task task) throws SQLException;
 
     /**
      * change state of task, by default state of task should be Status.TODO
@@ -98,7 +98,7 @@ public interface ITaskService {
      * @param newState new state
      * @return updated task
      */
-    public Task setState(Task task, Status newState);
+    public Task setState(Task task, Status newState) throws SQLException;
 
 
 }

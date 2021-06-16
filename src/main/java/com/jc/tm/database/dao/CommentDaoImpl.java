@@ -23,15 +23,23 @@ public class CommentDaoImpl implements CommentDao {
     private static final String _CREATED = "CREATED";
     //sql commands
     private static final String INSERT = "INSERT INTO COMMENT(ID, TASK_ID, TEXT, CREATED) VALUES (NULL, ?, ?, ?)";
-    private static final String UPDATE = "UPDATE COMMENT SET TEXT = ?, CREATED = ? WHERE ID = ?";
+    private static final String UPDATE = "UPDATE COMMENT SET TEXT = ? WHERE ID = ?";
     private static final String GET_BY_ID = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT WHERE ID = ? ";
     private static final String GET_ALL = "SELECT ID, TASK_ID, TEXT, CREATED FROM COMMENT";
     private static final String DELETE = "DELETE FROM COMMENT WHERE ID = ? ";
 
-    private DatabaseHelper dbHelper;
+    private final DatabaseHelper dbHelper;
 
     public CommentDaoImpl(DatabaseHelper dbHelper) {
         this.dbHelper = dbHelper;
+    }
+
+    private Long getGeneratedId(PreparedStatement ps) throws SQLException{
+        ResultSet generatedKeys = ps.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            return generatedKeys.getLong(1);
+        }
+        return null;
     }
 
     @Override
@@ -39,16 +47,13 @@ public class CommentDaoImpl implements CommentDao {
         log.debug("insert new comment:{}", comment);
         var connection = dbHelper.getConnection();
 
-        try (var preparedStatement = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setLong(1, comment.getTaskId());
-            preparedStatement.setString(2, comment.getText());
-            preparedStatement.setTimestamp(3, valueOf(LocalDateTime.now()));
+        try (var ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setLong(1, comment.getTaskId());
+            ps.setString(2, comment.getText());
+            ps.setTimestamp(3, valueOf(LocalDateTime.now()));
 
-            preparedStatement.executeUpdate();
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                comment.setId(generatedKeys.getLong(1));
-            }
+            ps.executeUpdate();
+            comment.setId(this.getGeneratedId(ps));
             log.debug("new comment {} was added", comment);
 
         } finally {
@@ -62,12 +67,11 @@ public class CommentDaoImpl implements CommentDao {
         log.debug("update comment:{}", comment);
         var connection = dbHelper.getConnection();
 
-        try (var preparedStatement = connection.prepareStatement(UPDATE)) {
-            preparedStatement.setString(1, comment.getText());
-            preparedStatement.setTimestamp(2, valueOf(LocalDateTime.now()));
-            preparedStatement.setLong(3, comment.getId());
+        try (var ps = connection.prepareStatement(UPDATE)) {
+            ps.setString(1, comment.getText());
+            ps.setLong(2, comment.getId());
 
-            preparedStatement.executeUpdate();
+            ps.executeUpdate();
             log.debug("comment was updated");
 
         } finally {
@@ -79,16 +83,16 @@ public class CommentDaoImpl implements CommentDao {
     public Comment getById(Long id) throws SQLException {
         var connection = dbHelper.getConnection();
 
-        try (var preparedStatement = connection.prepareStatement(GET_BY_ID)) {
-            preparedStatement.setLong(1, id);
-            var resultSet = preparedStatement.executeQuery();
+        try (var ps = connection.prepareStatement(GET_BY_ID)) {
+            ps.setLong(1, id);
+            var rs = ps.executeQuery();
 
-            if (resultSet.next()) {
+            if (rs.next()) {
                 var comment = new Comment();
-                comment.setId(resultSet.getLong(_ID));
-                comment.setTaskId(resultSet.getLong(_TASK_ID));
-                comment.setText(resultSet.getString(_TEXT));
-                comment.setCreated(resultSet.getTimestamp(_CREATED).toLocalDateTime());
+                comment.setId(rs.getLong(_ID));
+                comment.setTaskId(rs.getLong(_TASK_ID));
+                comment.setText(rs.getString(_TEXT));
+                comment.setCreated(rs.getTimestamp(_CREATED).toLocalDateTime());
                 return comment;
             }
 
@@ -103,14 +107,14 @@ public class CommentDaoImpl implements CommentDao {
     public List<Comment> getAll() throws SQLException {
         var connection = dbHelper.getConnection();
         List<Comment> commentList = new ArrayList<>();
-        try (var preparedStatement = connection.prepareStatement(GET_ALL)) {
-            var resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
+        try (var ps = connection.prepareStatement(GET_ALL)) {
+            var rs = ps.executeQuery();
+            while (rs.next()) {
                 var comment = new Comment();
-                comment.setId(resultSet.getLong(_ID));
-                comment.setTaskId(resultSet.getLong(_TASK_ID));
-                comment.setText(resultSet.getString(_TEXT));
-                comment.setCreated(resultSet.getTimestamp(_CREATED).toLocalDateTime());
+                comment.setId(rs.getLong(_ID));
+                comment.setTaskId(rs.getLong(_TASK_ID));
+                comment.setText(rs.getString(_TEXT));
+                comment.setCreated(rs.getTimestamp(_CREATED).toLocalDateTime());
                 commentList.add(comment);
             }
         } finally {
@@ -125,9 +129,9 @@ public class CommentDaoImpl implements CommentDao {
         log.debug("delete comment:{}", comment);
         var connection = dbHelper.getConnection();
 
-        try (var preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setLong(1, comment.getId());
-            boolean result = preparedStatement.executeUpdate() > 0;
+        try (var ps = connection.prepareStatement(DELETE)) {
+            ps.setLong(1, comment.getId());
+            boolean result = ps.executeUpdate() > 0;
             if (log.isDebugEnabled()) {
                 if (result) {
                     log.debug("comment {} was delete", comment);

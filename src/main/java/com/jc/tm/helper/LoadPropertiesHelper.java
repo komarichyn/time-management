@@ -1,9 +1,7 @@
 package com.jc.tm.helper;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,8 +26,6 @@ public class LoadPropertiesHelper {
      * @return loaded properties or null if some error happened
      */
     public Properties loadProperties() {
-//        String rootPath = Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("")).getPath();
-//        String appPropsPath = rootPath + APPLICATION_CONF;
         var properties = new Properties();
         try(var stream = this.getClass().getClassLoader().getResourceAsStream(APPLICATION_CONF)){
             properties.load(stream);
