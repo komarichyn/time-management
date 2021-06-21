@@ -6,26 +6,55 @@ import com.jc.tm.database.dao.TaskDao;
 import com.jc.tm.database.dao.TaskDaoImpl;
 import com.jc.tm.helper.DatabaseHelper;
 import com.jc.tm.service.ITaskService;
-import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskServiceImpl;
 import com.jc.tm.ui.TaskConsole;
-import com.jc.tm.ui.console.MyConsole;
-
-import java.sql.SQLException;
-import javax.swing.plaf.basic.BasicListUI.ListDataHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * this main class for launch a whole application
  */
-public class Main {
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+public class Main implements CommandLineRunner {
 
-    public static void main(String[] args) {
-        var dataHelper = DatabaseHelper.getInstance();
-        TaskDao taskDao = new TaskDaoImpl(dataHelper);
-        CommentDao commentDao = new CommentDaoImpl(dataHelper);
-        ITaskService taskService = new TaskServiceImpl(taskDao,commentDao);
-        TaskConsole console = new TaskConsole(taskService);
-        console.launch();
+  DatabaseHelper dataHelper = DatabaseHelper.getInstance();
 
-    }
+  @Autowired
+  private TaskConsole console;
+
+  public static void main(String[] args) {
+    SpringApplication.run(Main.class, args);
+  }
+
+
+  @Override
+  public void run(String... args) throws Exception {
+    console.launch();
+  }
+
+  @Bean
+  TaskDao getTaskDao(){
+    return new TaskDaoImpl(dataHelper);
+  }
+  @Bean
+  CommentDao getCommentDao(){
+    return new CommentDaoImpl(dataHelper);
+  }
+  @Bean
+  ITaskService getTaskService(@Autowired TaskDao taskDao, @Autowired CommentDao commentDao){
+    return new TaskServiceImpl(taskDao, commentDao);
+  }
+
+  @Bean
+  TaskConsole getConsole(@Autowired ITaskService taskService){
+    return new TaskConsole(taskService);
+  }
+
 }
