@@ -1,14 +1,12 @@
 package com.jc.tm.ui.subMenu;
 
-import com.jc.tm.database.Status;
-import com.jc.tm.database.entity.Task;
-import com.jc.tm.helper.DatabaseHelper;
+import com.jc.tm.db.Status;
+import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.ITaskService;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.ui.console.MyDevice;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.SQLException;
 
 @Slf4j
 public class TaskSubMenu {
@@ -16,7 +14,6 @@ public class TaskSubMenu {
     private ITaskService service;
     Task task;
     PaginationDto paginationDto;
-    private DatabaseHelper dbHelper = DatabaseHelper.getInstance(); // TODO DELETE!
 
     public TaskSubMenu(MyDevice console, ITaskService service) {
         this.console = console;
@@ -28,13 +25,8 @@ public class TaskSubMenu {
         task = new Task();
         console.printf("Please enter your task:%n");
         this.enterData();
-        try {
-            log.debug("createTask: task from user {}", task);
-            service.saveTask(task);
-        } catch (SQLException e) {
-            log.error("createTask: problem with {}", task);
-            e.printStackTrace();
-        }
+        log.debug("createTask: task from user {}", task);
+        service.saveTask(task);
     }
 
     public void updateTask() {
@@ -44,13 +36,9 @@ public class TaskSubMenu {
         Long taskId = Long.parseLong(console.readLine());
         task.setId(taskId);
         this.enterData();
-        try {
-            log.debug("updateTask: task from user {}", task);
-            service.updateTask(task);
-        } catch (SQLException e) {
-            log.error("updateTask: problem with {}", task);
-            e.printStackTrace();
-        }
+        log.debug("updateTask: task from user {}", task);
+        service.updateTask(task);
+
     }
 
     public void getByIdTask() {
@@ -58,29 +46,22 @@ public class TaskSubMenu {
         console.printf("Enter task id to view: ");
         Long taskId = Long.parseLong(console.readLine());
         console.clear();
-        try {
-            log.debug("getByIdTask: id from user {}", taskId);
-            if(service.getTask(taskId) != null) {
-                console.printf(String.valueOf(service.getTask(taskId)));
-            } else {
-                console.printf("Element not found");
-            }
-        } catch (SQLException e) {
-            log.error("getByIdTask: problem with {}", taskId);
-            e.printStackTrace();
+        log.debug("getByIdTask: id from user {}", taskId);
+        if (service.getTask(taskId) != null) {
+            console.printf(String.valueOf(service.getTask(taskId)));
+        } else {
+            console.printf("Element not found");
         }
+
     }
 
     public int getFiveDueDateTasks(int page) {
         log.debug("getFiveDueDateTasks: in TaskSubMenu");
         paginationDto = new PaginationDto(page, 5, 1);
-        try {
-            if (service.loadTasks(paginationDto).isEmpty()){
-                return 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (service.loadTasks(paginationDto).isEmpty()) {
+            return 0;
         }
+
         return paginationDto.getSize();
     }
 
@@ -88,17 +69,13 @@ public class TaskSubMenu {
         log.debug("removeTask: in TaskSubMenu");
         console.printf("Enter task id to delete: ");
         Long taskId = Long.parseLong(console.readLine());
-        try {
-            log.debug("removeTask: id from user {}", taskId);
-            if(service.removeTask(taskId) != null) {
-                console.printf("Element not found");
-            } else {
-                console.printf("Element not deleted");
-            }
-        } catch (SQLException e) {
-            log.error("removeTask: problem with {}", taskId);
-            e.printStackTrace();
+        log.debug("removeTask: id from user {}", taskId);
+        if (service.removeTask(taskId) != null) {
+            console.printf("Element not found");
+        } else {
+            console.printf("Element not deleted");
         }
+
     }
 
     private void enterData() {

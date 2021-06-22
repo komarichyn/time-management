@@ -1,4 +1,4 @@
-package com.jc.tm.database;
+package com.jc.tm.db;
 
 /**
  * status of for task
