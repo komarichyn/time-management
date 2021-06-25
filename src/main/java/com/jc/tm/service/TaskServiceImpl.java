@@ -1,41 +1,46 @@
 package com.jc.tm.service;
 
-import com.jc.tm.database.Status;
-import com.jc.tm.database.dao.CommentDao;
-import com.jc.tm.database.dao.TaskDao;
-import com.jc.tm.database.entity.Comment;
-import com.jc.tm.database.entity.Task;
+import com.jc.tm.db.Status;
+import com.jc.tm.db.dao.jpa.CommentDao;
+import com.jc.tm.db.dao.jpa.TaskDao;
+import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Task;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * this TaskServiceImpl class cooperate with DAO of Task and Comments
  */
 @Slf4j
+@Service
 public class TaskServiceImpl implements ITaskService {
 
     private final TaskDao taskDao;
     private final CommentDao commentDao;
 
-    public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao) {
+    public TaskServiceImpl(@Autowired TaskDao taskDao,@Autowired CommentDao commentDao) {
         this.taskDao = taskDao;
         this.commentDao = commentDao;
     }
 
     @Override
-    public Task saveTask(Task newTask) throws SQLException {
+    public Task saveTask(Task newTask)  {
         log.debug("saveTask input values:{}", newTask);
-        newTask = taskDao.insert(newTask);
+        newTask = taskDao.save(newTask);
         log.info("new task {} was saved", newTask);
         return newTask;
     }
 
     @Override
-    public Task removeTask(Long id) throws SQLException {
+    public Task removeTask(Long id){
         log.debug("removeTask input values:{}", id);
         var task = this.getTask(id);
         if (task == null) {
@@ -49,13 +54,13 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task removeTask(Task task) throws SQLException {
+    public Task removeTask(Task task){
         log.debug("removeTask input task:{}", task);
         return this.removeTask(task.getId());
     }
 
     @Override
-    public Task updateTask(Task freshTask) throws SQLException {
+    public Task updateTask(Task freshTask){
         log.debug("updateTask input values:{}", freshTask);
         var oldTask = this.getTask(freshTask);
         if (oldTask == null) {
@@ -63,43 +68,45 @@ public class TaskServiceImpl implements ITaskService {
             throw new NullPointerException();
         } else {
             log.debug("This task {} was update", freshTask);
-            taskDao.update(freshTask);
+            oldTask.setName(freshTask.getName());
+            oldTask.setPriority(freshTask.getPriority());
+            oldTask.setStatus(freshTask.getStatus());
+            oldTask.setDescription(freshTask.getDescription());
+            oldTask.setDueDate(freshTask.getDueDate());
+            taskDao.save(oldTask);
         }
         return freshTask;
     }
 
     @Override
-    public Task getTask(Long id) throws SQLException {
+    public Task getTask(Long id){
         log.debug("getTask input values:{}", id);
-        Task taskById;
         if (id == null) {
             log.error("Id {} not found", id);
             throw new NullPointerException();
         } else {
-            taskById = taskDao.getById(id);
+            return taskDao.findById(id).orElse(null);
         }
-        return taskById;
     }
 
     @Override
-    public Task getTask(Task task) throws SQLException {
+    public Task getTask(Task task){
         log.debug("getTask input values:{}", task);
         return this.getTask(task.getId());
     }
 
     @Override
-    public Collection<Task> loadTasks() throws SQLException {
+    public Collection<Task> loadTasks(){
         log.debug("load tasks with default pagination");
-        return this.loadTasks(PaginationDto.DEFAULT);
+        return this.taskDao.findAll();
     }
 
     @Override
-    public Collection<Task> loadTasks(PaginationDto page) throws SQLException {
+    public Collection<Task> loadTasks(PaginationDto page){
         log.debug("load task by pagination: {}", page);
-        List<Task> tasks;
-        tasks = taskDao.getFiveDueDateTasks(page);
-        log.debug("result of call: {}", tasks);
-        return tasks;
+        Page<Task> pt = taskDao.findAll(PageRequest.of(0,10));
+        log.debug("result of call: {}", pt);
+        return pt.getContent();
     }
 
     @Override
@@ -113,7 +120,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task addComment(Long taskId, Comment newComment) throws SQLException {
+    public Task addComment(Long taskId, Comment newComment){
         log.debug("addComment input values: task id {}, newComment {}", taskId, newComment);
         var task = getTask(taskId);
         if (task == null) {
@@ -126,53 +133,56 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task addComment(Task task, Comment newComment) throws SQLException {
+    public Task addComment(Task task, Comment newComment){
         log.debug("addComment input values: task {}, new Comment {}", task, newComment);
         task.getComments().add(newComment);
-        taskDao.update(task);
-        commentDao.insert(newComment);
+        newComment.setTaskId(task.getId());
+        commentDao.save(newComment);
         return task;
     }
 
     @Override
-    public Comment removeComment(Long id) throws SQLException {
+    public Comment removeComment(Long id){
         log.debug("removeComment input values:{}", id);
-        Comment comment;
-        comment = commentDao.getById(id);
-        if (comment == null) {
-            log.error("Comment with id {} not found", id);
-            throw new NullPointerException();
-        } else {
-            commentDao.delete(comment);
+        Optional<Comment> optionalComment  = commentDao.findById(id);
+        if(optionalComment.isPresent()){
+            Comment c = optionalComment.get();
+            commentDao.delete(optionalComment.get());
+            return c;
         }
-        return comment;
+        return null;
     }
 
     @Override
-    public Comment removeComment(Comment comment) throws SQLException {
+    public Comment removeComment(Comment comment){
         log.debug("removeComment input values:{}", comment);
         return this.removeComment(comment.getId());
     }
 
     @Override
-    public Comment updateComment(Comment freshComment) throws SQLException {
+    public Comment updateComment(Comment freshComment){
         log.debug("updateComment input values:{}", freshComment);
         if (freshComment == null) {
             throw new NullPointerException("Comment cannot be null");
         } else {
             log.debug("UpdateComment {} was update", freshComment);
-            commentDao.update(freshComment);
+            Optional<Comment> com = commentDao.findById(freshComment.getId());
+            if(com.isPresent()){
+                Comment comment = com.get();
+                comment.setText(freshComment.getText());
+                commentDao.save(comment);
+            }
         }
         return freshComment;
     }
 
     @Override
-    public Task setDueDate(Task task, LocalDateTime time) throws SQLException {
+    public Task setDueDate(Task task, LocalDateTime time){
         return this.setDueDate(task.getId(), time);
     }
 
     @Override
-    public Task setDueDate(Long taskId, LocalDateTime time) throws SQLException {
+    public Task setDueDate(Long taskId, LocalDateTime time){
         log.debug("setDueDate input values: taskId {}, new time {}", taskId, time);
         var task = getTask(taskId);
         if (task == null) {
@@ -186,7 +196,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task updateDueDate(Task task, LocalDateTime time)  throws SQLException{
+    public Task updateDueDate(Task task, LocalDateTime time) {
         log.debug("update due date:{} time for task: {}", time, task);
         if(task == null){
             throw new NullPointerException("task must not be null");
@@ -195,7 +205,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task updateDueDate(Long taskId, LocalDateTime time) throws SQLException{
+    public Task updateDueDate(Long taskId, LocalDateTime time){
         log.debug("update due date:{} time for task id: {}", time, taskId);
         Task freshTask = this.getTask(taskId);
         if(freshTask == null){
@@ -207,7 +217,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task setPriority(Task task, Priority priority) throws SQLException{
+    public Task setPriority(Task task, Priority priority){
         log.debug("update priority:{}  for task: {}", priority, task);
         if(task == null){
             throw new NullPointerException("task must not be null");
@@ -222,38 +232,39 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task setParentTask(Task parent, Task current) throws SQLException{
+    public Task setParentTask(Task parent, Task current){
         log.debug("update parent task:{}  for task: {}", parent, current);
-        if(current == null){
-            throw new NullPointerException("current task must not be null");
-        }
-        Task freshTask = this.getTask(current.getId());
-        if(freshTask == null){
-            log.error("current task was not found");
-            return null;
-        }
-        if(parent != null){
-            //refresh parent
-            parent = this.getTask(parent);
-        }
-        freshTask.setParent(parent);
-        return this.updateTask(freshTask);
+        throw new RuntimeException("Not implemented yet");
+//        if(current == null){
+//            throw new NullPointerException("current task must not be null");
+//        }
+//        Task freshTask = this.getTask(current.getId());
+//        if(freshTask == null){
+//            log.error("current task was not found");
+//            return null;
+//        }
+//        if(parent != null){
+//            //refresh parent
+//            parent = this.getTask(parent);
+//        }
+////        freshTask.setParent(parent);
+//        return this.updateTask(freshTask);
     }
 
     @Override
-    public Task moveTaskToRoot(Task task) throws SQLException{
+    public Task moveTaskToRoot(Task task){
         log.debug("move  task:{}  to root", task);
         return this.setParentTask(null, task);
     }
 
     @Override
-    public Task toPauseState(Task task) throws SQLException{
+    public Task toPauseState(Task task){
         log.debug("change state for task:{} to PAUSE", task);
         return this.setState(task, Status.PAUSE);
     }
 
     @Override
-    public Task setState(Task task, Status newState) throws SQLException{
+    public Task setState(Task task, Status newState){
         log.debug("set state:{}  for task: {}", newState, task);
         if(task == null){
             throw new NullPointerException("task must not be null");

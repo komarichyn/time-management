@@ -1,10 +1,7 @@
 package com.jc.tm;
 
-import com.jc.tm.database.dao.CommentDao;
-import com.jc.tm.database.dao.CommentDaoImpl;
-import com.jc.tm.database.dao.TaskDao;
-import com.jc.tm.database.dao.TaskDaoImpl;
-import com.jc.tm.helper.DatabaseHelper;
+import com.jc.tm.db.dao.jpa.CommentDao;
+import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.service.ITaskService;
 import com.jc.tm.service.TaskServiceImpl;
 import com.jc.tm.ui.TaskConsole;
@@ -24,7 +21,6 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 public class Main implements CommandLineRunner {
 
-  DatabaseHelper dataHelper = DatabaseHelper.getInstance();
 
   @Autowired
   private TaskConsole console;
@@ -37,19 +33,6 @@ public class Main implements CommandLineRunner {
   @Override
   public void run(String... args) throws Exception {
     console.launch();
-  }
-
-  @Bean
-  TaskDao getTaskDao(){
-    return new TaskDaoImpl(dataHelper);
-  }
-  @Bean
-  CommentDao getCommentDao(){
-    return new CommentDaoImpl(dataHelper);
-  }
-  @Bean
-  ITaskService getTaskService(@Autowired TaskDao taskDao, @Autowired CommentDao commentDao){
-    return new TaskServiceImpl(taskDao, commentDao);
   }
 
   @Bean

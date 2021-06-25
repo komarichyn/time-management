@@ -1,14 +1,15 @@
 package com.jc.tm.ui;
 
-import com.jc.tm.database.dao.TaskDaoImpl;
-import com.jc.tm.helper.DatabaseHelper;
 import com.jc.tm.service.ITaskService;
 import com.jc.tm.ui.console.MyConsole;
 import com.jc.tm.ui.console.MyDevice;
 import com.jc.tm.ui.subMenu.TaskSubMenu;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Component
 public class TaskConsole {
 
   MyDevice console = MyConsole.defaultTextDevice();
@@ -18,7 +19,8 @@ public class TaskConsole {
   private int programStart = 0;
   int page = 0;
 
-  public TaskConsole(ITaskService service) {
+
+  public TaskConsole(@Autowired ITaskService service) {
     this.service = service;
     taskSubMenu = new TaskSubMenu(console, service);
   }
