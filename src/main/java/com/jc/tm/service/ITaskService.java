@@ -3,8 +3,6 @@ package com.jc.tm.service;
 import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
-
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 

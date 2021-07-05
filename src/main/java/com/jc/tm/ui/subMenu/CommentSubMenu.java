@@ -15,19 +15,19 @@ public class CommentSubMenu {
         this.service = service;
     }
 
-    public void createComment() {
-        log.debug("createComment: in CommentSubMenu");
-        var comment = new Comment();
-        console.printf("set task id%n");
-        Long taskId = Long.parseLong(console.readLine());
-        console.printf("enter a comment%n");
-        String text = console.readLine();
-        comment.setTaskId(taskId);
-        comment.setText(text);
-            log.debug("createComment: comment from user {}", comment);
-            service.addComment(taskId, comment);
-
-    }
+//    public void createComment() {
+//        log.debug("createComment: in CommentSubMenu");
+//        var comment = new Comment();
+//        console.printf("set task id%n");
+//        Long taskId = Long.parseLong(console.readLine());
+//        console.printf("enter a comment%n");
+//        String text = console.readLine();
+//        comment.setTaskId(taskId);
+//        comment.setText(text);
+//            log.debug("createComment: comment from user {}", comment);
+//            service.addComment(taskId, comment);
+//
+//    }
 
     public void updateComment() {
         log.debug("updateComment: in CommentSubMenu");
