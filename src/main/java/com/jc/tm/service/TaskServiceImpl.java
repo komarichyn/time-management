@@ -25,7 +25,8 @@ public class TaskServiceImpl implements ITaskService {
     private final TaskDao taskDao;
     private final CommentDao commentDao;
 
-    public TaskServiceImpl(@Autowired TaskDao taskDao,@Autowired CommentDao commentDao) {
+    @Autowired
+    public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao) {
         this.taskDao = taskDao;
         this.commentDao = commentDao;
     }

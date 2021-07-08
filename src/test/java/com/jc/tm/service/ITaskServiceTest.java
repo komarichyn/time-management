@@ -1,35 +1,27 @@
 package com.jc.tm.service;
 
+import com.jc.tm.db.H2Config;
 import com.jc.tm.db.Status;
-import com.jc.tm.db.dao.jpa.CommentDao;
-import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.db.entity.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
-@PropertySource("classpath:application.properties")
-//@ContextConfiguration(classes = {DbConfig.class})
+@ContextConfiguration(classes = {H2Config.class})
 public class ITaskServiceTest {
 
     @Autowired
-    private TaskDao taskDao;
-    @Autowired
-    private CommentDao commentDao;
-
-    private TaskServiceImpl taskService;
+    private ITaskService taskService;
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskServiceImpl(taskDao, commentDao);
 
     }
 
