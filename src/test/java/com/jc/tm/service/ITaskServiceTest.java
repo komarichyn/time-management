@@ -1,34 +1,24 @@
 package com.jc.tm.service;
 
-import com.jc.tm.db.H2Config;
 import com.jc.tm.db.Status;
 import com.jc.tm.db.dao.jpa.CommentDao;
 import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.db.entity.Task;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ContextConfiguration;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Optional;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-//@ContextConfiguration(classes = {H2Config.class})
-/*
-I commented this annotation because :
-    If I understand right how mocks work
-    than we don't need connection to db because we test service layer and we mocked the dao layer
-    we will use H2Config when we test our oun custom methods in dao
-    is that right?
- */
 public class ITaskServiceTest {
 
     @Mock
@@ -41,10 +31,10 @@ public class ITaskServiceTest {
 
     @BeforeEach
     void setUp() {
-        taskService = new TaskServiceImpl(taskDao, commentDao);
     }
 
     @Test
+    @DisplayName("Positive test for save task")
     void saveTask() {
         //given
         Task task = new Task();
@@ -54,7 +44,7 @@ public class ITaskServiceTest {
         task.setStatus(Status.TODO);
         task.setPriority(Priority.NORMAL);
         //when
-        Mockito.when(taskDao.save(Mockito.any(Task.class))).thenReturn(task);
+        when(taskDao.save(any(Task.class))).thenReturn(task);
         //then
         task = taskService.saveTask(task);
         assertThat(task).isNotNull();
@@ -62,13 +52,41 @@ public class ITaskServiceTest {
     }
 
     @Test
-    @Disabled
-    //not working yet
-    void removeTask(){
+    @DisplayName("Positive test for remove task")
+    void removeTaskPositive() {
         Task task = new Task();
         task.setId(1L);
-        taskService.removeTask(task);
-        verify(taskService.removeTask(taskDao.getById(task.getId())));
+        when(taskDao.findById(anyLong())).thenReturn(Optional.empty());
+        task = taskService.removeTask(task);
+        assertNull(task);
+    }
+
+    @Test
+    @DisplayName("Negative test for remove task")
+    public void removeTaskNegativeTest() {
+        Task task = new Task();
+        task.setId(1L);
+        when(taskDao.findById(anyLong())).thenReturn(Optional.empty());
+        task = taskService.removeTask(2L);
+        assertNull(task);
+    }
+
+    @Test
+    @DisplayName("throw new NullPointerException() in id is null")
+    public void throwsNullPointerIfIdIsNull() {
+        Long id = null;
+        assertThatThrownBy(() -> taskService.getTask(id)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    @DisplayName("Update task if exists")
+    public void shouldUpdateTaskIfExists() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setName("updated task");
+        when(taskDao.findById(anyLong())).thenReturn(Optional.of(task));
+        task = taskService.updateTask(task);
+        assertNotNull(task);
     }
 
     @Test
@@ -78,7 +96,4 @@ public class ITaskServiceTest {
         //then
         verify(taskDao).findAll();
     }
-
-
-
 }
