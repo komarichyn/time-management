@@ -11,9 +11,10 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(name = "task")
 public class Task implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String description;
@@ -23,9 +24,9 @@ public class Task implements Serializable {
     private List<Comment> comments;
     @Enumerated(EnumType.STRING)
     private Status status;
-    @Column(columnDefinition = "TIMESTAMP")
+    @Column(columnDefinition = "TIMESTAMP", name = "due_date")
     private LocalDateTime dueDate;
-    //default prioritty for any task is normal
+    //default priority for any task is normal
     @Enumerated(EnumType.STRING)
     private Priority priority = Priority.NORMAL;
 

@@ -12,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,13 +27,14 @@ public class TaskServiceImpl implements ITaskService {
     private final TaskDao taskDao;
     private final CommentDao commentDao;
 
-    public TaskServiceImpl(@Autowired TaskDao taskDao,@Autowired CommentDao commentDao) {
+    @Autowired
+    public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao) {
         this.taskDao = taskDao;
         this.commentDao = commentDao;
     }
 
     @Override
-    public Task saveTask(Task newTask)  {
+    public Task saveTask(Task newTask) {
         log.debug("saveTask input values:{}", newTask);
         newTask = taskDao.save(newTask);
         log.info("new task {} was saved", newTask);
@@ -39,7 +42,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task removeTask(Long id){
+    public Task removeTask(Long id) {
         log.debug("removeTask input values:{}", id);
         var task = this.getTask(id);
         if (task == null) {
@@ -53,13 +56,13 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task removeTask(Task task){
+    public Task removeTask(Task task) {
         log.debug("removeTask input task:{}", task);
         return this.removeTask(task.getId());
     }
 
     @Override
-    public Task updateTask(Task freshTask){
+    public Task updateTask(Task freshTask) {
         log.debug("updateTask input values:{}", freshTask);
         var oldTask = this.getTask(freshTask);
         if (oldTask == null) {
@@ -78,7 +81,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task getTask(Long id){
+    public Task getTask(Long id) {
         log.debug("getTask input values:{}", id);
         if (id == null) {
             log.error("Id {} not found", id);
@@ -89,21 +92,21 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task getTask(Task task){
+    public Task getTask(Task task) {
         log.debug("getTask input values:{}", task);
         return this.getTask(task.getId());
     }
 
     @Override
-    public Collection<Task> loadTasks(){
+    public Collection<Task> loadTasks() {
         log.debug("load tasks with default pagination");
         return this.taskDao.findAll();
     }
 
     @Override
-    public Collection<Task> loadTasks(PaginationDto page){
+    public Collection<Task> loadTasks(PaginationDto page) {
         log.debug("load task by pagination: {}", page);
-        Page<Task> pt = taskDao.findAll(PageRequest.of(0,10));
+        Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10));
         log.debug("result of call: {}", pt);
         return pt.getContent();
     }
@@ -119,7 +122,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task addComment(Long taskId, Comment newComment){
+    public Task addComment(Long taskId, Comment newComment) {
         log.debug("addComment input values: task id {}, newComment {}", taskId, newComment);
         var task = getTask(taskId);
         if (task == null) {
@@ -132,19 +135,25 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task addComment(Task task, Comment newComment){
+    public Task addComment(Task task, Comment newComment) {
         log.debug("addComment input values: task {}, new Comment {}", task, newComment);
-        task.getComments().add(newComment);
-        newComment.setTaskId(task.getId());
+        if (task.getComments() == null) {
+            List<Comment> comments = new ArrayList<>();
+            comments.add(newComment);
+            task.setComments(comments);
+        } else {
+            task.getComments().add(newComment);
+        }
+        newComment.setTask(task);
         commentDao.save(newComment);
         return task;
     }
 
     @Override
-    public Comment removeComment(Long id){
+    public Comment removeComment(Long id) {
         log.debug("removeComment input values:{}", id);
-        Optional<Comment> optionalComment  = commentDao.findById(id);
-        if(optionalComment.isPresent()){
+        Optional<Comment> optionalComment = commentDao.findById(id);
+        if (optionalComment.isPresent()) {
             Comment c = optionalComment.get();
             commentDao.delete(optionalComment.get());
             return c;
@@ -153,20 +162,20 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Comment removeComment(Comment comment){
+    public Comment removeComment(Comment comment) {
         log.debug("removeComment input values:{}", comment);
         return this.removeComment(comment.getId());
     }
 
     @Override
-    public Comment updateComment(Comment freshComment){
+    public Comment updateComment(Comment freshComment) {
         log.debug("updateComment input values:{}", freshComment);
         if (freshComment == null) {
             throw new NullPointerException("Comment cannot be null");
         } else {
             log.debug("UpdateComment {} was update", freshComment);
             Optional<Comment> com = commentDao.findById(freshComment.getId());
-            if(com.isPresent()){
+            if (com.isPresent()) {
                 Comment comment = com.get();
                 comment.setText(freshComment.getText());
                 commentDao.save(comment);
@@ -176,12 +185,12 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task setDueDate(Task task, LocalDateTime time){
+    public Task setDueDate(Task task, LocalDateTime time) {
         return this.setDueDate(task.getId(), time);
     }
 
     @Override
-    public Task setDueDate(Long taskId, LocalDateTime time){
+    public Task setDueDate(Long taskId, LocalDateTime time) {
         log.debug("setDueDate input values: taskId {}, new time {}", taskId, time);
         var task = getTask(taskId);
         if (task == null) {
@@ -197,17 +206,17 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task updateDueDate(Task task, LocalDateTime time) {
         log.debug("update due date:{} time for task: {}", time, task);
-        if(task == null){
+        if (task == null) {
             throw new NullPointerException("task must not be null");
         }
         return this.updateDueDate(task.getId(), time);
     }
 
     @Override
-    public Task updateDueDate(Long taskId, LocalDateTime time){
+    public Task updateDueDate(Long taskId, LocalDateTime time) {
         log.debug("update due date:{} time for task id: {}", time, taskId);
         Task freshTask = this.getTask(taskId);
-        if(freshTask == null){
+        if (freshTask == null) {
             log.error("due date was not updated for task");
             return null;
         }
@@ -216,13 +225,13 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task setPriority(Task task, Priority priority){
+    public Task setPriority(Task task, Priority priority) {
         log.debug("update priority:{}  for task: {}", priority, task);
-        if(task == null){
+        if (task == null) {
             throw new NullPointerException("task must not be null");
         }
         Task freshTask = this.getTask(task.getId());
-        if(freshTask == null){
+        if (freshTask == null) {
             log.error("priority was not updated for task");
             return null;
         }
@@ -231,7 +240,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task setParentTask(Task parent, Task current){
+    public Task setParentTask(Task parent, Task current) {
         log.debug("update parent task:{}  for task: {}", parent, current);
         throw new RuntimeException("Not implemented yet");
 //        if(current == null){
@@ -251,25 +260,25 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Task moveTaskToRoot(Task task){
+    public Task moveTaskToRoot(Task task) {
         log.debug("move  task:{}  to root", task);
         return this.setParentTask(null, task);
     }
 
     @Override
-    public Task toPauseState(Task task){
+    public Task toPauseState(Task task) {
         log.debug("change state for task:{} to PAUSE", task);
         return this.setState(task, Status.PAUSE);
     }
 
     @Override
-    public Task setState(Task task, Status newState){
+    public Task setState(Task task, Status newState) {
         log.debug("set state:{}  for task: {}", newState, task);
-        if(task == null){
+        if (task == null) {
             throw new NullPointerException("task must not be null");
         }
         Task freshTask = this.getTask(task.getId());
-        if(freshTask == null){
+        if (freshTask == null) {
             log.error("state was not updated for task");
             return null;
         }
