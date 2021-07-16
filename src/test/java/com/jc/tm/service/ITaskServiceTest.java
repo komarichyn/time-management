@@ -10,11 +10,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -134,5 +137,97 @@ public class ITaskServiceTest {
         Assertions.assertTrue(savedTask.getComments().contains(comment));
         Assertions.assertEquals(2, savedTask.getComments().size());
         verify(commentDao, atLeastOnce()).save(any(Comment.class));
+    }
+
+    @Test
+    @DisplayName("updateTask")
+    public void updateTask() {
+        Task task = new Task();
+        Long id = 1L;
+        task.setId(id);
+        task.setName("Okay");
+        when(taskDao.findById(id)).thenReturn(Optional.of(task));
+        when(taskService.updateTask(task)).thenReturn(task);
+        task = taskService.updateTask(task);
+        assertNotNull(task);
+        Assertions.assertNull(task.getDescription());
+        assertNotNull(task.getName());
+        assertEquals(task.getName(),"Okay");
+    }
+
+    @Test
+    @DisplayName("setDueDate")
+    public void setDueDate() {
+        Task task = new Task();
+        LocalDateTime localDateTime = LocalDateTime.parse("2021-06-01T00:00:00");
+        Long id = 1L;
+        task.setId(id);
+        task.setDueDate(localDateTime);
+        taskService.saveTask(task);
+        when(taskDao.findById(id)).thenReturn(Optional.of(task));
+        when(taskService.setDueDate(task, localDateTime)).thenReturn(task);
+        task = taskService.setDueDate(task, localDateTime);
+        assertNotNull(task.getDueDate());
+        assertEquals(localDateTime, task.getDueDate());
+    }
+
+    @Test
+    @DisplayName("updateDueDate")
+    public void updateDueDate() {
+        Task task = new Task();
+        LocalDateTime localDateTime = LocalDateTime.parse("2021-08-01T00:00:00");
+        Long id = 1L;
+        task.setId(id);
+        task.setDueDate(localDateTime);
+        when(taskDao.findById(id)).thenReturn(Optional.of(task));
+        when(taskService.updateDueDate(task, localDateTime)).thenReturn(task);
+        task = taskService.updateDueDate(task, localDateTime);
+        assertEquals(localDateTime, task.getDueDate());
+        verify(taskDao, atLeastOnce()).findById(id);
+    }
+
+    @Test
+    @DisplayName("setPriority")
+    public void setPriority() {
+        Task task = new Task();
+        Long id = 1L;
+        task.setId(id);
+        when(taskDao.findById(id)).thenReturn(Optional.of(task));
+        when(taskService.setPriority(task, Priority.PAUSE)).thenReturn(task);
+        task = taskService.setPriority(task, Priority.PAUSE);
+        assertEquals(Priority.PAUSE, task.getPriority());
+    }
+
+    @Test
+    @DisplayName("removeComment")
+    public void removeComment() {
+        Task task = new Task();
+        Long id = 1L;
+        task.setId(id);
+        Comment comment = new Comment();
+        comment.setId(id);
+        comment.setText("Some text");
+        when(commentDao.findById(id)).thenReturn(Optional.of(comment));
+        doNothing().when(commentDao).delete(comment);
+        comment = taskService.removeComment(id);
+        assertNotNull(comment);
+        verify(commentDao, atLeastOnce()).delete(comment);
+    }
+
+    @Test
+    @DisplayName("updateComment")
+    public void updateComment() {
+        Task task = new Task();
+        Comment comment = new Comment();
+        Long id = 1L;
+        task.setId(id);
+        comment.setId(id);
+        comment.setText("New text");
+        when(commentDao.findById(id)).thenReturn(Optional.of(comment));
+        when(taskService.updateComment(comment)).thenReturn(comment);
+        comment = taskService.updateComment(comment);
+        assertNotNull(task);
+        assertNotNull(comment);
+        assertEquals("New text", comment.getText());
     }
 }
