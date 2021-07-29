@@ -57,7 +57,7 @@ public class TaskSubMenu {
 
     public int getFiveDueDateTasks(int page) {
         log.debug("getFiveDueDateTasks: in TaskSubMenu");
-        paginationDto = new PaginationDto(page, 5, 1);
+//        paginationDto = new PaginationDto(page, 5, 1);
         if (service.loadTasks(paginationDto).isEmpty()) {
             return 0;
         }
