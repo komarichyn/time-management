@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -285,4 +287,22 @@ public class TaskServiceImpl implements ITaskService {
         freshTask.setStatus(newState);
         return this.updateTask(freshTask);
     }
+
+    public Collection<Task> sortedByNameASCTasks(PaginationDto paginationDto) {
+        Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByName());
+        Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10, sort));
+        return pt.getContent();
+    }
+
+    public Collection<Task> sortedByNameDESCTasks(PaginationDto paginationDto) {
+        Sort sort = Sort.by(paginationDto.getSorDirectionDESC(), paginationDto.getSortByName());
+        Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10, sort));
+        return pt.getContent();
+    }
+    /*public Page<Task> sortedByNameTasks(PaginationDto paginationDto) {
+//        Sort sort = Sort.by(paginationDto.getSorDirection(), paginationDto.getSortBy());
+        Sort sort = Sort.by(Sort.Direction.DESC, "name");
+        Pageable pageable = PageRequest.of(0,10, sort);
+        return taskDao.findAll(pageable);
+    }*/
 }
