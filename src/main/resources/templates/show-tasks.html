@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Getting Started: Serving Web Content</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="toolbar-container">
+  <div class="toolbar">
+    <div class="logo">
+      <a href="/index.html">
+        <img src="/img/site-icon.ico">
+      </a>
+    </div>
+    <nav class="site-menu">
+      <ul class="toolbar-links">
+        <li><a href="/create-task">Create task</a></li>
+        <li><a href="/update-task">Update task</a></li>
+        <li><a href="/find-task">Find task by id</a></li>
+        <li><a href="/show-tasks">Show tasks</a></li>
+        <li><a href="/delete-task">Delete task</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+<h1>Show tasks page</h1>
+<table class="table-list">
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Created</th>
+    <th>Status</th>
+    <th>Due date</th>
+    <th>Priority</th>
+  </tr>
+  <tr th:each="task : ${service}">
+    <td th:text="${task.name}">q</td>
+    <td th:text="${task.description}">w</td>
+    <td th:text="${task.created}">e</td>
+    <td th:text="${task.status}">r</td>
+    <td th:text="${task.dueDate}">t </td>
+    <td th:text="${task.priority}">y</td>
+  </tr>
+</table>
+</body>
+</html>

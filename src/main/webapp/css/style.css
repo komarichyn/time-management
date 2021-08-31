@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+}
+.toolbar-container{
+    background-color: black;
+    width: 100%;
+    display: inline-block;
+}
+
+.toolbar-links {
+    list-style-type: none;
+    display: flex;
+    margin: 0;
+}
+
+.toolbar {
+    width: 1260px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: inline-block;
+}
+
+.site-menu {
+    display: inline-block;
+}
+
+.toolbar-links a {
+    float: left;
+    color: #f2f2f2;
+    /*text-align: center;*/
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.table-list {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, td, th {
+    border: 1px solid black;
+}
