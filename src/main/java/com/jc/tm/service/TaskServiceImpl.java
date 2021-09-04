@@ -289,19 +289,22 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     public Collection<Task> sortedByNameASCTasks(PaginationDto paginationDto) {
+        log.debug("sortedByNameASCTasks input values: {}", paginationDto);
         Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByName());
         Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10, sort));
         return pt.getContent();
     }
 
     public Collection<Task> sortedByNameDESCTasks(PaginationDto paginationDto) {
+        log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
         Sort sort = Sort.by(paginationDto.getSorDirectionDESC(), paginationDto.getSortByName());
         Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10, sort));
         return pt.getContent();
     }
+
     /*public Page<Task> sortedByNameTasks(PaginationDto paginationDto) {
-//        Sort sort = Sort.by(paginationDto.getSorDirection(), paginationDto.getSortBy());
-        Sort sort = Sort.by(Sort.Direction.DESC, "name");
+        Sort sort = Sort.by(paginationDto.getSorDirection(), paginationDto.getSortBy());
+//        Sort sort = Sort.by(Sort.Direction.DESC, "name");
         Pageable pageable = PageRequest.of(0,10, sort);
         return taskDao.findAll(pageable);
     }*/

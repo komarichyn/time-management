@@ -9,8 +9,6 @@ import org.springframework.data.domain.Sort;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaginationDto {
-    //This line commented because in class TaskSubMenu in line 60 mistake
-//    public static PaginationDto DEFAULT = new PaginationDto(0, 10, 1);
     private int index;
     private int size;
     private int page;

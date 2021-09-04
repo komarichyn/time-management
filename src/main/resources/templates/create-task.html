@@ -25,18 +25,13 @@
   </div>
 </div>
 <h1>Create task page</h1>
-<form>
+<form method="post" action="/add-task">
   <input type="text" name="name" placeholder="Enter name">
   <input type="text" name="description" placeholder="Enter description">
   <input type="text" name="status" placeholder="Enter status">
-  <input type="text" name="due_date" placeholder="Enter due date">
+  <input type="date" name="dueDate" placeholder="Enter due date">
   <input type="text" name="priority" placeholder="Enter priority">
   <input type="submit" value="Create task">
 </form>
-<!--<p th:text="${myAtribute}"></p>-->
-<!--<h1 th:text="${myModel.size}"></h1>-->
-<!--<h2 th:text="${myModel.sortByName}"></h2>-->
-<!--<h2 th:text="${myModel.page}"></h2>-->
-<!--<p th:each=""></p>-->
 </body>
 </html>
