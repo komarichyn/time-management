@@ -1,6 +1,7 @@
 package com.jc.tm.controller;
 
 import com.jc.tm.db.entity.Task;
+import com.jc.tm.filter.ConvertDateFilter;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,14 @@ public class Dashboard {
 
     public Dashboard(TaskServiceImpl service) {
         this.service = service;
+    }
+
+    @GetMapping("/index")
+    public String mainPage(Model model) {
+        log.debug("show last five tasks");
+        PaginationDto paginationDto = new PaginationDto();
+        model.addAttribute("lastFive", service.loadTasks(paginationDto));
+        return "index.html";
     }
 
     @GetMapping("/show-tasks")

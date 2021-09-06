@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
@@ -25,5 +25,23 @@
   </div>
 </div>
 <h1>Welcome page with greeting and general information</h1>
+<table class="table-list">
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Created</th>
+    <th>Status</th>
+    <th>Due date</th>
+    <th>Priority</th>
+  </tr>
+  <tr th:each="task : ${lastFive}">
+    <td th:text="${task.name}">q</td>
+    <td th:text="${task.description}">w</td>
+    <td th:text="${task.created}">e</td>
+    <td th:text="${task.status}">r</td>
+    <td th:text="${task.dueDate}">t </td>
+    <td th:text="${task.priority}">y</td>
+  </tr>
+</table>
 </body>
 </html>
