@@ -38,6 +38,7 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Task saveTask(Task newTask) {
         log.debug("saveTask input values:{}", newTask);
+        newTask.setCreated(LocalDateTime.now());
         newTask = taskDao.save(newTask);
         log.info("new task {} was saved", newTask);
         return newTask;
@@ -108,7 +109,7 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Collection<Task> loadTasks(PaginationDto page) {
         log.debug("load task by pagination: {}", page);
-        Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10));
+        Page<Task> pt = taskDao.findAll(PageRequest.of(page.getPage(), page.getSize()));
         log.debug("result of call: {}", pt);
         return pt.getContent();
     }
