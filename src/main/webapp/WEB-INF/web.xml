@@ -5,7 +5,14 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>displayName</display-name>
     <description>description</description>
-
+<!--    <filter>-->
+<!--        <filter-name>MyFilter</filter-name>-->
+<!--        <filter-class></filter-class>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>MyFilter</filter-name>-->
+<!--        <servlet-name>dispatcherServlet</servlet-name>-->
+<!--    </filter-mapping>-->
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>create-task.html</welcome-file>
