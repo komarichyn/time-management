@@ -16,5 +16,5 @@ public class PaginationDto {
     private Sort.Direction sorDirectionDESC = Sort.Direction.DESC;
     private String sortByName = "name";
     private String sortByDescription = "description";
-
+    private String sortByDueDate = "dueDate";
 }

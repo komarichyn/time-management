@@ -23,6 +23,7 @@ import java.util.Collection;
 @Controller
 public class Dashboard {
     private final TaskServiceImpl service;
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     public Dashboard(TaskServiceImpl service) {
         this.service = service;
@@ -32,9 +33,24 @@ public class Dashboard {
     public String mainPage(Model model) {
         log.debug("show last five tasks");
         PaginationDto paginationDto = new PaginationDto();
-        paginationDto.setPage(1);
+        paginationDto.setPage(0);
         paginationDto.setSize(5);
-        model.addAttribute("lastFive", service.loadTasks(paginationDto));
+        Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
+        Collection<TaskDto> result = new ArrayList<>();
+        for(Task task:taskList) {
+            TaskDto taskDto = new TaskDto();
+            LocalDateTime dateCreated = task.getCreated();
+            LocalDateTime dateDueDate = task.getDueDate();
+            String formatedDateCteated = dateCreated.format(dateTimeFormatter);
+            String formatedDateDueDate = dateDueDate.format(dateTimeFormatter);
+            taskDto.setName(task.getName());
+            taskDto.setCreated(formatedDateCteated);
+            taskDto.setStatus(task.getStatus());
+            taskDto.setDueDate(formatedDateDueDate);
+            taskDto.setPriority(task.getPriority());
+            result.add(taskDto);
+        }
+        model.addAttribute("lastFive", result);
         return "index";
     }
 
@@ -42,17 +58,20 @@ public class Dashboard {
     public String show(Model model) {
         log.debug("show tasks page");
         PaginationDto paginationDto = new PaginationDto();
-        paginationDto.setPage(1);
-        paginationDto.setSize(5);
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        paginationDto.setPage(0);
+        paginationDto.setSize(20);
         Collection<Task> taskList = service.loadTasks(paginationDto);
         Collection<TaskDto> result = new ArrayList<>();
         for(Task task:taskList) {
             TaskDto taskDto = new TaskDto();
-            LocalDateTime date = task.getDueDate();
-            String formatedDate = date.format(dateTimeFormatter);
-            taskDto.setDueDate(formatedDate);
+//            LocalDateTime dateCreated = task.getCreated();
+            LocalDateTime dateDueDate = task.getDueDate();
+//            String formatedDateCteated = dateCreated.format(dateTimeFormatter);
+            String formatedDateDueDate = dateDueDate.format(dateTimeFormatter);
             taskDto.setName(task.getName());
+//            taskDto.setCreated(formatedDateCteated);
+            taskDto.setStatus(task.getStatus());
+            taskDto.setDueDate(formatedDateDueDate);
             taskDto.setPriority(task.getPriority());
             result.add(taskDto);
         }
@@ -68,7 +87,7 @@ public class Dashboard {
 
     @PostMapping("/add-task")
     public String createTask(@ModelAttribute Task task) {
-        service.saveTask(task); //TODO fix bug with date
+        service.saveTask(task);
         return "redirect:/create-task";
     }
 
@@ -84,9 +103,10 @@ public class Dashboard {
         return "find-task";
     }
 
-    @GetMapping("/delete-task")
-    public String delete(Model model) {
-        log.debug("delete task page");
-        return "delete-task";
+    @PostMapping("/delete task")
+    public String deleteTask(@ModelAttribute Task task) {
+        log.debug("delete task");
+        service.removeTask(task); //TODO removeTask from database
+        return "redirect:/show-tasks";
     }
 }

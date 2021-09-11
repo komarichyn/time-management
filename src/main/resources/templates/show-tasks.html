@@ -29,16 +29,18 @@
   <tr>
     <th>Name</th>
     <th>Status</th>
-<!--    <th>Due date</th>-->
+    <th>Due date</th>
     <th>Priority</th>
+    <th>Delete task</th>
   </tr>
   <tr th:each="task : ${service}">
     <td th:text="${task.name}">q</td>
-<!--    <td th:text="${task.description}">w</td>-->
-<!--    <td th:text="${task.created}">e</td>-->
     <td th:text="${task.status}">r</td>
-<!--    <td th:text="${task.dueDate}">t </td>-->
+    <td th:text="${task.dueDate}">t </td>
     <td th:text="${task.priority}">y</td>
+    <td>
+      <input type="submit" value="Delete task">
+    </td>
   </tr>
 </table>
 </body>

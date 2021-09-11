@@ -7,7 +7,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,17 +21,13 @@ public class ConvertDateFilter implements Filter {
         log.debug("{}",servletRequest.getAttribute("name"));
         String data = servletRequest.getParameter("name");
 
-
         String sDueDate = servletRequest.getParameter("dueDate");
         if(StringUtils.hasText(sDueDate)) {
             LocalDateTime dueDate = LocalDateTime.parse(sDueDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
             log.info("due date is: {}", dueDate);
         }
-        log.info(((HttpServletRequest)servletRequest).getServletPath());
-//        if(servletResponse.set)
 
         log.debug(data);
         filterChain.doFilter(servletRequest, servletResponse);
-        log.info("en");
     }
 }

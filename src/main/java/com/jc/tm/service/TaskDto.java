@@ -8,8 +8,8 @@ public class TaskDto {
     private Long id;
     private String name;
     private String description;
+    private String created;
     private Status status;
-    private String date;
     private String dueDate;
     private Priority priority = Priority.NORMAL;
 }
