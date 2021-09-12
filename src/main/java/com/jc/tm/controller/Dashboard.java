@@ -114,10 +114,10 @@ public class Dashboard {
         return "find-task";
     }
 
-    @PostMapping("/delete task")
-    public String deleteTask(@ModelAttribute Task task) {
+    @GetMapping("/delete-task/{taskId}")
+    public String deleteTask(@PathVariable long taskId) {
         log.debug("delete task");
-        service.removeTask(task); //TODO removeTask from database
+        service.removeTask(taskId);
         return "redirect:/show-tasks";
     }
 }
