@@ -9,7 +9,7 @@
 <div class="toolbar-container">
   <div class="toolbar">
     <div class="logo">
-      <a href="/index.html">
+      <a href="/index">
         <img src="/img/site-icon.ico">
       </a>
     </div>
@@ -28,9 +28,22 @@
 <form method="post" action="/add-task">
   <input type="text" name="name" placeholder="Enter name">
   <textarea name="description" placeholder="Enter description"></textarea>
-  <input type="text" name="status" placeholder="Enter status">
+<!--  <input type="text" name="status" placeholder="Enter status">-->
+  <select name="status">
+      <option value="" disabled selected>Choose status</option>
+      <option value="TODO">To do</option>
+      <option value="IN_PROGRESS">In progress</option>
+      <option value="COMPLETE">Complete</option>
+      <option value="PAUSE">Pause</option>
+  </select>
   <input type="datetime-local" name="dueDate" placeholder="Enter due date"/>
-  <input type="text" name="priority" placeholder="Enter priority">
+  <select name="priority">
+    <option value="" disabled selected>Choose priority</option>
+    <option value="NORMAL">Normal</option>
+    <option value="HIGH">High</option>
+    <option value="LOW">Low</option>
+    <option value="PAUSE">Pause</option>
+  </select>
   <input type="submit" value="Create task">
 </form>
 </body>

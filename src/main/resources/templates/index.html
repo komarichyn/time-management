@@ -24,11 +24,10 @@
     </nav>
   </div>
 </div>
-<h1>Welcome page with greeting and general information</h1>
+<h1>This page show last five task sorting with due date</h1>
 <table class="table-list">
   <tr>
     <th>Name</th>
-    <th>Description</th>
     <th>Created</th>
     <th>Status</th>
     <th>Due date</th>
@@ -36,7 +35,6 @@
   </tr>
   <tr th:each="task : ${lastFive}">
     <td th:text="${task.name}">q</td>
-    <td th:text="${task.description}">w</td>
     <td th:text="${task.created}">e</td>
     <td th:text="${task.status}">r</td>
     <td th:text="${task.dueDate}">t </td>

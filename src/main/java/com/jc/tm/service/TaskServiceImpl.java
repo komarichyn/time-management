@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -300,6 +301,20 @@ public class TaskServiceImpl implements ITaskService {
         log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
         Sort sort = Sort.by(paginationDto.getSorDirectionDESC(), paginationDto.getSortByName());
         Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10, sort));
+        return pt.getContent();
+    }
+
+    public Collection<Task> sortedByDueDateASCTasks(PaginationDto paginationDto) {
+        log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
+        Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByDueDate());
+        Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
+        return pt.getContent();
+    }
+
+    public Collection<Task> sortedByDueDateDESCTasks(PaginationDto paginationDto) {
+        log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
+        Sort sort = Sort.by(paginationDto.getSorDirectionDESC(), paginationDto.getSortByDueDate());
+        Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
         return pt.getContent();
     }
 
