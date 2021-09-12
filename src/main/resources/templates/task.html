@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="toolbar-container">
+    <div class="toolbar">
+        <div class="logo">
+            <a href="/index">
+                <img src="/img/site-icon.ico">
+            </a>
+        </div>
+        <nav class="site-menu">
+            <ul class="toolbar-links">
+                <li><a href="/create-task">Create task</a></li>
+                <li><a href="/update-task">Update task</a></li>
+                <li><a href="/find-task">Find task by id</a></li>
+                <li><a href="/show-tasks">Show tasks</a></li>
+                <li><a href="/delete-task">Delete task</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<h1>Task page</h1>
+<div th:if="${task}">
+    <table border="10">
+        <tr>
+            <td>ID</td>
+            <td>:</td>
+            <td th:utext="${task.id}">...</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>:</td>
+            <td th:utext="${task.name}">...</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>:</td>
+            <td th:utext="${task.description}">...</td>
+        </tr>
+        <tr>
+            <td>Created</td>
+            <td>:</td>
+            <td th:utext="${task.created}">...</td>
+        </tr>
+        <tr>
+            <td>Comments</td>
+            <td>:</td>
+            <td th:utext="${task.comments}">...</td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td></td>
+            <td th:utext="${task.status}">...</td>
+        </tr>
+        <tr>
+            <td>dueDate</td>
+            <td></td>
+            <td th:utext="${task.dueDate}">...</td>
+        </tr>
+        <tr>
+            <td>Priority</td>
+            <td>:</td>
+            <td th:utext="${task.priority}">...</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

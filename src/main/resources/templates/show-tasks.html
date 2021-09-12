@@ -34,7 +34,7 @@
     <th>Delete task</th>
   </tr>
   <tr th:each="task : ${service}">
-    <td th:text="${task.name}">q</td>
+    <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">q</a></td>
     <td th:text="${task.status}">r</td>
     <td th:text="${task.dueDate}">t </td>
     <td th:text="${task.priority}">y</td>

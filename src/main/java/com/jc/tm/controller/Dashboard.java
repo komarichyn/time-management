@@ -1,5 +1,6 @@
 package com.jc.tm.controller;
 
+import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskDto;
@@ -7,13 +8,14 @@ import com.jc.tm.service.TaskServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * this class is controller and it merge database with UI
@@ -37,7 +39,7 @@ public class Dashboard {
         paginationDto.setSize(5);
         Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
         Collection<TaskDto> result = new ArrayList<>();
-        for(Task task:taskList) {
+        for (Task task : taskList) {
             TaskDto taskDto = new TaskDto();
             LocalDateTime dateCreated = task.getCreated();
             LocalDateTime dateDueDate = task.getDueDate();
@@ -62,12 +64,13 @@ public class Dashboard {
         paginationDto.setSize(20);
         Collection<Task> taskList = service.loadTasks(paginationDto);
         Collection<TaskDto> result = new ArrayList<>();
-        for(Task task:taskList) {
+        for (Task task : taskList) {
             TaskDto taskDto = new TaskDto();
 //            LocalDateTime dateCreated = task.getCreated();
             LocalDateTime dateDueDate = task.getDueDate();
 //            String formatedDateCteated = dateCreated.format(dateTimeFormatter);
             String formatedDateDueDate = dateDueDate.format(dateTimeFormatter);
+            taskDto.setId(task.getId());
             taskDto.setName(task.getName());
 //            taskDto.setCreated(formatedDateCteated);
             taskDto.setStatus(task.getStatus());
@@ -89,6 +92,14 @@ public class Dashboard {
     public String createTask(@ModelAttribute Task task) {
         service.saveTask(task);
         return "redirect:/create-task";
+    }
+
+    @GetMapping("/task/{taskId}")
+    public String getTaskById(Model model, @PathVariable long taskId) {
+        Task task = null;
+        task = service.getTask(taskId);
+        model.addAttribute("task", task);
+        return "task";
     }
 
     @GetMapping("/update-task")
