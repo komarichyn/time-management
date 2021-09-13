@@ -34,13 +34,11 @@
     <th>Delete task</th>
   </tr>
   <tr th:each="task : ${service}">
-    <td th:text="${task.name}">q</td>
+    <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">q</a></td>
     <td th:text="${task.status}">r</td>
     <td th:text="${task.dueDate}">t </td>
     <td th:text="${task.priority}">y</td>
-    <td>
-      <input type="submit" value="Delete task">
-    </td>
+    <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}" >Delete</a></td>
   </tr>
 </table>
 </body>
