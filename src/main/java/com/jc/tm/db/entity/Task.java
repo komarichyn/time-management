@@ -3,6 +3,7 @@ package com.jc.tm.db.entity;
 import com.jc.tm.db.Status;
 import com.jc.tm.service.Priority;
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +21,7 @@ public class Task implements Serializable {
     private String description;
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime created;
-    @OneToMany(targetEntity = Comment.class)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
     @Enumerated(EnumType.STRING)
     private Status status;

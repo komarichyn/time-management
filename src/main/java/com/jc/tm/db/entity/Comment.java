@@ -13,7 +13,7 @@ public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="task_id", nullable=false)
     private Task task;
     @Column(columnDefinition = "TEXT")
