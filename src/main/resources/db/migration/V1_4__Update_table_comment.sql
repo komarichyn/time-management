@@ -1,0 +1,1 @@
+alter table comment change localDate created timestamp null;
