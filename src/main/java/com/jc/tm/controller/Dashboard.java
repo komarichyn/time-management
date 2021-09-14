@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.CollationElementIterator;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,10 +26,32 @@ import java.util.Map;
 @Controller
 public class Dashboard {
     private final TaskServiceImpl service;
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     public Dashboard(TaskServiceImpl service) {
         this.service = service;
+    }
+
+    private Collection<TaskDto> dateConvert(Collection<Task> tasks) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        Collection<TaskDto> result = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskDto taskDto = new TaskDto();
+            LocalDateTime dateCreated = task.getCreated();
+            LocalDateTime dateDueDate = task.getDueDate();
+            if (dateCreated != null) {
+                String formattedDateCreated = dateCreated.format(dateTimeFormatter);
+                taskDto.setCreated(formattedDateCreated);
+            }
+            String formattedDateDueDate = dateDueDate.format(dateTimeFormatter);
+            taskDto.setDueDate(formattedDateDueDate);
+            taskDto.setId(task.getId());
+            taskDto.setName(task.getName());
+            taskDto.setDescription(task.getDescription());
+            taskDto.setStatus(task.getStatus());
+            taskDto.setPriority(task.getPriority());
+            result.add(taskDto);
+        }
+        return result;
     }
 
     @GetMapping("/index")
@@ -38,20 +61,7 @@ public class Dashboard {
         paginationDto.setPage(0);
         paginationDto.setSize(5);
         Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
-        Collection<TaskDto> result = new ArrayList<>();
-        for (Task task : taskList) {
-            TaskDto taskDto = new TaskDto();
-            LocalDateTime dateCreated = task.getCreated();
-            LocalDateTime dateDueDate = task.getDueDate();
-            String formatedDateCteated = dateCreated.format(dateTimeFormatter);
-            String formatedDateDueDate = dateDueDate.format(dateTimeFormatter);
-            taskDto.setName(task.getName());
-            taskDto.setCreated(formatedDateCteated);
-            taskDto.setStatus(task.getStatus());
-            taskDto.setDueDate(formatedDateDueDate);
-            taskDto.setPriority(task.getPriority());
-            result.add(taskDto);
-        }
+        Collection<TaskDto> result = dateConvert(taskList);
         model.addAttribute("lastFive", result);
         return "index";
     }
@@ -63,21 +73,7 @@ public class Dashboard {
         paginationDto.setPage(0);
         paginationDto.setSize(20);
         Collection<Task> taskList = service.loadTasks(paginationDto);
-        Collection<TaskDto> result = new ArrayList<>();
-        for (Task task : taskList) {
-            TaskDto taskDto = new TaskDto();
-//            LocalDateTime dateCreated = task.getCreated();
-            LocalDateTime dateDueDate = task.getDueDate();
-//            String formatedDateCteated = dateCreated.format(dateTimeFormatter);
-            String formatedDateDueDate = dateDueDate.format(dateTimeFormatter);
-            taskDto.setId(task.getId());
-            taskDto.setName(task.getName());
-//            taskDto.setCreated(formatedDateCteated);
-            taskDto.setStatus(task.getStatus());
-            taskDto.setDueDate(formatedDateDueDate);
-            taskDto.setPriority(task.getPriority());
-            result.add(taskDto);
-        }
+        Collection<TaskDto> result = dateConvert(taskList);
         model.addAttribute("service", result);
         return "show-tasks";
     }
