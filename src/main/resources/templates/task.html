@@ -17,9 +17,7 @@
             <ul class="toolbar-links">
                 <li><a href="/create-task">Create task</a></li>
                 <li><a href="/update-task">Update task</a></li>
-                <li><a href="/find-task">Find task by id</a></li>
                 <li><a href="/show-tasks">Show tasks</a></li>
-                <li><a href="/delete-task">Delete task</a></li>
             </ul>
         </nav>
     </div>
@@ -28,11 +26,6 @@
 <h4><a th:href="@{/show-tasks}">Back to tasks</a></h4>
 <div th:if="${task}">
     <table border="10">
-        <tr>
-            <td>ID</td>
-            <td>:</td>
-            <td th:utext="${task.id}">...</td>
-        </tr>
         <tr>
             <td>Name</td>
             <td>:</td>
@@ -47,11 +40,6 @@
             <td>Created</td>
             <td>:</td>
             <td th:utext="${task.created}">...</td>
-        </tr>
-        <tr>
-            <td>Comments</td>
-            <td>:</td>
-            <td th:utext="${task.comments}">...</td>
         </tr>
         <tr>
             <td>Status</td>
