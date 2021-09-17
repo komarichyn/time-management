@@ -9,12 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -99,6 +97,11 @@ public class TaskServiceImpl implements ITaskService {
     public Task getTask(Task task) {
         log.debug("getTask input values:{}", task);
         return this.getTask(task.getId());
+    }
+
+    @Override
+    public Collection<Task> findByKeyword(String search) {
+        return taskDao.findByName(search);
     }
 
     @Override

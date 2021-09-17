@@ -1,5 +1,6 @@
 package com.jc.tm.controller;
 
+import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskDto;
@@ -68,7 +69,7 @@ public class Dashboard {
     }
 
     @GetMapping("/show-tasks")
-    public String show(Model model) {
+    public String show(Model model, String search) {
         log.debug("show tasks page");
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setPage(0);
@@ -76,6 +77,14 @@ public class Dashboard {
         Collection<Task> taskList = service.loadTasks(paginationDto);
         Collection<TaskDto> result = parsingTaskDataToTaskDTO(taskList);
         model.addAttribute("service", result);
+        if(search != null) {
+            taskList = service.findByKeyword(search);
+            if(taskList.size() == 0) {
+
+            }
+            result = parsingTaskDataToTaskDTO(taskList);
+            model.addAttribute("service", result);
+        }
         return "show-tasks";
     }
 

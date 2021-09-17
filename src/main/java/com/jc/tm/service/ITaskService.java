@@ -5,6 +5,7 @@ import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 public interface ITaskService {
     /**
@@ -48,6 +49,8 @@ public interface ITaskService {
      * @return task object
      */
     public Task getTask(Task task) ;
+
+    public Collection<Task> findByKeyword(String search);
 
     /**
      * default call for loading task list. but result will be split on 20 items

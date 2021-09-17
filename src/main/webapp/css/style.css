@@ -16,6 +16,7 @@ body {
 .toolbar {
     width: 1260px;
     margin: 0 auto;
+    height: 53px;
 }
 
 .logo {
@@ -42,4 +43,24 @@ body {
 
 table, td, th {
     border: 1px solid black;
+}
+
+.search-button {
+    width: 21px;
+    height: auto;
+    display: inline-block;
+}
+
+.search-tag-link {
+    line-height: 1px;
+    display: inline-block;
+}
+
+.search-li-element {
+    border-left: 1px solid #ccc;
+}
+
+.search-string {
+    margin-top: 14px;
+    font-size: 16px;
 }
