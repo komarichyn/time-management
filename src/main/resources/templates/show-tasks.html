@@ -18,6 +18,12 @@
         <li><a href="/create-task">Create task</a></li>
         <li><a href="/update-task">Update task</a></li>
         <li><a href="/show-tasks">Show tasks</a></li>
+        <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button" src="/img/search-white.png"></a></li>
+        <li>
+          <form method="get" th:action="@{/show-tasks}">
+            <input type="text" class="search-string" name="search" placeholder="Search...">
+          </form>
+        </li>
       </ul>
     </nav>
   </div>
@@ -26,19 +32,20 @@
 <table class="table-list">
   <tr>
     <th>Name</th>
-    <th>Created</th>
     <th>Status</th>
     <th>Due date</th>
     <th>Priority</th>
     <th>Delete task</th>
   </tr>
   <tr th:each="task : ${service}">
-    <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">q</a></td>
-    <td th:text="${task.created}">r</td>
-    <td th:text="${task.status}">r</td>
-    <td th:text="${task.dueDate}">t </td>
-    <td th:text="${task.priority}">y</td>
+    <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">Task name</a></td>
+    <td th:text="${task.status}">Task status</td>
+    <td th:text="${task.dueDate}">Task due date</td>
+    <td th:text="${task.priority}">Task priority</td>
     <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}" >Delete</a></td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(service)}">
+    <td>Nothing found</td>
   </tr>
 </table>
 </body>
