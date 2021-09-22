@@ -31,38 +31,43 @@
 <h1>Task page</h1>
 <h4><a th:href="@{/show-tasks}">Back to tasks</a></h4>
 <div th:if="${task}">
-    <table border="10">
+    <table border="0">
         <tr>
             <td>Name</td>
             <td>:</td>
-            <td th:utext="${task.name}">...</td>
+            <td th:text="${task.name}">...</td>
         </tr>
         <tr>
             <td>Description</td>
             <td>:</td>
-            <td th:utext="${task.description}">...</td>
+            <td th:text="${task.description}">...</td>
         </tr>
         <tr>
             <td>Created</td>
             <td>:</td>
-            <td th:utext="${task.created}">...</td>
+            <td th:text="${task.created}">...</td>
         </tr>
         <tr>
             <td>Status</td>
             <td></td>
-            <td th:utext="${task.status}">...</td>
+            <td th:text="${task.status}">...</td>
         </tr>
         <tr>
             <td>dueDate</td>
             <td></td>
-            <td th:utext="${task.dueDate}">...</td>
+            <td th:text="${task.dueDate}">...</td>
         </tr>
         <tr>
             <td>Priority</td>
             <td>:</td>
-            <td th:utext="${task.priority}">...</td>
+            <td th:text="${task.priority}">...</td>
         </tr>
     </table>
+    <br/><br/>
+    <div >
+        <a th:href="@{/task/edit/{taskId}(taskId=${task.id})}">Edit</a> |
+        <a th:href="@{/delete-task/{taskId}(taskId=${task.id})}">Delete</a>
+    </div>
 </div>
 </body>
 </html>

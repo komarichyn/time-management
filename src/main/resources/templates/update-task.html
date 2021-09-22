@@ -1,27 +1,68 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Getting Started: Serving Web Content</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" href="/css/style.css">
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="toolbar-container">
-  <div class="toolbar">
-    <div class="logo">
-      <a href="/index">
-        <img src="/img/site-icon.ico">
-      </a>
+    <div class="toolbar">
+        <div class="logo">
+            <a href="/index">
+                <img src="/img/site-icon.ico">
+            </a>
+        </div>
+        <nav class="site-menu">
+            <ul class="toolbar-links">
+                <li><a href="/create-task">Create task</a></li>
+                <li><a href="/update-task">Update task</a></li>
+                <li><a href="/show-tasks">Show tasks</a></li>
+                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
+                                                                                      src="/img/search-white.png"></a>
+                </li>
+                <li>
+                    <form method="get" th:action="@{/show-tasks}">
+                        <input type="text" class="search-string" name="search" placeholder="Search...">
+                    </form>
+                </li>
+            </ul>
+        </nav>
     </div>
-    <nav class="site-menu">
-      <ul class="toolbar-links">
-        <li><a href="/create-task">Create task</a></li>
-        <li><a href="/update-task">Update task</a></li>
-        <li><a href="/show-tasks">Show tasks</a></li>
-      </ul>
-    </nav>
-  </div>
 </div>
-<h1>Update task page</h1>
+<h1>Task edit page</h1>
+<h4><a th:href="@{/show-tasks}">Back to tasks</a></h4>
+<form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
+      th:object="${task}" method="Post">
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>:</td>
+            <td><input type="text" th:field="*{description}" size="50"/></td>
+        </tr>
+        <br>--</br>
+        <select th:field="*{status}">
+            <option value="TODO">To do</option>
+            <option value="IN_PROGRESS">In progress</option>
+            <option value="COMPLETE">Complete</option>
+            <option value="PAUSE">Pause</option>
+        </select>
+        <input id="datetime" type="datetime-local" th:field="*{dueDate}">
+        <br>--</br>
+        <select th:field="*{priority}">
+            <option value="NORMAL">Normal</option>
+            <option value="HIGH">High</option>
+            <option value="LOW">Low</option>
+            <option value="PAUSE">Pause</option>
+        </select>
+        <br>--</br>
+    </table>
+    <input type="submit" value="Update task">
+</form>
 </body>
 </html>
