@@ -296,7 +296,7 @@ public class TaskServiceImpl implements ITaskService {
     public Collection<Task> sortedByNameASCTasks(PaginationDto paginationDto) {
         log.debug("sortedByNameASCTasks input values: {}", paginationDto);
         Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByName());
-        Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10, sort));
+        Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
         return pt.getContent();
     }
 
@@ -317,6 +317,15 @@ public class TaskServiceImpl implements ITaskService {
     public Collection<Task> sortedByDueDateDESCTasks(PaginationDto paginationDto) {
         log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
         Sort sort = Sort.by(paginationDto.getSorDirectionDESC(), paginationDto.getSortByDueDate());
+        Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
+        return pt.getContent();
+    }
+
+    @Override
+    public Collection<Task> sortedBy(PaginationDto paginationDto, String sortBy) {
+        log.debug("sortedByNameASCTasks input values: {}", paginationDto);
+//        Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByName());
+        Sort sort = Sort.by(paginationDto.getSorDirectionASC(), sortBy);
         Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
         return pt.getContent();
     }

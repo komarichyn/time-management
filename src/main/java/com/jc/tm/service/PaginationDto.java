@@ -17,4 +17,6 @@ public class PaginationDto {
     private String sortByName = "name";
     private String sortByDescription = "description";
     private String sortByDueDate = "dueDate";
+    private String sortByStatus = "status";
+    private String sortByPriority = "priority";
 }

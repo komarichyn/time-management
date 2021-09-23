@@ -28,7 +28,17 @@
     </nav>
   </div>
 </div>
-<h1>Show tasks page</h1>
+<h1 class="show-task-page-name">Show tasks page</h1>
+<div class="sorting-div">
+  <ul method="get" class="sort">
+    <li><a>Sort by:</a></li>
+    <li><a href="show-tasks">Name</a></li>
+    <li><a href="show-tasks?sortBy=status">Status</a></li>
+    <li><a th:href="@{'/show-tasks' + '?sortBy=status'}">Status2</a></li>
+    <li><a href="show-tasks?sortBy=dueDate">Due date</a></li>
+    <li><a href="show-tasks?sortBy=priority">Priority</a></li>
+  </ul>
+</div>
 <table class="table-list">
   <tr>
     <th>Name</th>

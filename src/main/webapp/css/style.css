@@ -30,10 +30,9 @@ body {
 .toolbar-links a {
     float: left;
     color: #f2f2f2;
-    /*text-align: center;*/
     padding: 14px 16px;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 20px;
 }
 
 .table-list {
@@ -63,4 +62,24 @@ table, td, th {
 .search-string {
     margin-top: 14px;
     font-size: 16px;
+}
+
+.show-task-page-name {
+    display: inline-block;
+    margin: 10px;
+}
+
+.sort {
+    /*display: inline-block;*/
+    list-style-type: none;
+    display: flex;
+}
+
+.sorting-div {
+    display: inline-block;
+}
+
+.sort a {
+    font-size: 18px;
+    padding: 14px 16px;
 }
