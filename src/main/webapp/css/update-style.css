@@ -1,0 +1,24 @@
+.update-page {
+    max-width: 1200px;
+    background: white;
+    clear: both;
+    margin: 0 auto;
+    padding: 15px 10px 0 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.update-input{
+    width: 100%;
+}
+
+.block {
+    margin-bottom: 30px;
+    line-height: 1.65;
+    position: relative;
+}
+label {
+    font-size: 15px;
+    font-weight: bold;
+}
+

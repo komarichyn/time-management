@@ -4,6 +4,7 @@
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/update-style.css">
 </head>
 <body>
 <div class="toolbar-container">
@@ -30,39 +31,58 @@
         </nav>
     </div>
 </div>
-<h1>Task edit page</h1>
-<h4><a th:href="@{/show-tasks}">Back to tasks</a></h4>
-<form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
-      th:object="${task}" method="Post">
-    <table>
-        <tr>
-            <td>Name</td>
-            <td>:</td>
-            <td><input type="text" th:field="*{name}"/></td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td>:</td>
-            <td><input type="text" th:field="*{description}" size="50"/></td>
-        </tr>
-        <br>--</br>
-        <select th:field="*{status}">
-            <option value="TODO">To do</option>
-            <option value="IN_PROGRESS">In progress</option>
-            <option value="COMPLETE">Complete</option>
-            <option value="PAUSE">Pause</option>
-        </select>
-        <input id="datetime" type="datetime-local" th:field="*{dueDate}">
-        <br>--</br>
-        <select th:field="*{priority}">
-            <option value="NORMAL">Normal</option>
-            <option value="HIGH">High</option>
-            <option value="LOW">Low</option>
-            <option value="PAUSE">Pause</option>
-        </select>
-        <br>--</br>
-    </table>
-    <input type="submit" value="Update task">
-</form>
+<h1 style="margin: 5px">Task edit page</h1>
+<h3 style="margin: 3px"><a th:href="@{/show-tasks}">Back to tasks</a></h3>
+<section class="update-page">
+    <form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
+          th:object="${task}" method="Post">
+        <div class="block" style="width:500px">
+            <div class="b-input">
+                <label>
+                    <strong >
+                        Name
+                    </strong>
+                </label>
+                <input class="update-input" type="text" th:field="*{name}">
+            </div>
+            <div>
+                <label>
+                    Description
+                </label>
+                <textarea class="update-input" type="text" th:field="*{description}"
+                          style="height:200px;font-size:12pt;">
+            </textarea>
+            </div>
+            <div>
+                <label>
+                    Status
+                </label>
+                <select th:field="*{status}">
+                    <option value="TODO">To do</option>
+                    <option value="IN_PROGRESS">In progress</option>
+                    <option value="COMPLETE">Complete</option>
+                    <option value="PAUSE">Pause</option>
+                </select>
+            </div>
+            <div>
+                <label>
+                    Priority
+                </label>
+                <select th:field="*{priority}">
+                    <option value="NORMAL">Normal</option>
+                    <option value="HIGH">High</option>
+                    <option value="LOW">Low</option>
+                    <option value="PAUSE">Pause</option>
+                </select>
+            </div>
+            <div>
+                <label>
+                    Due date
+                </label>
+                <input id="datetime" type="datetime-local" th:field="*{dueDate}"></div>
+        </div>
+        <input type="submit" value="Update task">
+    </form>
+</section>
 </body>
 </html>
