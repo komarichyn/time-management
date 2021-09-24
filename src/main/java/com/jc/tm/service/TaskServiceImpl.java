@@ -324,7 +324,6 @@ public class TaskServiceImpl implements ITaskService {
     @Override
     public Collection<Task> sortedBy(PaginationDto paginationDto, String sortBy) {
         log.debug("sortedByNameASCTasks input values: {}", paginationDto);
-//        Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByName());
         Sort sort = Sort.by(paginationDto.getSorDirectionASC(), sortBy);
         Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
         return pt.getContent();

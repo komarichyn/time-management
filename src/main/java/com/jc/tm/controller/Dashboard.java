@@ -110,7 +110,7 @@ public class Dashboard {
         return "task";
     }
 
-    @GetMapping("/update-task") // TODO update method
+    @GetMapping("/update-task")
     public String update(Model model) {
         log.debug("update task page");
         return "update-task";

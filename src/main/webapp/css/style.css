@@ -83,3 +83,21 @@ table, td, th {
     font-size: 18px;
     padding: 14px 16px;
 }
+
+.main-page {
+    width: 1260px;
+    margin: 0 auto;
+}
+
+input:not(.search-string, [type="submit"]), select, textarea {
+    width: 100%;
+    margin: 0 0 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 10px 7px;
+}
+
+.input-string {
+    width: 375px;
+}
