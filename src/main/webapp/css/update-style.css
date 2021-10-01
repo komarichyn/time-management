@@ -1,0 +1,38 @@
+.update-page {
+    max-width: 1200px;
+    background: white;
+    clear: both;
+    margin: 0 auto;
+    padding: 0px 10px 0 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.update-input{
+    width: 100%;
+    margin: 0 0 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 10px 7px;
+}
+
+.block {
+    margin-bottom: 10px;
+    line-height: 1.65;
+    position: relative;
+}
+label {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+select, textarea  {
+    width: 100%;
+    margin: 0 0 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 10px 7px;
+}
+
