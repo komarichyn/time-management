@@ -76,9 +76,9 @@ public class Dashboard {
         Collection<Task> taskList = service.loadTasks(paginationDto);
         Collection<TaskDto> result = parsingTaskDataToTaskDTO(taskList);
         model.addAttribute("service", result);
-        if(search != null) {
+        if (search != null) {
             taskList = service.findByKeyword(search);
-            if(taskList.size() == 0) {
+            if (taskList.size() == 0) {
 
             }
             result = parsingTaskDataToTaskDTO(taskList);
@@ -107,10 +107,18 @@ public class Dashboard {
         return "task";
     }
 
-    @GetMapping("/update-task") // TODO update method
-    public String update(Model model) {
-        log.debug("update task page");
+    @GetMapping(value = {"/task/edit/{taskId}"})
+    public String showEditTask(Model model, @PathVariable long taskId) {
+        Task task = service.getTask(taskId);
+        model.addAttribute("task", task);
         return "update-task";
+    }
+
+    @PostMapping(value = {"/task/update/{taskId}"})
+    public String updateTask(@PathVariable long taskId, @ModelAttribute Task task) {
+        task.setId(taskId);
+        service.updateTask(task);
+        return "redirect:/task/" + task.getId();
     }
 
     @GetMapping("/delete-task/{taskId}")

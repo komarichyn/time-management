@@ -1,27 +1,88 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Getting Started: Serving Web Content</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" href="/css/style.css">
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/update-style.css">
 </head>
 <body>
 <div class="toolbar-container">
-  <div class="toolbar">
-    <div class="logo">
-      <a href="/index">
-        <img src="/img/site-icon.ico">
-      </a>
+    <div class="toolbar">
+        <div class="logo">
+            <a href="/index">
+                <img src="/img/site-icon.ico">
+            </a>
+        </div>
+        <nav class="site-menu">
+            <ul class="toolbar-links">
+                <li><a href="/create-task">Create task</a></li>
+                <li><a href="/update-task">Update task</a></li>
+                <li><a href="/show-tasks">Show tasks</a></li>
+                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
+                                                                                      src="/img/search-white.png"></a>
+                </li>
+                <li>
+                    <form method="get" th:action="@{/show-tasks}">
+                        <input type="text" class="search-string" name="search" placeholder="Search...">
+                    </form>
+                </li>
+            </ul>
+        </nav>
     </div>
-    <nav class="site-menu">
-      <ul class="toolbar-links">
-        <li><a href="/create-task">Create task</a></li>
-        <li><a href="/update-task">Update task</a></li>
-        <li><a href="/show-tasks">Show tasks</a></li>
-      </ul>
-    </nav>
-  </div>
 </div>
-<h1>Update task page</h1>
+<h2 style="margin: 5px">Task edit page</h2>
+<h3 style="margin: 3px"><a th:href="@{/show-tasks}">Back to tasks</a></h3>
+<section class="update-page">
+    <form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
+          th:object="${task}" method="Post">
+        <div class="block" style="width:500px">
+            <div class="b-input">
+                <label>
+                    <strong >
+                        Name
+                    </strong>
+                </label>
+                <input class="update-input" type="text" th:field="*{name}">
+            </div>
+            <div>
+                <label>
+                    Description
+                </label>
+                <textarea class="update-input" type="text" th:field="*{description}"
+                          style="height:200px;font-size:12pt;">
+            </textarea>
+            </div>
+            <div>
+                <label>
+                    Status
+                </label>
+                <select th:field="*{status}">
+                    <option value="TODO">To do</option>
+                    <option value="IN_PROGRESS">In progress</option>
+                    <option value="COMPLETE">Complete</option>
+                    <option value="PAUSE">Pause</option>
+                </select>
+            </div>
+            <div>
+                <label>
+                    Priority
+                </label>
+                <select th:field="*{priority}">
+                    <option value="NORMAL">Normal</option>
+                    <option value="HIGH">High</option>
+                    <option value="LOW">Low</option>
+                    <option value="PAUSE">Pause</option>
+                </select>
+            </div>
+            <div>
+                <label>
+                    Due date
+                </label>
+                <input id="datetime" type="datetime-local" th:field="*{dueDate}"></div>
+        </div>
+        <input type="submit" value="Update task">
+    </form>
+</section>
 </body>
 </html>
