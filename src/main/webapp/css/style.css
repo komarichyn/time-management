@@ -79,11 +79,6 @@ table, td, th {
     display: inline-block;
 }
 
-.sort a {
-    font-size: 18px;
-    padding: 14px 16px;
-}
-
 .main-page {
     width: 1260px;
     margin: 0 auto;
@@ -100,4 +95,53 @@ input:not(.search-string, [type="submit"]), select, textarea {
 
 .input-string {
     width: 375px;
+    font-size: 16px;
 }
+
+input, textarea, button, select {
+    font-family: "Times New Roman";
+}
+
+.dropDown-show {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.showSortedBybtn {
+    cursor: pointer;
+    font-size: 16px;
+    color: black;
+    padding: 8px 16px;
+    background-color: white;
+    font-family: inherit;
+    margin: 0;
+    border: 2px solid #808080;
+}
+
+.dropDown-show a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.submit-button {
+    background-color: white;
+    color: black;
+    border: 2px solid #808080;
+    padding: 16px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.submit-button:hover {background-color: #e7e7e7;}

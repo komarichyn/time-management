@@ -28,22 +28,24 @@
     </nav>
   </div>
 </div>
-<h1>This page show last five task sorting with due date</h1>
-<table class="table-list">
-  <tr>
-    <th>Name</th>
-    <th>Created</th>
-    <th>Status</th>
-    <th>Due date</th>
-    <th>Priority</th>
-  </tr>
-  <tr th:each="task : ${lastFive}">
-    <td th:text="${task.name}">q</td>
-    <td th:text="${task.created}">e</td>
-    <td th:text="${task.status}">r</td>
-    <td th:text="${task.dueDate}">t </td>
-    <td th:text="${task.priority}">y</td>
-  </tr>
-</table>
+<div class="main-page">
+  <h1>This page show last five task sorting with due date</h1>
+  <table class="table-list">
+    <tr>
+      <th>Name</th>
+      <th>Created</th>
+      <th>Status</th>
+      <th>Due date</th>
+      <th>Priority</th>
+    </tr>
+    <tr th:each="task : ${lastFive}">
+      <td th:text="${task.name}">q</td>
+      <td th:text="${task.created}">e</td>
+      <td th:text="${task.status}">r</td>
+      <td th:text="${task.dueDate}">t </td>
+      <td th:text="${task.priority}">y</td>
+    </tr>
+  </table>
+</div>
 </body>
 </html>
