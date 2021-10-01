@@ -68,22 +68,24 @@ public class Dashboard {
     }
 
     @GetMapping("/show-tasks")
-    public String show(Model model, String search) {
+    public String show(Model model, String search, @RequestParam(name="sortBy", required = false) String sortBy) {
         log.debug("show tasks page");
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setPage(0);
         paginationDto.setSize(20);
-        Collection<Task> taskList = service.loadTasks(paginationDto);
+        Collection<Task> taskList = service.sortedByNameASCTasks(paginationDto);
         Collection<TaskDto> result = parsingTaskDataToTaskDTO(taskList);
-        model.addAttribute("service", result);
-        if (search != null) {
+        if(sortBy != null) {
+            taskList = service.sortedBy(paginationDto, sortBy);
+            result = parsingTaskDataToTaskDTO(taskList);
+            model.addAttribute("sortBy", result);
+        }
+        if(search != null) {
             taskList = service.findByKeyword(search);
-            if (taskList.size() == 0) {
-
-            }
             result = parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("service", result);
         }
+        model.addAttribute("service", result);
         return "show-tasks";
     }
 
@@ -96,7 +98,8 @@ public class Dashboard {
     @PostMapping("/add-task")
     public String createTask(@ModelAttribute Task task) {
         service.saveTask(task);
-        return "redirect:/create-task";
+        Long taskId = task.getId();
+        return "redirect:/task/" + taskId;
     }
 
     @GetMapping("/task/{taskId}")

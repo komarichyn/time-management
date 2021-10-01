@@ -4,6 +4,14 @@
   <title>Getting Started: Serving Web Content</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+      $(document).ready(function(){
+          $(".showSortedBybtn").click(function(){
+             $(".dropDown-show").toggle();
+          });
+      });
+  </script>
 </head>
 <body>
 <div class="toolbar-container">
@@ -28,25 +36,48 @@
     </nav>
   </div>
 </div>
-<h1>Show tasks page</h1>
-<table class="table-list">
-  <tr>
-    <th>Name</th>
-    <th>Status</th>
-    <th>Due date</th>
-    <th>Priority</th>
-    <th>Delete task</th>
-  </tr>
-  <tr th:each="task : ${service}">
-    <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">Task name</a></td>
-    <td th:text="${task.status}">Task status</td>
-    <td th:text="${task.dueDate}">Task due date</td>
-    <td th:text="${task.priority}">Task priority</td>
-    <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}" >Delete</a></td>
-  </tr>
-  <tr th:if="${#lists.isEmpty(service)}">
-    <td>Nothing found</td>
-  </tr>
-</table>
+<div class="main-page">
+  <h1 class="show-task-page-name">Show tasks page</h1>
+  <!--<div class="sorting-div">-->
+  <!--  <ul method="get" class="sort">-->
+  <!--    <li><a>Sort by:</a></li>-->
+  <!--    <li><a href="show-tasks">Name</a></li>-->
+  <!--    <li><a href="show-tasks?sortBy=status">Status</a></li>-->
+  <!--    <li><a th:href="@{'/show-tasks' + '?sortBy=status'}">Status2</a></li>-->
+  <!--    <li><a href="show-tasks?sortBy=dueDate">Due date</a></li>-->
+  <!--    <li><a href="show-tasks?sortBy=priority">Priority</a></li>-->
+  <!--  </ul>-->
+  <!--</div>-->
+
+  <div class="sorting-div">
+    <button class="showSortedBybtn" type="button">Sort by▼</button>
+    <div class="dropDown-show">
+      <a href="show-tasks">Name</a>
+      <a href="show-tasks?sortBy=status">Status</a>
+      <a href="show-tasks?sortBy=dueDate">Due date</a>
+      <a href="show-tasks?sortBy=priority">Priority</a>
+    </div>
+  </div>
+
+  <table class="table-list">
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Due date</th>
+      <th>Priority</th>
+      <th>Delete task</th>
+    </tr>
+    <tr th:each="task : ${service}">
+      <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">Task name</a></td>
+      <td th:text="${task.status}">Task status</td>
+      <td th:text="${task.dueDate}">Task due date</td>
+      <td th:text="${task.priority}">Task priority</td>
+      <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}" >Delete</a></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(service)}">
+      <td>Nothing found</td>
+    </tr>
+  </table>
+</div>
 </body>
 </html>

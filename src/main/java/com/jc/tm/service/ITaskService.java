@@ -101,4 +101,5 @@ public interface ITaskService {
     public Task setState(Task task, Status newState) ;
 
 
+    Collection<Task> sortedBy(PaginationDto paginationDto, String sortBy);
 }
