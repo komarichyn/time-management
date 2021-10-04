@@ -4,7 +4,6 @@
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/update-style.css">
 </head>
 <body>
 <div class="toolbar-container">
@@ -31,30 +30,25 @@
         </nav>
     </div>
 </div>
-<h2 style="margin: 5px">Task edit page</h2>
-<h3 style="margin: 3px"><a th:href="@{/show-tasks}">Back to tasks</a></h3>
-<section class="update-page">
-    <form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
-          th:object="${task}" method="Post">
-        <div class="block" style="width:500px">
-            <div class="b-input">
-                <label>
-                    <strong >
-                        Name
-                    </strong>
+<div class="main-page">
+    <h2 style="margin: 5px">Task edit page</h2>
+    <h3 style="margin: 3px"><a th:href="@{/show-tasks}">Back to tasks</a></h3>
+        <form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
+              th:object="${task}" method="Post">
+            <div class="input-string">
+                <label class="name-string">
+                    Name
                 </label>
-                <input class="update-input" type="text" th:field="*{name}">
+                <input type="text" name="name" class="input-data" th:field="*{name}">
             </div>
-            <div>
-                <label>
+            <div class="input-string">
+                <label class="name-string">
                     Description
                 </label>
-                <textarea class="update-input" type="text" th:field="*{description}"
-                          style="height:200px;font-size:12pt;">
-            </textarea>
+                <textarea name="description" th:field="*{description}" style="height:150px"></textarea>
             </div>
-            <div>
-                <label>
+            <div class="input-string">
+                <label class="name-string">
                     Status
                 </label>
                 <select th:field="*{status}">
@@ -64,8 +58,14 @@
                     <option value="PAUSE">Pause</option>
                 </select>
             </div>
-            <div>
-                <label>
+            <div class="input-string">
+                <label class="name-string">
+                    Due date
+                </label>
+                <input type="datetime-local" name="dueDate" th:field="*{dueDate}"/>
+            </div>
+            <div class="input-string">
+                <label class="name-string">
                     Priority
                 </label>
                 <select th:field="*{priority}">
@@ -75,14 +75,10 @@
                     <option value="PAUSE">Pause</option>
                 </select>
             </div>
-            <div>
-                <label>
-                    Due date
-                </label>
-                <input id="datetime" type="datetime-local" th:field="*{dueDate}"></div>
-        </div>
-        <input type="submit" value="Update task">
-    </form>
-</section>
+            <div class="submit-button-div">
+                <input class="submit-button" type="submit" value="Update task">
+            </div>
+        </form>
+</div>
 </body>
 </html>
