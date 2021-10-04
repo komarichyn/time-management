@@ -99,7 +99,7 @@ input:not(.search-string, [type="submit"]), select, textarea {
 }
 
 input, textarea, button, select {
-    font-family: Times New Roman;
+    font-family: "Times New Roman";
 }
 
 .dropDown-show {
@@ -111,10 +111,6 @@ input, textarea, button, select {
     z-index: 1;
 }
 
-.dropDown-show a:hover {
-    background-color: #e7e7e7;
-}
-
 .showSortedBybtn {
     cursor: pointer;
     font-size: 16px;
@@ -124,12 +120,6 @@ input, textarea, button, select {
     font-family: inherit;
     margin: 0;
     border: 2px solid #808080;
-    border-radius: 4px;
-    transition-duration: 0.4s;
-}
-
-.showSortedBybtn:hover {
-    background-color: #e7e7e7;
 }
 
 .dropDown-show a {
@@ -152,7 +142,6 @@ input, textarea, button, select {
     font-size: 16px;
     transition-duration: 0.4s;
     cursor: pointer;
-    border-radius: 4px;
 }
 
 .submit-button:hover {background-color: #e7e7e7;}
