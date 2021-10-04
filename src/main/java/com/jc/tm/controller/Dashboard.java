@@ -110,10 +110,18 @@ public class Dashboard {
         return "task";
     }
 
-    @GetMapping("/update-task")
-    public String update(Model model) {
-        log.debug("update task page");
+    @GetMapping(value = {"/task/edit/{taskId}"})
+    public String showEditTask(Model model, @PathVariable long taskId) {
+        Task task = service.getTask(taskId);
+        model.addAttribute("task", task);
         return "update-task";
+    }
+
+    @PostMapping(value = {"/task/update/{taskId}"})
+    public String updateTask(@PathVariable long taskId, @ModelAttribute Task task) {
+        task.setId(taskId);
+        service.updateTask(task);
+        return "redirect:/task/" + task.getId();
     }
 
     @GetMapping("/delete-task/{taskId}")
