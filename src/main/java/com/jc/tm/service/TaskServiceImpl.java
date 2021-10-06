@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -295,9 +296,7 @@ public class TaskServiceImpl implements ITaskService {
 
     public Collection<Task> sortedByNameASCTasks(PaginationDto paginationDto) {
         log.debug("sortedByNameASCTasks input values: {}", paginationDto);
-        Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByName());
-        Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
-        return pt.getContent();
+        return this.sortedBy(paginationDto, "name");
     }
 
     public Collection<Task> sortedByNameDESCTasks(PaginationDto paginationDto) {
@@ -316,9 +315,7 @@ public class TaskServiceImpl implements ITaskService {
 
     public Collection<Task> sortedByDueDateDESCTasks(PaginationDto paginationDto) {
         log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
-        Sort sort = Sort.by(paginationDto.getSorDirectionDESC(), paginationDto.getSortByDueDate());
-        Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
-        return pt.getContent();
+        return this.sortedBy(paginationDto, "dueDate");
     }
 
     @Override
@@ -327,6 +324,16 @@ public class TaskServiceImpl implements ITaskService {
         Sort sort = Sort.by(paginationDto.getSorDirectionASC(), sortBy);
         Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
         return pt.getContent();
+    }
+
+    @Override
+    public Page<Task> loadTask(PaginationDto paginationDto, String sortBy) {
+        if (sortBy == null){
+            sortBy = "name";
+        }
+        Sort sort = Sort.by(Sort.Direction.ASC, sortBy);
+        Pageable pageable = PageRequest.of(paginationDto.getPage() - 1, paginationDto.getSize(), sort);
+        return this.taskDao.findAll(pageable);
     }
 
     /*public Page<Task> sortedByNameTasks(PaginationDto paginationDto) {

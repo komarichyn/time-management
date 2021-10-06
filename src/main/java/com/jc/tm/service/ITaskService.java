@@ -3,6 +3,7 @@ package com.jc.tm.service;
 import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -100,6 +101,7 @@ public interface ITaskService {
      */
     public Task setState(Task task, Status newState) ;
 
-
     Collection<Task> sortedBy(PaginationDto paginationDto, String sortBy);
+
+    Page<Task> loadTask(PaginationDto paginationDto, String sortBy);
 }

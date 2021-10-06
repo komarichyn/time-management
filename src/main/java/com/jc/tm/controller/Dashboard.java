@@ -4,6 +4,7 @@ import com.jc.tm.Converter.Converter;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,25 +36,35 @@ public class Dashboard {
         model.addAttribute("lastFive", result);
         return "index";
     }
-
-    @GetMapping("/show-tasks")
-    public String show(Model model, String search, @RequestParam(name = "sortBy", required = false) String sortBy) {
-        log.debug("show tasks page");
+  
+    @GetMapping("show-tasks/page/{pageNumber}")
+    public String show(Model model,
+                           String search,
+                           @PathVariable(value = "pageNumber") int pageNumber,
+                           @RequestParam(name="sortBy", required = false) String sortBy) {
         PaginationDto paginationDto = new PaginationDto();
-        paginationDto.setPage(0);
-        paginationDto.setSize(20);
-        Collection<Task> taskList = service.sortedByNameASCTasks(paginationDto);
-        Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
-        if (sortBy != null) {
-            taskList = service.sortedBy(paginationDto, sortBy);
-            result = converter.parsingTaskDataToTaskDTO(taskList);
+        paginationDto.setSize(10);
+        paginationDto.setPage(pageNumber);
+
+        Page<Task> page = service.loadTask(paginationDto, sortBy);
+        Collection<Task> taskList = page.getContent();
+        Collection<TaskDto> result = parsingTaskDataToTaskDTO(taskList);
+
+        if(sortBy != null) {
+            taskList = page.getContent();
+            result = parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("sortBy", result);
         }
-        if (search != null) {
+
+        if(search != null) {
             taskList = service.findByKeyword(search);
             result = converter.parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("service", result);
         }
+
+        model.addAttribute("currentPage", pageNumber);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("service", result);
         return "show-tasks";
     }
