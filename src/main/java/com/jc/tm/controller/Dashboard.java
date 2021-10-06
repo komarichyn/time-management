@@ -5,6 +5,7 @@ import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskDto;
 import com.jc.tm.service.TaskServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -67,24 +68,34 @@ public class Dashboard {
         return "index";
     }
 
-    @GetMapping("/show-tasks")
-    public String show(Model model, String search, @RequestParam(name="sortBy", required = false) String sortBy) {
-        log.debug("show tasks page");
+    @GetMapping("show-tasks/page/{pageNumber}")
+    public String show(Model model,
+                           String search,
+                           @PathVariable(value = "pageNumber") int pageNumber,
+                           @RequestParam(name="sortBy", required = false) String sortBy) {
         PaginationDto paginationDto = new PaginationDto();
-        paginationDto.setPage(0);
-        paginationDto.setSize(20);
-        Collection<Task> taskList = service.sortedByNameASCTasks(paginationDto);
+        paginationDto.setSize(10);
+        paginationDto.setPage(pageNumber);
+
+        Page<Task> page = service.loadTask(paginationDto, sortBy);
+        Collection<Task> taskList = page.getContent();
         Collection<TaskDto> result = parsingTaskDataToTaskDTO(taskList);
+
         if(sortBy != null) {
-            taskList = service.sortedBy(paginationDto, sortBy);
+            taskList = page.getContent();
             result = parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("sortBy", result);
         }
+
         if(search != null) {
             taskList = service.findByKeyword(search);
             result = parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("service", result);
         }
+
+        model.addAttribute("currentPage", pageNumber);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("service", result);
         return "show-tasks";
     }
