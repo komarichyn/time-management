@@ -3,7 +3,10 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/task.css">
 </head>
 <body>
 <div class="toolbar-container">
@@ -18,7 +21,9 @@
                 <li><a href="/create-task">Create task</a></li>
                 <li><a href="/update-task">Update task</a></li>
                 <li><a href="/show-tasks">Show tasks</a></li>
-                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button" src="/img/search-white.png"></a></li>
+                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
+                                                                                      src="/img/search-white.png"></a>
+                </li>
                 <li>
                     <form method="get" th:action="@{/show-tasks}">
                         <input type="text" class="search-string" name="search" placeholder="Search...">
@@ -28,46 +33,43 @@
         </nav>
     </div>
 </div>
-<h1>Task page</h1>
-<h4><a th:href="@{/show-tasks}">Back to tasks</a></h4>
-<div th:if="${task}">
-    <table border="0">
-        <tr>
-            <td>Name</td>
-            <td>:</td>
-            <td th:text="${task.name}">...</td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td>:</td>
-            <td th:text="${task.description}">...</td>
-        </tr>
-        <tr>
-            <td>Created</td>
-            <td>:</td>
-            <td th:text="${task.created}">...</td>
-        </tr>
-        <tr>
-            <td>Status</td>
-            <td></td>
-            <td th:text="${task.status}">...</td>
-        </tr>
-        <tr>
-            <td>dueDate</td>
-            <td></td>
-            <td th:text="${task.dueDate}">...</td>
-        </tr>
-        <tr>
-            <td>Priority</td>
-            <td>:</td>
-            <td th:text="${task.priority}">...</td>
-        </tr>
-    </table>
-    <br/><br/>
-    <div >
-        <a th:href="@{/task/edit/{taskId}(taskId=${task.id})}">Edit</a> |
-        <a th:href="@{/delete-task/{taskId}(taskId=${task.id})}" onclick="return confirm('Are you sure you want to delete this task')">Delete</a>
+<div>
+    <h6>Task page</h6>
+    <h6><a th:href="@{/show-tasks}">Back to tasks</a></h6>
+</div>
+<div th:if="${task}" class="container">
+    <div class="container">
+        <section class="promo row">
+            <div class="col-6 dt">
+                <div class="block"  style="overflow:auto;">
+                    <h2 th:text="${task.name}"></h2>
+                    <hr>
+                    <p th:utext="${task.description}">${task.description}</p>
+                </div>
+            </div>
+            <div class="col-6 dc" >
+                <div class="block">
+                    <h2>Comments </h2>
+                    <hr>
+                    <div style="height: 310px; overflow:auto;">
+                    <table>
+                        <ul th:each="comment : ${comments}">
+                            <li th:utext="${comment.text}">comment</li>
+                            <li th:text="${comment.created}">created</li>
+                        </ul>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
+    <button type="button" class="btn btn-outline-primary btn-sm"><a
+            th:href="@{/task/edit/{taskId}(taskId=${task.id})}">Edit</a></button>
+    <button type="button" class="btn btn-outline-primary btn-sm">
+        <a th:href="@{/delete-task/{taskId}(taskId=${task.id})}"
+           onclick="return confirm('Are you sure you want to delete this task')">Delete</a></button>
+</div>
 </div>
 </body>
 </html>

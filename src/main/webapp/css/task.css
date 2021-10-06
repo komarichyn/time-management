@@ -1,0 +1,29 @@
+
+.promo{
+    min-height: 300px;
+    margin-bottom: 20px;
+
+}
+
+.container{
+    max-height: 400px;
+}
+
+.col-6 {
+    max-height: 400px;
+}
+
+.dt {
+    background: #056c8d;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 2px;
+}
+.dc {
+    background: #0391be;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 2px;
+}
