@@ -1,18 +1,14 @@
 package com.jc.tm.controller;
 
+import com.jc.tm.Converter.Converter;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.service.PaginationDto;
-import com.jc.tm.service.TaskDto;
-import com.jc.tm.service.TaskServiceImpl;
+import com.jc.tm.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -22,39 +18,12 @@ import java.util.Collection;
 @Slf4j
 @Controller
 public class Dashboard {
-    private final TaskServiceImpl service;
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    @Autowired
+    private TaskServiceImpl service;
+    @Autowired
+    private Converter converter;
 
-    public Dashboard(TaskServiceImpl service) {
-        this.service = service;
-    }
 
-    private Collection<TaskDto> parsingTaskDataToTaskDTO(Collection<Task> tasks) {
-        Collection<TaskDto> result = new ArrayList<>();
-        for (Task task : tasks) {
-            TaskDto taskDto = dateConvert(task);
-            result.add(taskDto);
-        }
-        return result;
-    }
-
-    private TaskDto dateConvert(Task task) {
-        TaskDto taskDto = new TaskDto();
-        LocalDateTime dateCreated = task.getCreated();
-        LocalDateTime dateDueDate = task.getDueDate();
-        if (dateCreated != null) {
-            String formattedDateCreated = dateCreated.format(dateTimeFormatter);
-            taskDto.setCreated(formattedDateCreated);
-        }
-        String formattedDateDueDate = dateDueDate.format(dateTimeFormatter);
-        taskDto.setDueDate(formattedDateDueDate);
-        taskDto.setId(task.getId());
-        taskDto.setName(task.getName());
-        taskDto.setDescription(task.getDescription());
-        taskDto.setStatus(task.getStatus());
-        taskDto.setPriority(task.getPriority());
-        return taskDto;
-    }
 
     @GetMapping("/index")
     public String mainPage(Model model) {
@@ -63,11 +32,11 @@ public class Dashboard {
         paginationDto.setPage(0);
         paginationDto.setSize(5);
         Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
-        Collection<TaskDto> result = parsingTaskDataToTaskDTO(taskList);
+        Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
         model.addAttribute("lastFive", result);
         return "index";
     }
-
+  
     @GetMapping("show-tasks/page/{pageNumber}")
     public String show(Model model,
                            String search,
@@ -89,7 +58,7 @@ public class Dashboard {
 
         if(search != null) {
             taskList = service.findByKeyword(search);
-            result = parsingTaskDataToTaskDTO(taskList);
+            result = converter.parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("service", result);
         }
 
@@ -116,8 +85,10 @@ public class Dashboard {
     @GetMapping("/task/{taskId}")
     public String getTaskById(Model model, @PathVariable long taskId) {
         Task task = service.getTask(taskId);
-        TaskDto taskDto = dateConvert(task);
+        TaskDto taskDto = converter.TasktoTaskDto(task);
+        Collection<CommentDto> comments = converter.parsingCommentDataToCommentDTO(task.getComments());
         model.addAttribute("task", taskDto);
+        model.addAttribute("comments", comments);
         return "task";
     }
 
