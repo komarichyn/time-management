@@ -48,11 +48,11 @@ public class Dashboard {
 
         Page<Task> page = service.loadTask(paginationDto, sortBy);
         Collection<Task> taskList = page.getContent();
-        Collection<TaskDto> result = parsingTaskDataToTaskDTO(taskList);
+        Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
 
         if(sortBy != null) {
             taskList = page.getContent();
-            result = parsingTaskDataToTaskDTO(taskList);
+            result = converter.parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("sortBy", result);
         }
 
@@ -110,6 +110,6 @@ public class Dashboard {
     public String deleteTask(@PathVariable long taskId) {
         log.debug("delete task");
         service.removeTask(taskId);
-        return "redirect:/show-tasks";
+        return "redirect:/show-tasks/page/1";
     }
 }

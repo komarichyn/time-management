@@ -36,7 +36,7 @@
 </div>
 <div class="main-page">
     <h2 style="margin: 5px">Task edit page</h2>
-    <h3 style="margin: 3px"><a th:href="@{/show-tasks}">Back to tasks</a></h3>
+    <h3 style="margin: 3px"><a th:href="@{/show-tasks/page/1}">Back to tasks</a></h3>
         <form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
               th:object="${task}" method="Post">
             <div class="input-string">
