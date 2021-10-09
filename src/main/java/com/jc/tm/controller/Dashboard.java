@@ -53,13 +53,14 @@ public class Dashboard {
         if(sortBy != null) {
             taskList = page.getContent();
             result = converter.parsingTaskDataToTaskDTO(taskList);
-            model.addAttribute("sortBy", result);
+            model.addAttribute("sortBy", sortBy);
         }
 
         if(search != null) {
             taskList = service.findByKeyword(search);
             result = converter.parsingTaskDataToTaskDTO(taskList);
             model.addAttribute("service", result);
+            return "show-tasks";
         }
 
         model.addAttribute("currentPage", pageNumber);

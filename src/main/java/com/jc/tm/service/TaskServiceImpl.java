@@ -102,7 +102,7 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public Collection<Task> findByKeyword(String search) {
-        return taskDao.findByName(search);
+        return this.taskDao.findByName(search);
     }
 
     @Override
