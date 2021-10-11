@@ -3,6 +3,7 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/style.css">
@@ -20,7 +21,9 @@
             <ul class="toolbar-links">
                 <li><a href="/create-task">Create task</a></li>
                 <li><a href="/show-tasks/page/1">Show tasks</a></li>
-                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button" src="/img/search-white.png"></a></li>
+                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
+                                                                                      src="/img/search-white.png"></a>
+                </li>
                 <li>
                     <form method="get" th:action="@{/show-tasks}">
                         <input type="text" class="search-string" name="search" placeholder="Search...">
@@ -38,35 +41,90 @@
     <div class="container">
         <section class="promo row">
             <div class="col-6 dt">
-                <div class="block"  style="overflow:auto;">
+                <div class="block" style="overflow:auto;">
                     <h2 th:text="${task.name}"></h2>
                     <hr>
                     <p th:utext="${task.description}">${task.description}</p>
                 </div>
             </div>
-            <div class="col-6 dc" >
+            <div class="col-6 dc">
                 <div class="block">
                     <h2>Comments </h2>
                     <hr>
-                    <div style="height: 310px; overflow:auto;">
-                    <table>
-                        <ul th:each="comment : ${comments}">
-                            <li th:utext="${comment.text}">comment</li>
-                            <li th:text="${comment.created}">created</li>
+                    <div style="height: 310px; overflow:auto;" class="promo row">
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                data-target="#myModal">Add comment
+                        </button>
+                        <div id="myModal" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" style="color: black">type comment please</h4>
+                                        <button class="close" data-dismiss="modal" align="right">x</button>
+                                    </div>
+                                    <div>
+                                        <form th:action="@{/task/{taskId}/added-comment(taskId=${task.id})}"
+                                              th:object="${task}" method="Post">
+                                            <div class="input-string">
+                                                <label class="name-string">
+                                                    Name
+                                                </label>
+                                                <input type="text" name="text" class="input-data">
+                                            </div>
+                                            <div class="submit-button-div">
+                                                <input class="submit-button" type="submit" value="add comment">
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul>
+                            <li style="margin-bottom: 0px" th:each="comment : ${comments}" class="promo row">
+                                <div class="col-9" th:text="${comment.text}"></div>
+                                <div style="padding-left: 1px" align="right" class="col-3"
+                                     th:text="${comment.created}"></div>
+                                <p>
+                                    <!--  //TODO edit button-->
+                                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseExample" aria-expanded="false"
+                                            aria-controls="collapseExample">
+                                        edit
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <a style="color: #cccccc;"
+                                           th:href="@{/task/{taskId}/comment-del/{commentId}(taskId=${task.id}, commentId=${comment.id})}"
+                                           onclick="return confirm('Are you sure you want to delete this comment')">delete</a>
+                                    </button>
+                                </p>
+                                <div class="collapse" id="collapseExample">
+                                    <textarea th:text="${comment.text}">
+                                    </textarea>
+                                </div>
+                                <hr>
+                            </li>
+
                         </ul>
-                    </table>
                     </div>
                 </div>
             </div>
         </section>
-
     </div>
-    <button type="button" class="btn btn-outline-primary btn-sm"><a
-            th:href="@{/task/edit/{taskId}(taskId=${task.id})}">Edit</a></button>
-    <button type="button" class="btn btn-outline-primary btn-sm">
-        <a th:href="@{/delete-task/{taskId}(taskId=${task.id})}"
+    <button type="button" class="btn btn-primary">
+        <a style="color: #cccccc" th:href="@{/task/edit/{taskId}(taskId=${task.id})}">Edit</a></button>
+    <button type="button" class="btn btn-danger">
+        <a style="color: #cccccc;" th:href="@{/delete-task/{taskId}(taskId=${task.id})}"
            onclick="return confirm('Are you sure you want to delete this task')">Delete</a></button>
 </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
 </body>
 </html>

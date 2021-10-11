@@ -1,6 +1,7 @@
 package com.jc.tm.controller;
 
 import com.jc.tm.Converter.Converter;
+import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -85,8 +86,8 @@ public class Dashboard {
     @GetMapping("/task/{taskId}")
     public String getTaskById(Model model, @PathVariable long taskId) {
         Task task = service.getTask(taskId);
-        TaskDto taskDto = converter.TasktoTaskDto(task);
-        Collection<CommentDto> comments = converter.parsingCommentDataToCommentDTO(task.getComments());
+        TaskDto taskDto = converter.TaskToTaskDto(task);
+        Collection<CommentDto> comments = taskDto.getComments();
         model.addAttribute("task", taskDto);
         model.addAttribute("comments", comments);
         return "task";
@@ -111,5 +112,21 @@ public class Dashboard {
         log.debug("delete task");
         service.removeTask(taskId);
         return "redirect:/show-tasks/page/1";
+    }
+
+    //Comment controllers
+
+    @PostMapping("/task/{taskId}/added-comment")
+    public String addComment(@ModelAttribute("comment") Comment comment, @PathVariable("taskId") long taskId) {
+        service.addComment(taskId,comment);
+        return "redirect:/task/" + taskId;
+    }
+
+
+    @GetMapping("/task/{taskId}/comment-del/{commentId}")
+    public String deleteComment(@PathVariable("commentId") long commentId, @PathVariable("taskId") long taskId) {
+        log.debug("delete comment");
+        service.removeComment(commentId);
+        return "redirect:/task/" + taskId;
     }
 }

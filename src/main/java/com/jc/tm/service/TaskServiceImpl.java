@@ -138,6 +138,7 @@ public class TaskServiceImpl implements ITaskService {
             throw new NullPointerException();
         } else {
             log.debug("Task was found:{}", task);
+            newComment.setCreated(LocalDateTime.now());
         }
         return this.addComment(task, newComment);
     }
