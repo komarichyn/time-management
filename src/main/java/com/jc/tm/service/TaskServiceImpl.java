@@ -101,8 +101,9 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Collection<Task> findByKeyword(String search) {
-        return this.taskDao.findByName(search);
+    public Page<Task> findByKeyword(PaginationDto paginationDto, String search) {
+        Pageable pageable = PageRequest.of(paginationDto.getPage() - 1, paginationDto.getSize());
+        return this.taskDao.findByName(pageable, search);
     }
 
     @Override

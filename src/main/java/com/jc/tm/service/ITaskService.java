@@ -51,7 +51,7 @@ public interface ITaskService {
      */
     public Task getTask(Task task) ;
 
-    public Collection<Task> findByKeyword(String search);
+    public Page<Task> findByKeyword(PaginationDto page, String search);
 
     /**
      * default call for loading task list. but result will be split on 20 items

@@ -80,6 +80,7 @@
         <li th:if="${currentPage == 1}" class="page-item disabled"><a class="page-link" th:href="@{${currentPage - 1}}">Previous</a></li>
         <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${i} + '?sortBy=' + ${sortBy}}">[[${i}]]</a></li>
         <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${i}}">[[${i}]]</a></li>
+          <!--th:classappend="${currentPage == 1} ? 'page-item disabled'"-->
         <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${currentPage + 1} + '?sortBy=' + ${sortBy}}">Next</a></li>
         <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${currentPage + 1}}">Next</a></li>
         <li th:if="${currentPage == totalPages}" class="page-item disabled"><a class="page-link" th:href="@{${currentPage + 1}}">Next</a></li>

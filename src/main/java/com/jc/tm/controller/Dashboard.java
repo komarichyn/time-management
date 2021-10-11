@@ -6,6 +6,8 @@ import com.jc.tm.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -53,19 +55,18 @@ public class Dashboard {
         if(sortBy != null) {
             taskList = page.getContent();
             result = converter.parsingTaskDataToTaskDTO(taskList);
-            model.addAttribute("sortBy", sortBy);
         }
 
         if(search != null) {
-            taskList = service.findByKeyword(search);
+            page = service.findByKeyword(paginationDto, search);
+            taskList = page.getContent();
             result = converter.parsingTaskDataToTaskDTO(taskList);
-            model.addAttribute("service", result);
-            return "show-tasks";
         }
 
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("sortBy", sortBy);
         model.addAttribute("service", result);
         return "show-tasks";
     }
