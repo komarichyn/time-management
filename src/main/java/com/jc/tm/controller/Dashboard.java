@@ -122,6 +122,15 @@ public class Dashboard {
         return "redirect:/task/" + taskId;
     }
 
+    @PostMapping("/task/{taskId}/edit-comment/{commentId}")
+    public String editComment(@ModelAttribute("comment") Comment comment,
+                              @PathVariable("commentId") long commentId,
+                              @PathVariable("taskId") long taskId) {
+        comment.setId(commentId);
+        service.updateComment(comment);
+        return "redirect:/task/" + taskId;
+    }
+
 
     @GetMapping("/task/{taskId}/comment-del/{commentId}")
     public String deleteComment(@PathVariable("commentId") long commentId, @PathVariable("taskId") long taskId) {
