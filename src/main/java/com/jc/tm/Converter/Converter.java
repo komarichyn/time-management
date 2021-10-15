@@ -21,7 +21,7 @@ public class Converter {
         return date;
     }
 
-    public TaskDto TasktoTaskDto(Task task) {
+    public TaskDto TaskToTaskDto(Task task) {
         TaskDto taskDto = new TaskDto();
         LocalDateTime created = task.getCreated();
         LocalDateTime dueDate = task.getDueDate();
@@ -36,8 +36,18 @@ public class Converter {
         taskDto.setDescription(task.getDescription());
         taskDto.setStatus(task.getStatus());
         taskDto.setPriority(task.getPriority());
+        taskDto.setComments(parsingCommentDataToCommentDTO(task.getComments()));
 
         return taskDto;
+    }
+
+    public Collection<TaskDto> parsingTaskDataToTaskDTO(Collection<Task> tasks) {
+        Collection<TaskDto> taskResult = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskDto taskDto = TaskToTaskDto(task);
+            taskResult.add(taskDto);
+        }
+        return taskResult;
     }
 
     private CommentDto CommentToCommentDto(Comment comment) {
@@ -52,16 +62,7 @@ public class Converter {
         return commentDto;
     }
 
-    public Collection<TaskDto> parsingTaskDataToTaskDTO(Collection<Task> tasks) {
-        Collection<TaskDto> taskResult = new ArrayList<>();
-        for (Task task : tasks) {
-            TaskDto taskDto = TasktoTaskDto(task);
-            taskResult.add(taskDto);
-        }
-        return taskResult;
-    }
-
-    public Collection<CommentDto> parsingCommentDataToCommentDTO(Collection<Comment> comments) {
+    private Collection<CommentDto> parsingCommentDataToCommentDTO(Collection<Comment> comments) {
         Collection<CommentDto> commentResult = new ArrayList<>();
 
         for (Comment comment : comments) {
