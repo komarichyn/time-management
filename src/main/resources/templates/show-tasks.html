@@ -7,12 +7,52 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/style.css">
   <script>
-      $(document).ready(function(){
-          $(".showSortedBybtn").click(function(){
-             $(".dropDown-show").toggle();
+      $(document).ready(function() {
+          $(".showSortedBybtn").click(function () {
+              $(".dropDown-show").toggle();
           });
-          $(".search-string").keydown(function(event) {
+          $(".search-string").keydown(function (event) {
               event.which(13)
+          });
+
+          $("td.status").click(function () {
+              var point = $(this).text();
+              var taskId = $(this).parent().get(0).id;
+              console.log(taskId);
+              if (point == "TODO") {
+                  $.ajax({
+                      type: "POST",
+                      url: "/show-tasks/task/update/" + taskId,
+                      data: "IN_PROGRESS",
+                      dataType: "json",
+                      success: function (data, status) {
+                          console.log("Good: " + status);
+                          $(this).text(data.status);
+                      }
+                  });
+              } else if (point == "IN_PROGRESS") {
+                  $.ajax({
+                      type: "POST",
+                      url: "/show-tasks/task/update/" + taskId,
+                      data: "COMPLETE",
+                      dataType: "json",
+                      success: function (data, status) {
+                          console.log("Good: " + status);
+                          $(this).text(data.status);
+                      }
+                  });
+              } else {
+                  $.ajax({
+                      type: "POST",
+                      url: "/show-tasks/task/update/" + taskId,
+                      data: "TODO",
+                      dataType: "json",
+                      success: function (data, status) {
+                          console.log("Good: " + status);
+                          $(this).text(data.status);
+                      }
+                  });
+              }
           });
       });
   </script>
@@ -60,9 +100,9 @@
       <th>Priority</th>
       <th>Delete task</th>
     </tr>
-    <tr th:each="task : ${service}">
+    <tr th:id="${task.id}" th:each="task : ${service}">
       <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">Task name</a></td>
-      <td th:text="${task.status}">Task status</td>
+      <td class="status" th:text="${task.status}">Task status</td>
       <td th:text="${task.dueDate}">Task due date</td>
       <td th:text="${task.priority}">Task priority</td>
       <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}" onclick="return confirm('Are you sure you want to delete this task')">Delete</a>
@@ -75,13 +115,17 @@
   <div th:if="${totalPages > 1}">
     <nav aria-label="Page navigation example">
         <ul class="pagination">
-        <li th:if="${currentPage != 1}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${currentPage - 1} + '?sortBy=' + ${sortBy}}">Previous</a></li>
-        <li th:if="${currentPage != 1}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${currentPage - 1}}">Previous</a></li>
+        <li th:if="${currentPage != 1}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${currentPage - 1} + '?sortBy=' + ${sortBy} + '&search=' + ${searchBy}}">Previous</a></li>
+        <li th:if="${currentPage != 1}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${currentPage - 1} + '&search=' + ${searchBy}}">Previous</a></li>
         <li th:if="${currentPage == 1}" class="page-item disabled"><a class="page-link" th:href="@{${currentPage - 1}}">Previous</a></li>
+
+<!--        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${i} + '?sortBy=' + ${sortBy} + '&search=' + ${searchBy}}">[[${i}]]</a></li>-->
         <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${i} + '?sortBy=' + ${sortBy}}">[[${i}]]</a></li>
-        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${i}}">[[${i}]]</a></li>
-          <!--th:classappend="${currentPage == 1} ? 'page-item disabled'"-->
+        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${searchBy == null}" th:href="@{${i}}">[[${i}]]</a></li>
+        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:unless="${searchBy == null}" th:href="@{${i} + '?search=' + ${searchBy}}">[[${i}]]</a></li>
+
         <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${currentPage + 1} + '?sortBy=' + ${sortBy}}">Next</a></li>
+        <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${searchBy != null}" th:href="@{${currentPage + 1} + '?search=' + ${searchBy}}">Next</a></li>
         <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${currentPage + 1}}">Next</a></li>
         <li th:if="${currentPage == totalPages}" class="page-item disabled"><a class="page-link" th:href="@{${currentPage + 1}}">Next</a></li>
       </ul>

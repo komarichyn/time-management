@@ -1,16 +1,19 @@
 package com.jc.tm.controller;
 
 import com.jc.tm.Converter.Converter;
+import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.service.*;
+import com.jc.tm.service.CommentDto;
+import com.jc.tm.service.PaginationDto;
+import com.jc.tm.service.TaskDto;
+import com.jc.tm.service.TaskServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Collection;
 
 /**
@@ -24,8 +27,6 @@ public class Dashboard {
     private TaskServiceImpl service;
     @Autowired
     private Converter converter;
-
-
 
     @GetMapping("/index")
     public String mainPage(Model model) {
@@ -67,6 +68,7 @@ public class Dashboard {
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("totalItems", page.getTotalElements());
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("searchBy",search);
         model.addAttribute("service", result);
         return "show-tasks";
     }
@@ -99,6 +101,16 @@ public class Dashboard {
         Task task = service.getTask(taskId);
         model.addAttribute("task", task);
         return "update-task";
+    }
+
+    @PostMapping(value = {"show-tasks/task/update/{taskId}"})
+    public Task updateTask(@PathVariable long taskId, @RequestBody String status) {
+        Task task = service.getTask(taskId);
+        status = status.replace("=",""); //delete sign '=' from String
+        System.out.println(status);
+        task.setStatus(Status.valueOf(status));
+        service.updateTask(task);
+        return task;
     }
 
     @PostMapping(value = {"/task/update/{taskId}"})
