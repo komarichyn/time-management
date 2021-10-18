@@ -154,6 +154,7 @@ input, textarea, button, select {
     transition-duration: 0.4s;
     cursor: pointer;
     border-radius: 4px;
+    margin-top: 10px;
 }
 
 .submit-button:hover {background-color: #e7e7e7;}
