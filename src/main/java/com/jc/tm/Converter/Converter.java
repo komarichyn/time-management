@@ -29,7 +29,7 @@ public class Converter {
             String formattedDateCreated = dateConverter(created);
             taskDto.setCreated(formattedDateCreated);
         }
-        String formattedDateDueDate = dateConverter(created);
+        String formattedDateDueDate = dateConverter(dueDate);
         taskDto.setDueDate(formattedDateDueDate);
         taskDto.setId(task.getId());
         taskDto.setName(task.getName());

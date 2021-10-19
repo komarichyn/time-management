@@ -19,12 +19,14 @@ import java.util.Collection;
 @Slf4j
 @Controller
 public class Dashboard {
-    @Autowired
-    private TaskServiceImpl service;
-    @Autowired
-    private Converter converter;
+    private  TaskServiceImpl service;
+    private  Converter converter;
 
-
+    @Autowired
+    public Dashboard(TaskServiceImpl service, Converter converter) {
+        this.service = service;
+        this.converter = converter;
+    }
 
     @GetMapping("/index")
     public String mainPage(Model model) {
