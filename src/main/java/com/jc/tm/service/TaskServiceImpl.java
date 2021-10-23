@@ -101,9 +101,12 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public Page<Task> findByKeyword(PaginationDto paginationDto, String search) {
-        Pageable pageable = PageRequest.of(paginationDto.getPage() - 1, paginationDto.getSize());
-        return this.taskDao.findByName(pageable, search);
+    public Page<Task> loadTask(PaginationDto paginationDto, String searchBy, String sortBy) {
+        searchBy = this.checkSearchBy(searchBy);
+        sortBy = this.checkSortBy(sortBy);
+        Sort sort = Sort.by(Sort.Direction.ASC, sortBy);
+        Page<Task> pt = taskDao.findByName(PageRequest.of(paginationDto.getIndex() - 1, paginationDto.getSize(), sort), searchBy);
+        return pt;
     }
 
     @Override
@@ -328,20 +331,17 @@ public class TaskServiceImpl implements ITaskService {
         return pt.getContent();
     }
 
-    @Override
-    public Page<Task> loadTask(PaginationDto paginationDto, String sortBy) {
-        if (sortBy == null){
-            sortBy = "name";
+    private String checkSortBy(String sortBy) {
+        if (sortBy == null || sortBy.isBlank()){
+            return "name";
         }
-        Sort sort = Sort.by(Sort.Direction.ASC, sortBy);
-        Pageable pageable = PageRequest.of(paginationDto.getPage() - 1, paginationDto.getSize(), sort);
-        return this.taskDao.findAll(pageable);
+        return sortBy;
     }
 
-    /*public Page<Task> sortedByNameTasks(PaginationDto paginationDto) {
-        Sort sort = Sort.by(paginationDto.getSorDirection(), paginationDto.getSortBy());
-//        Sort sort = Sort.by(Sort.Direction.DESC, "name");
-        Pageable pageable = PageRequest.of(0,10, sort);
-        return taskDao.findAll(pageable);
-    }*/
+    private String checkSearchBy(String searchBy) {
+        if(searchBy == null || searchBy.isBlank()) {
+            return "";
+        }
+        return searchBy;
+    }
 }

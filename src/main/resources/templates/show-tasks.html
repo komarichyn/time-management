@@ -23,6 +23,7 @@
                   $.ajax({
                       type: "POST",
                       url: "/show-tasks/task/update/" + taskId,
+                      contentType: "text/plain",
                       data: "IN_PROGRESS",
                       dataType: "json",
                       success: function (data, status) {
@@ -34,6 +35,7 @@
                   $.ajax({
                       type: "POST",
                       url: "/show-tasks/task/update/" + taskId,
+                      contentType: "text/plain",
                       data: "COMPLETE",
                       dataType: "json",
                       success: function (data, status) {
@@ -45,6 +47,7 @@
                   $.ajax({
                       type: "POST",
                       url: "/show-tasks/task/update/" + taskId,
+                      contentType: "text/plain",
                       data: "TODO",
                       dataType: "json",
                       success: function (data, status) {
@@ -72,7 +75,7 @@
         <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button" src="/img/search-white.png"></a></li>
         <li>
           <form method="get" th:action="@{/show-tasks/page/1}">
-            <input type="text" class="search-string" name="search" placeholder="Search...">
+            <input type="text" class="search-string" name="searchBy" placeholder="Search...">
           </form>
         </li>
       </ul>
@@ -87,7 +90,7 @@
     <div class="dropDown-show">
       <a th:href="@{${currentPage}}">Name</a>
       <a th:href="@{${currentPage} + '?sortBy=status'}">Status</a>
-      <a th:href="@{${currentPage} + '?sortBy=dueDate'}">Due date</a>
+      <a th:href="@{${currentPage} + '?sortBy=due_date'}">Due date</a>
       <a th:href="@{${currentPage} + '?sortBy=priority'}">Priority</a>
     </div>
   </div>
@@ -115,19 +118,33 @@
   <div th:if="${totalPages > 1}">
     <nav aria-label="Page navigation example">
         <ul class="pagination">
-        <li th:if="${currentPage != 1}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${currentPage - 1} + '?sortBy=' + ${sortBy} + '&search=' + ${searchBy}}">Previous</a></li>
-        <li th:if="${currentPage != 1}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${currentPage - 1} + '&search=' + ${searchBy}}">Previous</a></li>
-        <li th:if="${currentPage == 1}" class="page-item disabled"><a class="page-link" th:href="@{${currentPage - 1}}">Previous</a></li>
-
-<!--        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${i} + '?sortBy=' + ${sortBy} + '&search=' + ${searchBy}}">[[${i}]]</a></li>-->
-        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${i} + '?sortBy=' + ${sortBy}}">[[${i}]]</a></li>
-        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:if="${searchBy == null}" th:href="@{${i}}">[[${i}]]</a></li>
-        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:unless="${searchBy == null}" th:href="@{${i} + '?search=' + ${searchBy}}">[[${i}]]</a></li>
-
-        <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${sortBy != null}" th:href="@{${currentPage + 1} + '?sortBy=' + ${sortBy}}">Next</a></li>
-        <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${searchBy != null}" th:href="@{${currentPage + 1} + '?search=' + ${searchBy}}">Next</a></li>
-        <li th:if="${currentPage < totalPages}" class="page-item"><a class="page-link" th:if="${sortBy == null}" th:href="@{${currentPage + 1}}">Next</a></li>
-        <li th:if="${currentPage == totalPages}" class="page-item disabled"><a class="page-link" th:href="@{${currentPage + 1}}">Next</a></li>
+          <li th:if="${currentPage != 1}" class="page-item">
+            <a class="page-link" th:href="@{${currentPage - 1}(sortBy=${sortBy},searchBy=${searchBy})} ">
+              Previous
+            </a>
+          </li>
+          <li th:if="${currentPage == 1}" class="page-item disabled">
+            <a class="page-link" th:href="@{${currentPage - 1}(sortBy=${sortBy},searchBy=${searchBy})} ">
+              Previous
+            </a>
+          </li>
+          <li th:each="pageNumber: ${#numbers.sequence(1, totalPages)}"
+              class="page-item">
+            <a class="page-link"
+               th:href="@{${pageNumber}(sortBy=${sortBy},searchBy=${searchBy})}">
+              [[${pageNumber}]]
+            </a>
+          </li>
+          <li th:if="${currentPage < totalPages}" class="page-item">
+            <a class="page-link" th:href="@{${currentPage + 1}(sortBy=${sortBy},searchBy=${searchBy})} ">
+              Next
+            </a>
+          </li>
+          <li th:if="${currentPage == totalPages}" class="page-item disabled">
+            <a class="page-link" th:href="@{${currentPage + 1}(sortBy=${sortBy},searchBy=${searchBy})} ">
+              Next
+            </a>
+          </li>
       </ul>
     </nav>
   </div>

@@ -51,8 +51,6 @@ public interface ITaskService {
      */
     public Task getTask(Task task) ;
 
-    public Page<Task> findByKeyword(PaginationDto page, String search);
-
     /**
      * default call for loading task list. but result will be split on 20 items
      * @return list of tasks
@@ -103,5 +101,5 @@ public interface ITaskService {
 
     Collection<Task> sortedBy(PaginationDto paginationDto, String sortBy);
 
-    Page<Task> loadTask(PaginationDto paginationDto, String sortBy);
+    Page<Task> loadTask(PaginationDto paginationDto, String searchBy, String sortBy);
 }
