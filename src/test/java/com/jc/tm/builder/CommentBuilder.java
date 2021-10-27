@@ -1,4 +1,4 @@
-package com.jc.tm.controller.builder;
+package com.jc.tm.builder;
 
 import com.jc.tm.db.entity.Comment;
 
