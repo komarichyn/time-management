@@ -82,8 +82,6 @@ public class Dashboard {
     @GetMapping("/create-task")
     public String create(Model model) {
         Task task = new Task();
-        task.setDueDate(LocalDateTime.now().plusDays(1));
-        task.setStatus(Status.TODO); // Default status
         model.addAttribute("task", task);
         log.debug("create task page");
         return "create-task";

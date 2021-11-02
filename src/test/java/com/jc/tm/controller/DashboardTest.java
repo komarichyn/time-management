@@ -10,8 +10,10 @@ import com.jc.tm.service.Priority;
 import com.jc.tm.service.TaskDto;
 import com.jc.tm.service.TaskServiceImpl;
 import org.junit.Before;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +29,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -134,14 +137,33 @@ class DashboardTest {
         mockMvc.perform(get("/create-task"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("create-task"))
-                //suppose it is impossible to test time :) TODO ??
-//                .andExpect(model().attribute("task", hasProperty("dueDate", is(LocalDateTime.now().plusDays(1)))))
                 .andExpect(model().attribute("task", hasProperty("status", is(Status.TODO))))
                 .andExpect(model().attribute("task", hasProperty("priority", is(Priority.NORMAL))));
 
     }
 
     @Test
-    void createTask() {
+    @Disabled
+    //TODO
+    void createTask() throws Exception {
+        Task createdTask = new TaskBuilderImpl().setId(10L).setName("created").setDescription("created description")
+                .setStatus(Status.IN_PROGRESS).setPriority(Priority.HIGH)
+                .setDueDate(LocalDateTime.of(2021, 11, 19, 12, 25, 25))
+                .build();
+
+        when(taskServiceMock.saveTask(isA(Task.class))).thenReturn(createdTask);
+
+        mockMvc.perform(post("/add-task").param("name", "created")
+                        .param("description", "created description")
+                        .flashAttr("task", createdTask)
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/task/10"))
+                .andExpect(redirectedUrl("/task/10"))
+                .andExpect(model().attribute("task", hasProperty("name", is("created"))))
+                .andExpect(model().attribute("task", hasProperty("description", is("created description"))))
+                .andExpect(model().attribute("task", hasProperty("status", is(Status.IN_PROGRESS))))
+                .andExpect(model().attribute("task", hasProperty("priority", is(Priority.HIGH))))
+                .andExpect(model().attribute("task", hasProperty("dueDate", is(dateConverter(LocalDateTime.of(2021, 11, 19, 12, 25, 25))))));
     }
 }

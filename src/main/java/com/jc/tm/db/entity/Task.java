@@ -24,7 +24,8 @@ public class Task implements Serializable {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    //default status for any task is to do
+    private Status status = Status.TODO;
     @Column(columnDefinition = "TIMESTAMP", name = "due_date")
     private LocalDateTime dueDate;
     //default priority for any task is normal
