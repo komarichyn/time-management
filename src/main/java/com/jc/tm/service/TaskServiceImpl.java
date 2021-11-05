@@ -102,10 +102,11 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public Page<Task> loadTask(PaginationDto paginationDto, String searchBy, String sortBy) {
+        log.debug("loadTasks method with paginationDto={} searchBy={} sortBy={}", paginationDto, searchBy, sortBy);
         searchBy = this.checkSearchBy(searchBy);
         sortBy = this.checkSortBy(sortBy);
         Sort sort = Sort.by(Sort.Direction.ASC, sortBy);
-        Page<Task> pt = taskDao.findByName(PageRequest.of(paginationDto.getIndex() - 1, paginationDto.getSize(), sort), searchBy);
+        Page<Task> pt = taskDao.findAllBy(PageRequest.of(paginationDto.getIndex() - 1, paginationDto.getSize(), sort), searchBy);
         return pt;
     }
 
@@ -299,28 +300,29 @@ public class TaskServiceImpl implements ITaskService {
         return this.updateTask(freshTask);
     }
 
-    public Collection<Task> sortedByNameASCTasks(PaginationDto paginationDto) {
-        log.debug("sortedByNameASCTasks input values: {}", paginationDto);
-        return this.sortedBy(paginationDto, "name");
+    public String sortedByNameASCTasks() {
+        log.debug("sortedByNameASCTasks");
+        return ("name");
     }
 
-    public Collection<Task> sortedByNameDESCTasks(PaginationDto paginationDto) {
-        log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
-        Sort sort = Sort.by(paginationDto.getSorDirectionDESC(), paginationDto.getSortByName());
-        Page<Task> pt = taskDao.findAll(PageRequest.of(0, 10, sort));
-        return pt.getContent();
+    public String sortedByStatusASCTasks() {
+        log.debug("sortedByStatusASCTasks");
+        return ("status");
     }
 
-    public Collection<Task> sortedByDueDateASCTasks(PaginationDto paginationDto) {
-        log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
-        Sort sort = Sort.by(paginationDto.getSorDirectionASC(), paginationDto.getSortByDueDate());
-        Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
-        return pt.getContent();
+    public String sortedByDueDateASCTasks() {
+        log.debug("sortedByDueDateASCTasks");
+        return "due_date";
     }
 
     public Collection<Task> sortedByDueDateDESCTasks(PaginationDto paginationDto) {
         log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
         return this.sortedBy(paginationDto, "dueDate");
+    }
+
+    public String sortedByPriorityASCTasks() {
+        log.debug("sortedByPriorityASCTasks");
+        return ("priority");
     }
 
     @Override
@@ -332,13 +334,21 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     private String checkSortBy(String sortBy) {
+        log.debug("Check sortBy={}", sortBy);
         if (sortBy == null || sortBy.isBlank()){
-            return "name";
+            return this.sortedByNameASCTasks();
+        } else if (sortBy.equals("status")) {
+            return this.sortedByStatusASCTasks();
+        } else if (sortBy.equals("due_date")) {
+            return this.sortedByDueDateASCTasks();
+        } else if (sortBy.equals("priority")) {
+            return this.sortedByPriorityASCTasks();
         }
         return sortBy;
     }
 
     private String checkSearchBy(String searchBy) {
+        log.debug("Check searchBy={}", searchBy);
         if(searchBy == null || searchBy.isBlank()) {
             return "";
         }

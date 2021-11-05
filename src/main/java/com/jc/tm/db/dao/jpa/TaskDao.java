@@ -12,5 +12,5 @@ public interface TaskDao extends BaseDao<Task, Long> {
 
     Page<Task> findAll(Pageable pageable) ;
     @Query(value = "select * from Task task where task.name like %:search%", nativeQuery = true)
-    Page<Task> findByName(Pageable pageable, @Param("search") String search);
+    Page<Task> findAllBy(Pageable pageable, @Param("search") String search);
 }
