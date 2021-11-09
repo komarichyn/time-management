@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -25,6 +24,7 @@ import java.util.Collection;
 @Slf4j
 @Controller
 public class Dashboard {
+    private final int pageSize = 10;
 
     private final TaskServiceImpl service;
     private final Converter converter;
@@ -37,7 +37,7 @@ public class Dashboard {
 
     @GetMapping("/index")
     public String mainPage(Model model) {
-        log.debug("show last five tasks");
+        log.debug("Show last five tasks");
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setPage(0);
         paginationDto.setSize(5);
@@ -46,35 +46,25 @@ public class Dashboard {
         model.addAttribute("lastFive", result);
         return "index";
     }
-  
+
     @GetMapping("show-tasks/page/{pageNumber}")
     public String show(Model model,
-                           String search,
+                           String searchBy,
                            @PathVariable(value = "pageNumber") int pageNumber,
                            @RequestParam(name="sortBy", required = false) String sortBy) {
+        log.debug("Show tasks page with params: searchBy={}, pageNumber={}, sortBy={}", searchBy, pageNumber, sortBy);
+        SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
         PaginationDto paginationDto = new PaginationDto();
-        paginationDto.setSize(10);
-        paginationDto.setPage(pageNumber);
+        paginationDto.setIndex(pageNumber);
+        paginationDto.setSize(pageSize);
+        var taskList = service.loadTask(paginationDto, searchBy, sortBy);
+        int tm = (int) taskList.getTotalElements();
+        var result = converter.parsingTaskDataToTaskDTO(taskList.getContent());
 
-        Page<Task> page = service.loadTask(paginationDto, sortBy);
-        Collection<Task> taskList = page.getContent();
-        Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
+        paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
 
-        if(sortBy != null) {
-            taskList = page.getContent();
-            result = converter.parsingTaskDataToTaskDTO(taskList);
-            model.addAttribute("sortBy", result);
-        }
-
-        if(search != null) {
-            taskList = service.findByKeyword(search);
-            result = converter.parsingTaskDataToTaskDTO(taskList);
-            model.addAttribute("service", result);
-        }
-
-        model.addAttribute("currentPage", pageNumber);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("pagination", paginationDto);
+        model.addAttribute("sortSearch", sortnSearch);
         model.addAttribute("service", result);
         return "show-tasks";
     }
@@ -89,6 +79,7 @@ public class Dashboard {
 
     @PostMapping("/add-task")
     public String createTask(@ModelAttribute Task task) {
+        log.debug("Add task page. Task={}", task);
         service.saveTask(task);
         Long taskId = task.getId();
         return "redirect:/task/" + taskId;
@@ -96,6 +87,7 @@ public class Dashboard {
 
     @GetMapping("/task/{taskId}")
     public String getTaskById(Model model, @PathVariable long taskId) {
+        log.debug("Show one task with id={}", taskId);
         Task task = service.getTask(taskId);
         TaskDto taskDto = converter.taskToTaskDto(task);
         Collection<CommentDto> comments = taskDto.getComments();
@@ -106,13 +98,24 @@ public class Dashboard {
 
     @GetMapping(value = {"/task/edit/{taskId}"})
     public String showEditTask(Model model, @PathVariable long taskId) {
+        log.debug("Change task with id={}", taskId);
         Task task = service.getTask(taskId);
         model.addAttribute("task", task);
         return "update-task";
     }
 
+    @PostMapping(value = {"show-tasks/task/update/{taskId}"}, produces = "application/json")
+    public Task updateTaskStatus(@PathVariable long taskId, @RequestBody String status) {
+        log.debug("Update Task Status: {}" + status);
+        Task task = service.getTask(taskId);
+        task.setStatus(Status.valueOf(status));
+        service.updateTask(task);
+        return task;
+    }
+
     @PostMapping(value = {"/task/update/{taskId}"})
     public String updateTask(@PathVariable long taskId, @ModelAttribute Task task) {
+        log.debug("Update task={} with id={}", task, taskId);
         task.setId(taskId);
         service.updateTask(task);
         return "redirect:/task/" + task.getId();
@@ -120,7 +123,7 @@ public class Dashboard {
 
     @GetMapping("/delete-task/{taskId}")
     public String deleteTask(@PathVariable long taskId) {
-        log.debug("delete task");
+        log.debug("Delete task with id={}", taskId);
         service.removeTask(taskId);
         return "redirect:/show-tasks/page/1";
     }
@@ -129,6 +132,7 @@ public class Dashboard {
 
     @PostMapping("/task/{taskId}/added-comment")
     public String addComment(@ModelAttribute("comment") Comment comment, @PathVariable("taskId") long taskId) {
+        log.debug("Add comment={} in task with id={}", comment, taskId);
         service.addComment(taskId,comment);
         return "redirect:/task/" + taskId;
     }
@@ -137,6 +141,7 @@ public class Dashboard {
     public String editComment(@ModelAttribute("comment") Comment comment,
                               @PathVariable("commentId") long commentId,
                               @PathVariable("taskId") long taskId) {
+        log.debug("Update comment with id={} in task with id={}", commentId, taskId);
         comment.setId(commentId);
         service.updateComment(comment);
         return "redirect:/task/" + taskId;
@@ -145,7 +150,7 @@ public class Dashboard {
 
     @GetMapping("/task/{taskId}/comment-del/{commentId}")
     public String deleteComment(@PathVariable("commentId") long commentId, @PathVariable("taskId") long taskId) {
-        log.debug("delete comment");
+        log.debug("Delete comment with id={} in task with id={}", commentId, taskId);
         service.removeComment(commentId);
         return "redirect:/task/" + taskId;
     }

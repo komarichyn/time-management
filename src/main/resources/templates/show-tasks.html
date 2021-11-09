@@ -3,16 +3,59 @@
 <head>
   <title>Getting Started: Serving Web Content</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <link rel="stylesheet" href="/css/style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/style.css">
   <script>
-      $(document).ready(function(){
-          $(".showSortedBybtn").click(function(){
-             $(".dropDown-show").toggle();
+      $(document).ready(function() {
+          $(".showSortedBybtn").click(function () {
+              $(".dropDown-show").toggle();
           });
-          $(".search-string").keydown(function(event) {
+          $(".search-string").keydown(function (event) {
               event.which(13)
+          });
+
+          $("td.status").click(function () {
+              var point = $(this).text();
+              var taskId = $(this).parent().get(0).id;
+              console.log(taskId);
+              if (point == "TODO") {
+                  $.ajax({
+                      type: "POST",
+                      url: "/show-tasks/task/update/" + taskId,
+                      contentType: "application/json",
+                      data: "IN_PROGRESS",
+                      dataType: "json",
+                      success: function (data, status) {
+                          console.log("Good: " + status);
+                          $(this).text(data.status);
+                      }
+                  });
+              } else if (point == "IN_PROGRESS") {
+                  $.ajax({
+                      type: "POST",
+                      url: "/show-tasks/task/update/" + taskId,
+                      contentType: "application/json",
+                      data: "COMPLETE",
+                      dataType: "json",
+                      success: function (data, status) {
+                          console.log("Good: " + status);
+                          $(this).text(data.status);
+                      }
+                  });
+              } else {
+                  $.ajax({
+                      type: "POST",
+                      url: "/show-tasks/task/update/" + taskId,
+                      contentType: "application/json",
+                      data: "TODO",
+                      dataType: "json",
+                      success: function (data, status) {
+                          console.log("Good: " + status);
+                          $(this).text(data.status);
+                      }
+                  });
+              }
           });
       });
   </script>
@@ -31,8 +74,8 @@
         <li><a href="/show-tasks/page/1">Show tasks</a></li>
         <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button" src="/img/search-white.png"></a></li>
         <li>
-          <form method="get" th:action="@{/show-tasks}">
-            <input type="text" class="search-string" name="search" placeholder="Search...">
+          <form method="get" th:action="@{/show-tasks/page/1}">
+            <input type="text" class="search-string" name="searchBy" placeholder="Search...">
           </form>
         </li>
       </ul>
@@ -45,11 +88,10 @@
   <div class="sorting-div">
     <button class="showSortedBybtn" type="button">Sort by▼</button>
     <div class="dropDown-show">
-      <a href="show-tasks">Name</a>
-      <a href="show-tasks?sortBy=status">Status</a>
-      <a href="show-tasks?sortBy=dueDate">Due date</a>
-      <a href="show-tasks?sortBy=priority">Priority</a>
-      <a th:href="@{${currentPage} + '?sortBy=priority'}">Priority2</a>
+      <a th:href="@{${pagination.getIndex()}}">Name</a>
+      <a th:href="@{${pagination.getIndex()} + '?sortBy=status'}">Status</a>
+      <a th:href="@{${pagination.getIndex()} + '?sortBy=due_date'}">Due date</a>
+      <a th:href="@{${pagination.getIndex()} + '?sortBy=priority'}">Priority</a>
     </div>
   </div>
 
@@ -61,9 +103,9 @@
       <th>Priority</th>
       <th>Delete task</th>
     </tr>
-    <tr th:each="task : ${service}">
+    <tr th:id="${task.id}" th:each="task : ${service}">
       <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">Task name</a></td>
-      <td th:text="${task.status}">Task status</td>
+      <td class="status" th:text="${task.status}">Task status</td>
       <td th:text="${task.dueDate}">Task due date</td>
       <td th:text="${task.priority}">Task priority</td>
       <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}" onclick="return confirm('Are you sure you want to delete this task')">Delete</a>
@@ -73,12 +115,36 @@
       <td>Nothing found</td>
     </tr>
   </table>
-  <div th:if="${totalPages > 1}">
+  <div th:if="${pagination.getPage()> 1}">
     <nav aria-label="Page navigation example">
         <ul class="pagination">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li th:each="i: ${#numbers.sequence(1, totalPages)}" class="page-item"><a class="page-link" th:href="@{${i}}">[[${i}]]</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          <li th:if="${pagination.getIndex() != 1}" class="page-item">
+            <a class="page-link" th:href="@{${pagination.getIndex() - 1}(sortBy=${sortSearch.sortBy},searchBy=${sortSearch.searchBy})} ">
+              Previous
+            </a>
+          </li>
+          <li th:if="${pagination.getIndex() == 1}" class="page-item disabled">
+            <a class="page-link" th:href="@{${pagination.getIndex() - 1}(sortBy=${sortSearch.sortBy},searchBy=${sortSearch.searchBy})} ">
+              Previous
+            </a>
+          </li>
+          <li th:each="pageNumber: ${#numbers.sequence(1, pagination.getPage())}"
+              class="page-item">
+            <a class="page-link"
+               th:href="@{${pageNumber}(sortBy=${sortSearch.sortBy},searchBy=${sortSearch.searchBy})}">
+              [[${pageNumber}]]
+            </a>
+          </li>
+          <li th:if="${pagination.getIndex() < pagination.getPage()}" class="page-item">
+            <a class="page-link" th:href="@{${pagination.getIndex() + 1}(sortBy=${sortSearch.sortBy},searchBy=${sortSearch.searchBy})} ">
+              Next
+            </a>
+          </li>
+          <li th:if="${pagination.getIndex() == pagination.getPage()}" class="page-item disabled">
+            <a class="page-link" th:href="@{${pagination.getIndex() + 1}(sortBy=${sortSearch.sortBy},searchBy=${sortSearch.searchBy})} ">
+              Next
+            </a>
+          </li>
       </ul>
     </nav>
   </div>

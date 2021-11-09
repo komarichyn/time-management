@@ -10,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -229,5 +232,28 @@ public class ITaskServiceTest {
         assertNotNull(task);
         assertNotNull(comment);
         assertEquals("New text", comment.getText());
+    }
+
+    @Test
+    @DisplayName("Positive loadTask")
+    void loadTaskPositive() {
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setIndex(1);
+        paginationDto.setSize(10);
+        String searchBy = null;
+        String sortBy = null;
+        Task task = new Task();
+        task.setId(1L);
+        Task task2 = new Task();
+        task2.setId(2L);
+        List<Task> list = new ArrayList<>();
+        list.add(task);
+        list.add(task2);
+        Page<Task> result = new PageImpl<>(list);
+        Page<Task> newResult;
+        when(taskDao.findAllBy(any(Pageable.class), anyString())).thenReturn(result);
+        newResult = taskService.loadTask(paginationDto, searchBy, sortBy);
+        assertNotNull(newResult);
+        verify(taskDao, atLeastOnce()).findAllBy(any(Pageable.class), anyString());
     }
 }

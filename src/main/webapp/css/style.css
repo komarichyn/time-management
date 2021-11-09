@@ -158,3 +158,8 @@ input, textarea, button, select {
 }
 
 .submit-button:hover {background-color: #e7e7e7;}
+
+.page-item {
+    /*pointer-events: none;*/
+    /*cursor: default;*/
+}

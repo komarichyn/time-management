@@ -46,6 +46,9 @@
       <td th:text="${task.dueDate}">t </td>
       <td th:text="${task.priority}">y</td>
     </tr>
+    <tr th:if="${#lists.isEmpty(lastFive)}">
+      <td>Nothing found</td>
+    </tr>
   </table>
 </div>
 </body>
