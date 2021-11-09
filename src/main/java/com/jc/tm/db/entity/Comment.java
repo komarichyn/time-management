@@ -1,6 +1,9 @@
 package com.jc.tm.db.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +12,9 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name =  "comment")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

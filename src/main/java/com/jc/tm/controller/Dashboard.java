@@ -1,15 +1,21 @@
 package com.jc.tm.controller;
 
-import com.jc.tm.Converter.Converter;
+import com.jc.tm.converter.Converter;
+import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.service.*;
+import com.jc.tm.service.CommentDto;
+import com.jc.tm.service.PaginationDto;
+import com.jc.tm.service.TaskDto;
+import com.jc.tm.service.TaskServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -19,12 +25,15 @@ import java.util.Collection;
 @Slf4j
 @Controller
 public class Dashboard {
-    @Autowired
-    private TaskServiceImpl service;
-    @Autowired
-    private Converter converter;
 
+    private final TaskServiceImpl service;
+    private final Converter converter;
 
+    @Autowired
+    public Dashboard(TaskServiceImpl service, Converter converter) {
+        this.service = service;
+        this.converter = converter;
+    }
 
     @GetMapping("/index")
     public String mainPage(Model model) {
@@ -72,6 +81,8 @@ public class Dashboard {
 
     @GetMapping("/create-task")
     public String create(Model model) {
+        Task task = new Task();
+        model.addAttribute("task", task);
         log.debug("create task page");
         return "create-task";
     }
@@ -86,7 +97,7 @@ public class Dashboard {
     @GetMapping("/task/{taskId}")
     public String getTaskById(Model model, @PathVariable long taskId) {
         Task task = service.getTask(taskId);
-        TaskDto taskDto = converter.TaskToTaskDto(task);
+        TaskDto taskDto = converter.taskToTaskDto(task);
         Collection<CommentDto> comments = taskDto.getComments();
         model.addAttribute("task", taskDto);
         model.addAttribute("comments", comments);
