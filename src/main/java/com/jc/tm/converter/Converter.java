@@ -1,4 +1,4 @@
-package com.jc.tm.Converter;
+package com.jc.tm.converter;
 
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
@@ -21,7 +21,7 @@ public class Converter {
         return date;
     }
 
-    public TaskDto TaskToTaskDto(Task task) {
+    public TaskDto taskToTaskDto(Task task) {
         TaskDto taskDto = new TaskDto();
         LocalDateTime created = task.getCreated();
         LocalDateTime dueDate = task.getDueDate();
@@ -29,8 +29,10 @@ public class Converter {
             String formattedDateCreated = dateConverter(created);
             taskDto.setCreated(formattedDateCreated);
         }
-        String formattedDateDueDate = dateConverter(created);
-        taskDto.setDueDate(formattedDateDueDate);
+        if (dueDate != null) {
+            String formattedDateDueDate = dateConverter(dueDate);
+            taskDto.setDueDate(formattedDateDueDate);
+        }
         taskDto.setId(task.getId());
         taskDto.setName(task.getName());
         taskDto.setDescription(task.getDescription());
@@ -44,13 +46,13 @@ public class Converter {
     public Collection<TaskDto> parsingTaskDataToTaskDTO(Collection<Task> tasks) {
         Collection<TaskDto> taskResult = new ArrayList<>();
         for (Task task : tasks) {
-            TaskDto taskDto = TaskToTaskDto(task);
+            TaskDto taskDto = taskToTaskDto(task);
             taskResult.add(taskDto);
         }
         return taskResult;
     }
 
-    private CommentDto CommentToCommentDto(Comment comment) {
+    private CommentDto commentToCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
         LocalDateTime dateCreated = comment.getCreated();
         if (dateCreated != null) {
@@ -66,7 +68,7 @@ public class Converter {
         Collection<CommentDto> commentResult = new ArrayList<>();
 
         for (Comment comment : comments) {
-            CommentDto commentDto = CommentToCommentDto(comment);
+            CommentDto commentDto = commentToCommentDto(comment);
             commentResult.add(commentDto);
         }
         return commentResult;

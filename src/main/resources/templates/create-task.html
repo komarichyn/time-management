@@ -31,12 +31,12 @@
 </div>
 <div class="main-page">
   <h1>Create task page</h1>
-  <form method="post" action="/add-task">
+  <form th:object="${task}" method="post" action="/add-task">
     <div class="input-string">
       <label class="name-string">
         Name
       </label>
-      <input type="text" name="name" class="input-data">
+      <input required type="text" name="name" class="input-data">
     </div>
     <div class="input-string">
       <label class="name-string">
@@ -48,8 +48,7 @@
       <label class="name-string">
         Status
       </label>
-      <select name="status">
-        <option value="" disabled selected>Choose status</option>
+      <select name="status" th:field="*{status}">
         <option value="TODO">To do</option>
         <option value="IN_PROGRESS">In progress</option>
         <option value="COMPLETE">Complete</option>
@@ -60,14 +59,13 @@
       <label class="name-string">
         Due date
       </label>
-      <input type="datetime-local" name="dueDate" placeholder="Enter due date"/>
+      <input type="datetime-local" name="dueDate" placeholder="Enter due date" th:field="*{dueDate}"/>
     </div>
     <div class="input-string">
       <label class="name-string">
         Priority
       </label>
-      <select name="priority">
-        <option value="" disabled selected>Choose priority</option>
+      <select name="priority" th:field="*{priority}">
         <option value="NORMAL">Normal</option>
         <option value="HIGH">High</option>
         <option value="LOW">Low</option>
