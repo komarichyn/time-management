@@ -53,15 +53,15 @@ class DashboardTest {
 
     @Test
     void shouldGetTaskById() throws Exception {
-        Comment comment1 = Comment.builder().id(1L).text("comment 1").created(LocalDateTime.now()).build();
-        Comment comment2 = Comment.builder().id(2L).text("comment 2").created(LocalDateTime.now()).build();
+        Comment comment1 = Comment.builder().setId(1L).setText("comment 1").setCreated(LocalDateTime.now()).build();
+        Comment comment2 = Comment.builder().setId(2L).setText("comment 2").setCreated(LocalDateTime.now()).build();
         List<Comment> comments = Arrays.asList(comment1, comment2);
 
-        Task foundTask = Task.builder().id(1L).name("test").description("some description")
-                .status(Status.TODO).priority(Priority.NORMAL)
-                .created(LocalDateTime.of(2021, 10, 19, 12, 25, 25))
-                .dueDate(LocalDateTime.of(2021, 11, 19, 12, 25, 25))
-                .comments(comments)
+        Task foundTask = Task.builder().setId(1L).setName("test").setDescription("some description")
+                .setStatus(Status.TODO).setPriority(Priority.NORMAL)
+                .setCreated(LocalDateTime.of(2021, 10, 19, 12, 25, 25))
+                .setDueDate(LocalDateTime.of(2021, 11, 19, 12, 25, 25))
+                .setComments(comments)
                 .build();
 
         doCallRealMethod().when(converter).taskToTaskDto(foundTask);
@@ -99,10 +99,9 @@ class DashboardTest {
 
     @Test
     void showEditTask() throws Exception {
-        Task showingTask = Task.builder().id(1L).name("test").description("some description")
-                .status(Status.TODO).priority(Priority.NORMAL)
-                .created(LocalDateTime.of(2021, 10, 19, 12, 25, 25))
-                .dueDate(LocalDateTime.of(2021, 11, 19, 12, 25, 25))
+        Task showingTask = Task.builder().setId(1L).setName("test").setDescription("some description").setStatus(Status.TODO).setPriority(Priority.NORMAL)
+                .setCreated(LocalDateTime.of(2021, 10, 19, 12, 25, 25))
+                .setDueDate(LocalDateTime.of(2021, 11, 19, 12, 25, 25))
                 .build();
 
         when(taskServiceMock.getTask(1L)).thenReturn(showingTask);
