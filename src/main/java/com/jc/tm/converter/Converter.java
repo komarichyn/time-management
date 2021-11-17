@@ -39,7 +39,7 @@ public class Converter {
         taskDto.setStatus(task.getStatus());
         taskDto.setPriority(task.getPriority());
         taskDto.setComments(parsingCommentDataToCommentDTO(task.getComments()));
-
+        taskDto.setProgress(task.getProgress());
         return taskDto;
     }
 

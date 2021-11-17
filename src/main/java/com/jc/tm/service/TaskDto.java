@@ -17,4 +17,5 @@ public class TaskDto {
     private Status status;
     private String dueDate;
     private Priority priority = Priority.NORMAL;
+    private int progress;
 }
