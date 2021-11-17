@@ -34,8 +34,9 @@ public class Task implements Serializable {
     @Enumerated(EnumType.STRING)
     //default priority for any task is normal
     private Priority priority = Priority.NORMAL;
+    private int progress;
 
-    public static TaskBuilder builder(){
+    public static TaskBuilder builder() {
         return new TaskBuilder();
     }
 
@@ -83,6 +84,11 @@ public class Task implements Serializable {
 
         public TaskBuilder setPriority(Priority priority) {
             task.priority = priority;
+            return this;
+        }
+
+        public TaskBuilder setProgress(int progress) {
+            task.progress = progress;
             return this;
         }
 

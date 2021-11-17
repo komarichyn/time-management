@@ -49,12 +49,14 @@
                     <hr>
                     <h6><u>Description</u></h6>
                     <p th:utext="${task.description}"></p>
-                    <div class="container" style="margin-top: 29%;">
+                    <div class="container" style="margin-top: 20%;">
                         <dl class="row">
                             <dt class="col-6">Due date :</dt>
                             <dd class="col-6" th:utext="${task.dueDate}"></dd>
                             <dt class="col-6">Status :</dt>
                             <dd class="col-6" th:utext="${task.status}"></dd>
+                            <dt class="col-6">Progress :</dt>
+                            <dd class="col-6" th:utext="${task.progress} +'%'"></dd>
                             <dt class="col-6">Priority :</dt>
                             <dd class="col-6" th:utext="${task.priority}"></dd>
                         </dl>
