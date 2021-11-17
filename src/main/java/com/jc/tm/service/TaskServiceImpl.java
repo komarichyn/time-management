@@ -79,11 +79,13 @@ public class TaskServiceImpl implements ITaskService {
             oldTask.setDescription(freshTask.getDescription());
             oldTask.setDueDate(freshTask.getDueDate());
             oldTask.setProgress(freshTask.getProgress());
-            if(freshTask.getProgress() >= 10 && oldTask.getStatus() == Status.TODO) {
+            if (freshTask.getProgress() >= 10 && oldTask.getStatus() == Status.TODO) {
                 oldTask.setStatus(Status.IN_PROGRESS);
             }
-            if(freshTask.getProgress() == 100 && oldTask.getStatus() == Status.IN_PROGRESS){
-                oldTask.setStatus(Status.COMPLETE);
+            if (freshTask.getProgress() == 100) {
+                if (oldTask.getStatus() == Status.IN_PROGRESS || oldTask.getStatus() == Status.PAUSE) {
+                    oldTask.setStatus(Status.COMPLETE);
+                }
             }
             taskDao.save(oldTask);
         }
@@ -342,7 +344,7 @@ public class TaskServiceImpl implements ITaskService {
 
     private String checkSortBy(String sortBy) {
         log.debug("Check sortBy={}", sortBy);
-        if (sortBy == null || sortBy.isBlank()){
+        if (sortBy == null || sortBy.isBlank()) {
             return this.sortedByNameASCTasks();
         } else if (sortBy.equals("status")) {
             return this.sortedByStatusASCTasks();
@@ -356,7 +358,7 @@ public class TaskServiceImpl implements ITaskService {
 
     private String checkSearchBy(String searchBy) {
         log.debug("Check searchBy={}", searchBy);
-        if(searchBy == null || searchBy.isBlank()) {
+        if (searchBy == null || searchBy.isBlank()) {
             return "";
         }
         return searchBy;
