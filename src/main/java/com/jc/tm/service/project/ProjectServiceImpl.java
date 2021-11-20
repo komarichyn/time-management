@@ -21,6 +21,7 @@ public class ProjectServiceImpl implements IProjectService {
     public Project saveProject(Project newProject) {
         log.info("saveProject input values:{}", newProject);
         newProject = projectDao.save(newProject);
+//        newProject = projectDao.save(newProject);
         return newProject;
     }
 }

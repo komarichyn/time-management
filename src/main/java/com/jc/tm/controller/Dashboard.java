@@ -3,11 +3,13 @@ package com.jc.tm.controller;
 import com.jc.tm.converter.Converter;
 import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.CommentDto;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskDto;
 import com.jc.tm.service.TaskServiceImpl;
+import com.jc.tm.service.project.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,11 +29,13 @@ public class Dashboard {
     private final int pageSize = 10;
 
     private final TaskServiceImpl service;
+    private final ProjectServiceImpl projectService;
     private final Converter converter;
 
     @Autowired
-    public Dashboard(TaskServiceImpl service, Converter converter) {
+    public Dashboard(TaskServiceImpl service, ProjectServiceImpl projectService, Converter converter) {
         this.service = service;
+        this.projectService = projectService;
         this.converter = converter;
     }
 
@@ -66,6 +70,17 @@ public class Dashboard {
         model.addAttribute("pagination", paginationDto);
         model.addAttribute("sortSearch", sortnSearch);
         model.addAttribute("service", result);
+
+//        Task task = new Task();
+//        task.setId(900L);
+//        task.setName("900");
+//        service.saveTask(task);
+
+        Project project = new Project();
+        project.setId(1L);
+        project.setName("New project");
+        projectService.saveProject(project);
+
         return "show-tasks";
     }
 

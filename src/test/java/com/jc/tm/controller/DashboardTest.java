@@ -39,10 +39,10 @@ class DashboardTest {
     @MockBean
     private Converter converter;
 
-    @Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new Dashboard(taskServiceMock, converter)).build();
-    }
+//    @Before
+//    public void setUp() {
+//        mockMvc = MockMvcBuilders.standaloneSetup(new Dashboard(taskServiceMock, converter)).build();
+//    }
 
     private String dateConverter(LocalDateTime time) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
