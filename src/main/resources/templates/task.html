@@ -7,36 +7,38 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/task.css">
 </head>
 <body>
-<div class="toolbar-container">
-    <div class="toolbar">
-        <div class="logo">
-            <a href="/index">
-                <img src="/img/site-icon.ico">
-            </a>
-        </div>
-        <nav class="site-menu">
-            <ul class="toolbar-links">
-                <li><a href="/create-task">Create task</a></li>
-                <li><a href="/show-tasks/page/1">Show tasks</a></li>
-                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
-                                                                                      src="/img/search-white.png"></a>
-                </li>
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary">Time management</a></li>
+                <li><a href="/create-task" class="nav-link px-2 text-white">Create task</a></li>
+                <li><a href="/show-tasks/page/1" class="nav-link px-2 text-white">Task list</a></li>
                 <li>
-                    <form method="get" th:action="@{/show-tasks}">
-                        <input type="text" class="search-string" name="search" placeholder="Search...">
+                    <form method="post" action="/add-task">
+                        <div>
+                            <input required type="text" name="name" class="form-control form-control-dark" placeholder="Quick create task...">
+                        </div>
                     </form>
                 </li>
             </ul>
-        </nav>
+            <form method="get" th:action="@{/show-tasks/page/1}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="text" name="searchBy" class="form-control form-control-dark" placeholder="Search..."
+                       aria-label="Search">
+            </form>
+        </div>
     </div>
-</div>
-<div>
-    <h6>Task page</h6>
-    <h6><a th:href="@{/show-tasks/page/1}">Back to tasks</a></h6>
+</header>
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/show-tasks/page/1}">Back to task list</a></li>
+            <li class="breadcrumb-item active" th:text="${task.name}"></li>
+        </ol>
+    </nav>
 </div>
 <div th:if="${task}" class="container-xl">
     <div class="container">

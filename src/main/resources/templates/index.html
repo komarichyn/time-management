@@ -1,63 +1,78 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Timemanagement</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css"
-        rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Time management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF"
+          crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<div class="toolbar-container">
-  <div class="toolbar">
-    <div class="logo">
-      <a href="index">
-        <img src="img/site-icon.ico">
-      </a>
-    </div>
-    <nav class="site-menu">
-      <ul class="toolbar-links">
-        <li><a href="/create-task">Create task</a></li>
-        <li><a href="/show-tasks/page/1">Show tasks</a></li>
-        <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button" src="/img/search-white.png"></a></li>
-        <li>
-          <form method="get" th:action="@{/show-tasks}">
-            <input type="text" class="search-string" name="search" placeholder="Search...">
-          </form>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</div>
-<div class="main-page">
-  <h1>This page show last five task sorting with due date</h1>
-  <table class="table-list">
-    <tr>
-      <th>Name</th>
-      <th>Created</th>
-      <th>Status</th>
-      <th>Progress</th>
-      <th>Due date</th>
-      <th>Priority</th>
-    </tr>
-    <tr th:each="task : ${lastFive}">
-      <td th:text="${task.name}">q</td>
-      <td th:text="${task.created}">e</td>
-      <td th:text="${task.status}">r</td>
-      <td>
-        <div class="progress">
-          <div class="progress-bar" role="progressbar" th:attr="aria-valuenow=${task.progress}"
-               th:style="'width:'+ ${task.progress} +'%'"
-               aria-valuemin="0" aria-valuemax="100" th:text="${task.progress} +'%'"></div>
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary">Time management</a></li>
+                <li><a href="/create-task" class="nav-link px-2 text-white">Create task</a></li>
+                <li><a href="/show-tasks/page/1" class="nav-link px-2 text-white">Task list</a></li>
+                <li>
+                    <form method="post" action="/add-task">
+                        <div>
+                            <input required type="text" name="name" class="form-control form-control-dark"
+                                   placeholder="Quick create task...">
+                        </div>
+                    </form>
+                </li>
+            </ul>
+            <form method="get" th:action="@{/show-tasks/page/1}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="text" name="searchBy" class="form-control form-control-dark" placeholder="Search..."
+                       aria-label="Search">
+            </form>
+
         </div>
-      </td>
-      <td th:text="${task.dueDate}">t </td>
-      <td th:text="${task.priority}">y</td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(lastFive)}">
-      <td>Nothing found</td>
-    </tr>
-  </table>
+    </div>
+</header>
+<div class="container">
+    <h3>
+        Five tasks
+        <small class="text-muted">Sorted by due date</small>
+    </h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Created</th>
+            <th scope="col">Status</th>
+            <th scope="col">Progress</th>
+            <th scope="col">Due date</th>
+            <th scope="col">Priority</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="task : ${lastFive}">
+            <td th:text="${task.name}">q</td>
+            <td th:text="${task.created}">e</td>
+            <td th:text="${task.status}">r</td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" th:attr="aria-valuenow=${task.progress}"
+                         th:style="'width:'+ ${task.progress} +'%'"
+                         aria-valuemin="0" aria-valuemax="100" th:text="${task.progress} +'%'"></div>
+                </div>
+            </td>
+            <td th:text="${task.dueDate}">t</td>
+            <td th:text="${task.priority}">y</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(lastFive)}">
+            <td>Nothing found</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
 </body>
 </html>
