@@ -8,10 +8,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/task.css">
+    <script>
+        $(document).ready(function () {
+            $("#addCommentModal").on('shown.bs.modal', function () {
+                $(this).find('#addComment').focus();
+            });
+        });
+    </script>
 </head>
 <body>
 <header class="p-3 bg-dark text-white">
-    <div class="container">
+    <div class="container-fluid">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="/" class="nav-link px-2 text-secondary">Time management</a></li>
@@ -20,7 +27,8 @@
                 <li>
                     <form method="post" action="/add-task">
                         <div>
-                            <input required type="text" name="name" class="form-control form-control-dark" placeholder="Quick create task...">
+                            <input required type="text" name="name" class="form-control form-control-dark"
+                                   placeholder="Quick create task..." style="margin-left: 15px">
                         </div>
                     </form>
                 </li>
@@ -73,6 +81,7 @@
                                 data-target="#addCommentModal">Add comment
                         </button>
                     </div>
+                    <!--comment add modal-->
                     <div class="modal fade" id="addCommentModal" data-backdrop="true">
                         <form th:action="@{/task/{taskId}/added-comment(taskId=${task.id})}"
                               th:object="${task}" method="Post">
@@ -85,9 +94,10 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <textarea type="text" name="text" class="form-control"></textarea>
+                                            <label for="addComment"></label>
+                                            <textarea type="text" name="text" class="form-control"
+                                                      id="addComment"></textarea>
                                         </div>
-
                                     </div>
                                     <div class="modal-footer">
                                         </button>
@@ -119,7 +129,7 @@
                                 </div>
                                 <!--   Modals for comment  -->
                                 <div class="modal fade" id="editCommentModal" data-backdrop="true"
-                                     th:attrappend="id=${comment.id}">>
+                                     th:attrappend="id=${comment.id}">
                                     <form th:action="@{/task/{taskId}/edit-comment/{commentId}(taskId=${task.id}, commentId=${comment.id})}"
                                           th:object="${comment}" method="Post">
                                         <div class="modal-dialog">
