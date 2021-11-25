@@ -21,7 +21,8 @@
                     <form method="post" action="/add-task">
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
-                                   placeholder="Quick create task..." style="margin-left: 15px">
+                                   placeholder="Quick create task..." style="margin-left: 15px"
+                                   pattern="[A-Za-z0-9+-=/*!@#%()?]+">
                         </div>
                     </form>
                 </li>
@@ -39,6 +40,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a th:href="@{/show-tasks/page/1}">Back to task list</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}"></a></li>
                 <li class="breadcrumb-item active">Update task - <span th:text="${task.name}"></span></li>
             </ol>
         </nav>

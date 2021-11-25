@@ -28,7 +28,8 @@
                     <form method="post" action="/add-task">
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
-                                   placeholder="Quick create task..." style="margin-left: 15px">
+                                   placeholder="Quick create task..." style="margin-left: 15px"
+                                   pattern="[A-Za-z0-9+-=/*!@#%()?]+">
                         </div>
                     </form>
                 </li>
@@ -140,8 +141,9 @@
                                                             aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                        <textarea class="form-control" name="text" id="editComment"
-                                                                  th:text="*{text}"></textarea>
+                                                    <label for="editComment"></label>
+                                                    <textarea class="form-control" name="text" id="editComment"
+                                                              th:text="*{text}"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
                                                     </button>

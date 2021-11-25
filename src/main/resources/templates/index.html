@@ -20,7 +20,8 @@
                     <form method="post" action="/add-task">
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
-                                   placeholder="Quick create task..." style="margin-left: 15px">
+                                   placeholder="Quick create task..." style="margin-left: 15px"
+                                   pattern="[A-Za-z0-9+-=/*!@#%()?]+">
                         </div>
                     </form>
                 </li>
@@ -35,8 +36,8 @@
 </header>
 <div class="container">
     <h3>
-        Five tasks
-        <small class="text-muted">Sorted by due date</small>
+        Five tasks -
+        <small class="text-muted">sorted by due date</small>
     </h3>
     <table class="table">
         <thead>
