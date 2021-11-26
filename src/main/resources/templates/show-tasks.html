@@ -90,7 +90,6 @@
     </div>
 </header>
 <div class="container">
-    <!--TODO sort button-->
     <div class="dropdown sortBy">
         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
@@ -128,7 +127,7 @@
                 </div>
             </td>
             <td th:text="${task.dueDate}">Task due date</td>
-            <td class="priority" th:text="${task.priority}">Task priority</td>
+            <td><span class="badge" th:text="${task.priority}">task priority</span></td>
             <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}"
                    onclick="return confirm('Are you sure you want to delete this task')">Delete</a>
             </td>
@@ -177,13 +176,7 @@
         </nav>
     </div>
 </div>
-<script>
-        $('.priority:contains("NORMAL")').css('color', 'green');
-        $('.priority:contains("HIGH")').css('color', 'red');
-        $('.priority:contains("LOW")').css('color', 'yellow');
-        $('.priority:contains("PAUSE")').css('color', 'blue');
-
-</script>
+<script src="/js/priority-badge.js" ></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
         integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
         crossorigin="anonymous"></script>
