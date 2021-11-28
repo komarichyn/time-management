@@ -15,6 +15,13 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function () {
+            $("#editCommentModal").on('shown.bs.modal', function () {
+                $(this).find('#editComment').focus();
+            });
+        });
+    </script>
 </head>
 <body>
 <header class="p-3 bg-dark text-white">
@@ -29,7 +36,7 @@
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
                                    placeholder="Quick create task..." style="margin-left: 15px"
-                                   pattern="[A-Za-z0-9+-=/*!@#%()?]+">
+                                   oninput="noFirstSpace(this)">
                         </div>
                     </form>
                 </li>
@@ -100,9 +107,9 @@
                                         <div class="mb-3">
                                             <label for="addComment"></label>
                                             <textarea type="text" name="text" class="form-control"
-                                                      id="addComment" required></textarea>
+                                                      id="addComment" oninput="noFirstSpace(this)" required></textarea>
                                             <div class="invalid-feedback">
-                                                Please enter a comment
+                                                Please enter comment
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">add comment</button>
@@ -151,7 +158,7 @@
                                                         <label for="editComment"></label>
                                                         <textarea type="text" name="text" class="form-control"
                                                                   th:text="*{text}"
-                                                                  id="editComment" required></textarea>
+                                                                  id="editComment" oninput="noFirstSpace(this)" required></textarea>
                                                         <div class="invalid-feedback">
                                                             Please enter a comment
                                                         </div>
@@ -211,7 +218,13 @@
     </div>
 </div>
 </div>
-<script src="/js/modal-validation.js"></script>
+<script>
+    function noFirstSpace(input) {
+        if (/^\s/.test(input.value))
+            input.value = ''
+    }
+</script>
+<script src="/js/form-validation.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>

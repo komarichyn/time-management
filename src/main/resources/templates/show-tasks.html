@@ -76,7 +76,7 @@
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
                                    placeholder="Quick create task..." style="margin-left: 15px"
-                                   pattern="[A-Za-z0-9+-=/*!@#%()?]+">
+                                   oninput="noFirstSpace(this)">
                         </div>
                     </form>
                 </li>
@@ -176,6 +176,12 @@
         </nav>
     </div>
 </div>
+<script>
+    function noFirstSpace(input) {
+        if (/^\s/.test(input.value))
+            input.value = ''
+    }
+</script>
 <script src="/js/priority-badge.js" ></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
         integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"

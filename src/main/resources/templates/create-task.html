@@ -22,7 +22,7 @@
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
                                    placeholder="Quick create task..." style="margin-left: 15px"
-                                   pattern="[A-Za-z0-9+-=/*!@#%()?]+">
+                                   oninput="noFirstSpace(this)">
                         </div>
                     </form>
                 </li>
@@ -48,7 +48,7 @@
             <div class="col-md-5 mb-3">
                 <label for="taskName">Task name</label>
                 <input type="text" name="name" id="taskName" class="form-control" placeholder="Task..." required
-                       pattern="[A-Za-z0-9+-=/*!@#%()?]+">
+                       oninput="noFirstSpace(this)">
                 <div class="invalid-feedback">
                     Please enter task name.
                 </div>
@@ -78,6 +78,12 @@
         </form>
     </div>
 </div>
+<script>
+    function noFirstSpace(input) {
+        if (/^\s/.test(input.value))
+            input.value = ''
+    }
+</script>
 <script src="js/form-validation.js"></script>
 </body>
 </html>
