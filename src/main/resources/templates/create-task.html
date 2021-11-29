@@ -19,13 +19,14 @@
         <nav class="site-menu">
             <ul class="toolbar-links">
                 <li><a href="/create-task">Create task</a></li>
+                <li><a href="/create-project">Create project</a></li>
                 <li><a href="/show-tasks/page/1">Show tasks</a></li>
                 <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
                                                                                       src="/img/search-white.png"></a>
                 </li>
                 <li>
-                    <form method="get" th:action="@{/show-tasks}">
-                        <input type="text" class="search-string" name="search" placeholder="Search...">
+                    <form method="get" th:action="@{/show-tasks/page/1}">
+                        <input type="text" class="search-string" name="searchBy" placeholder="Search...">
                     </form>
                 </li>
             </ul>
@@ -73,6 +74,18 @@
                 <option value="HIGH">High</option>
                 <option value="LOW">Low</option>
                 <option value="PAUSE">Pause</option>
+            </select>
+        </div>
+        <div class="input-string">
+            <label class="name-string">
+                Add project
+            </label>
+            <select th:field="*{projects}">
+                <option value="">Choose project</option>
+
+                <option th:value="${project.id}" th:each="project : ${projects}">
+                    <label th:value="${project.id}" th:text="${project.name}">Project name</label>
+                </option>
             </select>
         </div>
         <div class="submit-button-div">

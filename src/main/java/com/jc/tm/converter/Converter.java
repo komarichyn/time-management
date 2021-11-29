@@ -1,6 +1,7 @@
 package com.jc.tm.converter;
 
 import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.CommentDto;
 import com.jc.tm.service.TaskDto;
@@ -23,6 +24,7 @@ public class Converter {
 
     public TaskDto taskToTaskDto(Task task) {
         TaskDto taskDto = new TaskDto();
+        var project = task.getProjects();
         LocalDateTime created = task.getCreated();
         LocalDateTime dueDate = task.getDueDate();
         if (created != null) {
@@ -40,6 +42,7 @@ public class Converter {
         taskDto.setPriority(task.getPriority());
         taskDto.setComments(parsingCommentDataToCommentDTO(task.getComments()));
         taskDto.setProgress(task.getProgress());
+        taskDto.setProject(project);
         return taskDto;
     }
 

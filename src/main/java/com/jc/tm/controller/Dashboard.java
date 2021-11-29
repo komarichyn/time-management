@@ -17,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * this class is controller and it merge database with UI
@@ -87,6 +89,8 @@ public class Dashboard {
     @GetMapping("/create-task")
     public String create(Model model) {
         Task task = new Task();
+        var projects = projectService.loadProject();
+        model.addAttribute("projects", projects);
         model.addAttribute("task", task);
         log.debug("create task page");
         return "create-task";
@@ -168,5 +172,20 @@ public class Dashboard {
         log.debug("Delete comment with id={} in task with id={}", commentId, taskId);
         service.removeComment(commentId);
         return "redirect:/task/" + taskId;
+    }
+
+    @GetMapping("/create-project")
+    public String createProject(Model model) {
+        Project project = new Project();
+        model.addAttribute("project", project);
+        log.info("Create project page");
+        return "create-project";
+    }
+
+    @PostMapping("/add-project")
+    public String addProject(@ModelAttribute Project project) {
+        log.info("Add project page. Project={}", project);
+        projectService.saveProject(project);
+        return "redirect:/create-task";
     }
 }

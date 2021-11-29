@@ -16,8 +16,8 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany
-    @JoinColumn(name = "task_id")
+//    @ManyToMany(mappedBy = "projects") //TODO many to one
+    @OneToMany(mappedBy = "projects")
     private List<Task> tasks;
     private String name;
 }
