@@ -2,8 +2,10 @@ package com.jc.tm.service;
 
 import com.jc.tm.db.Status;
 import com.jc.tm.db.dao.jpa.CommentDao;
+import com.jc.tm.db.dao.jpa.ProjectDao;
 import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +30,13 @@ public class TaskServiceImpl implements ITaskService {
 
     private final TaskDao taskDao;
     private final CommentDao commentDao;
+    private final ProjectDao projectDao;
 
     @Autowired
-    public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao) {
+    public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao, ProjectDao projectDao) {
         this.taskDao = taskDao;
         this.commentDao = commentDao;
+        this.projectDao = projectDao;
     }
 
     @Override
@@ -79,6 +83,7 @@ public class TaskServiceImpl implements ITaskService {
             oldTask.setDescription(freshTask.getDescription());
             oldTask.setDueDate(freshTask.getDueDate());
             oldTask.setProgress(freshTask.getProgress());
+            oldTask.setProjects(freshTask.getProjects());
             if (freshTask.getProgress() >= 10 && oldTask.getStatus() == Status.TODO) {
                 oldTask.setStatus(Status.IN_PROGRESS);
             }
@@ -171,6 +176,19 @@ public class TaskServiceImpl implements ITaskService {
         commentDao.save(newComment);
         return task;
     }
+
+//    @Override
+//    public Task addProject(Task task, Project project) {
+//        log.info("It work");
+//        List<Project> projects = new ArrayList<>();
+//        List<Task> tasks = new ArrayList<>();
+//        tasks.add(task);
+//        projects.add(project);
+////        task.setProjects(projects);
+////        project.setTasks(tasks);
+//        projectDao.save(project);
+//        return task;
+//    }
 
     @Override
     public Comment removeComment(Long id) {

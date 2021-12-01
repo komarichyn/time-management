@@ -96,6 +96,15 @@
                     <option value="100">100%</option>
                 </select>
             </div>
+            <div class="col-md-5 mb-3">
+                <label>Project</label>
+                <select class="form-select" name="project" th:field="*{projects}">
+                    <option value="">Choose project</option>
+                    <option th:value="${project.id}" th:each="project : ${projects}">
+                        <label th:value="${project.id}" th:text="${project.name}">Project name</label>
+                    </option>
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
