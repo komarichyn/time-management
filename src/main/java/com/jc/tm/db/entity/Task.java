@@ -35,6 +35,9 @@ public class Task implements Serializable {
     //default priority for any task is normal
     private Priority priority = Priority.NORMAL;
     private int progress;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project projects;
 
     public static TaskBuilder builder() {
         return new TaskBuilder();

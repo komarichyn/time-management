@@ -30,9 +30,9 @@ public class H2Config {
         return dataSource;
     }
 
-    @Bean
-    public ITaskService taskService(TaskDao taskDao, CommentDao commentDao){
-        return new TaskServiceImpl(taskDao, commentDao);
-    }
+//    @Bean
+//    public ITaskService taskService(TaskDao taskDao, CommentDao commentDao){
+//        return new TaskServiceImpl(taskDao, commentDao);
+//    }
 
 }

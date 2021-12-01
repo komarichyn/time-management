@@ -2,6 +2,7 @@ package com.jc.tm.service;
 
 import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Project;
 import lombok.Data;
 
 import java.util.Collection;
@@ -18,4 +19,5 @@ public class TaskDto {
     private String dueDate;
     private Priority priority = Priority.NORMAL;
     private int progress;
+    private String projectName;
 }

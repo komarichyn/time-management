@@ -2,6 +2,7 @@ package com.jc.tm.service;
 
 import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
 import org.springframework.data.domain.Page;
 
@@ -67,6 +68,9 @@ public interface ITaskService {
     public Collection<Task> loadTasksByAskPriority(PaginationDto page);
     public Task addComment(Long taskId, Comment newComment) ;
     public Task addComment(Task task, Comment newComment) ;
+
+//    Task addProject(Task task, Project project);
+
     public Comment removeComment(Long id) ;
     public Comment removeComment(Comment comment) ;
     public Comment updateComment(Comment freshComment) ;

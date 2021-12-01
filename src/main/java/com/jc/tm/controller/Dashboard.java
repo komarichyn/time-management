@@ -3,18 +3,19 @@ package com.jc.tm.controller;
 import com.jc.tm.converter.Converter;
 import com.jc.tm.db.Status;
 import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.CommentDto;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskDto;
 import com.jc.tm.service.TaskServiceImpl;
+import com.jc.tm.service.project.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
+
 import java.util.Collection;
 
 /**
@@ -27,11 +28,13 @@ public class Dashboard {
     private final int pageSize = 10;
 
     private final TaskServiceImpl service;
+    private final ProjectServiceImpl projectService;
     private final Converter converter;
 
     @Autowired
-    public Dashboard(TaskServiceImpl service, Converter converter) {
+    public Dashboard(TaskServiceImpl service, ProjectServiceImpl projectService, Converter converter) {
         this.service = service;
+        this.projectService = projectService;
         this.converter = converter;
     }
 
@@ -66,14 +69,17 @@ public class Dashboard {
         model.addAttribute("pagination", paginationDto);
         model.addAttribute("sortSearch", sortnSearch);
         model.addAttribute("service", result);
+
         return "show-tasks";
     }
 
     @GetMapping("/create-task")
     public String create(Model model) {
-        Task task = new Task();
-        model.addAttribute("task", task);
         log.debug("create task page");
+        Task task = new Task();
+        var projects = projectService.loadProject();
+        model.addAttribute("projects", projects);
+        model.addAttribute("task", task);
         return "create-task";
     }
 
@@ -99,8 +105,10 @@ public class Dashboard {
     @GetMapping(value = {"/task/edit/{taskId}"})
     public String showEditTask(Model model, @PathVariable long taskId) {
         log.debug("Change task with id={}", taskId);
+        var projects = projectService.loadProject();
         Task task = service.getTask(taskId);
         model.addAttribute("task", task);
+        model.addAttribute("projects", projects);
         return "update-task";
     }
 
@@ -153,5 +161,20 @@ public class Dashboard {
         log.debug("Delete comment with id={} in task with id={}", commentId, taskId);
         service.removeComment(commentId);
         return "redirect:/task/" + taskId;
+    }
+
+    @GetMapping("/create-project")
+    public String createProject(Model model) {
+        log.debug("Create project page");
+        Project project = new Project();
+        model.addAttribute("project", project);
+        return "create-project";
+    }
+
+    @PostMapping("/add-project")
+    public String addProject(@ModelAttribute Project project) {
+        log.debug("Add project page. Project={}", project);
+        projectService.saveProject(project);
+        return "redirect:/create-task";
     }
 }

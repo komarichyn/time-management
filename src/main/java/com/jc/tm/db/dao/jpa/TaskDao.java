@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskDao extends BaseDao<Task, Long> {
 
-    Page<Task> findAll(Pageable pageable) ;
+    Page<Task> findAll(Pageable pageable);
     @Query(value = "select * from Task task where task.name like %:search%", nativeQuery = true)
     Page<Task> findAllBy(Pageable pageable, @Param("search") String search);
 }
