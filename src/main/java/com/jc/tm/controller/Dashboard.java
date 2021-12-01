@@ -73,16 +73,6 @@ public class Dashboard {
         model.addAttribute("sortSearch", sortnSearch);
         model.addAttribute("service", result);
 
-//        Task task = new Task();
-//        task.setId(900L);
-//        task.setName("900");
-//        service.saveTask(task);
-
-        Project project = new Project();
-        project.setId(1L);
-        project.setName("New project");
-        projectService.saveProject(project);
-
         return "show-tasks";
     }
 
