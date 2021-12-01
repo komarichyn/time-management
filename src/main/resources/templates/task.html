@@ -8,13 +8,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/task.css">
-    <script>
-        $(document).ready(function () {
-            $("#addCommentModal").on('shown.bs.modal', function () {
-                $(this).find('#addComment').focus();
-            });
-        });
-    </script>
 </head>
 <body>
 <header class="p-3 bg-dark text-white">
@@ -28,7 +21,8 @@
                     <form method="post" action="/add-task">
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
-                                   placeholder="Quick create task..." style="margin-left: 15px">
+                                   placeholder="Quick create task..." style="margin-left: 15px"
+                                   oninput="noFirstSpace(this)">
                         </div>
                     </form>
                 </li>
@@ -76,36 +70,40 @@
             <div class="col-6 dc">
                 <div class="block">
                     <div>
-                        <h2 style="display: inline">Comments </h2>
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                        <h2 style="display: inline">Comments(<span
+                                th:text="${#lists.size(task.comments)}">[comments.size]</span>)
+                        </h2>
+                        <button type="button" class="btn btn-primary btn-sm " data-toggle="modal"
                                 data-target="#addCommentModal">Add comment
                         </button>
                     </div>
                     <!--comment add modal-->
-                    <div class="modal fade" id="addCommentModal" data-backdrop="true">
-                        <form th:action="@{/task/{taskId}/added-comment(taskId=${task.id})}"
-                              th:object="${task}" method="Post">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" style="color: black">your comment</h5>
-                                        <button type="button" class="btn-close" data-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
+                    <div class="modal fade" id="addCommentModal" tabindex="-1" aria-labelledby="addCommentLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addCommentLabel">add comment</h5>
+                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form th:action="@{/task/{taskId}/added-comment(taskId=${task.id})}"
+                                          th:object="${task}" method="Post" class="needs-validation" novalidate>
                                         <div class="mb-3">
                                             <label for="addComment"></label>
                                             <textarea type="text" name="text" class="form-control"
-                                                      id="addComment"></textarea>
+                                                      id="addComment" oninput="noFirstSpace(this)" autofocus
+                                                      required></textarea>
+                                            <div class="invalid-feedback">
+                                                Please enter comment
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        </button>
                                         <button type="submit" class="btn btn-primary">add comment</button>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
                     <hr>
                     <div style="height: 310px; overflow:auto;" class="promo row">
@@ -127,35 +125,46 @@
                                     </button>
 
                                 </div>
-                                <!--   Modals for comment  -->
-                                <div class="modal fade" id="editCommentModal" data-backdrop="true"
-                                     th:attrappend="id=${comment.id}">
-                                    <form th:action="@{/task/{taskId}/edit-comment/{commentId}(taskId=${task.id}, commentId=${comment.id})}"
-                                          th:object="${comment}" method="Post">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" style="color: black">Edit comment</h5>
-                                                    <button type="button" class="btn-close" data-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                        <textarea class="form-control" name="text" id="editComment"
-                                                                  th:text="*{text}"></textarea>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    </button>
-                                                    <button type="submit" class="btn btn-primary">save comment</button>
-                                                </div>
+                                <!--   Modals for comment edit  -->
+                                <div class="modal fade" id="editCommentModal" tabindex="-1"
+                                     aria-labelledby="editCommentLabel"
+                                     aria-hidden="true" th:attrappend="id=${comment.id}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editCommentLabel">edit comment</h5>
+                                                <button type="button" class="btn-close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form th:action="@{/task/{taskId}/edit-comment/{commentId}(taskId=${task.id}, commentId=${comment.id})}"
+                                                      th:object="${comment}" method="Post" class="needs-validation"
+                                                      novalidate>
+                                                    <div class="mb-3">
+                                                        <label for="editComment"></label>
+                                                        <textarea type="text" name="text" class="form-control"
+                                                                  th:text="*{text}"
+                                                                  id="editComment" oninput="noFirstSpace(this)"
+                                                                  autofocus required
+                                                                  onfocus="this.selectionStart = this.selectionEnd = this.value.length;">
+                                                        </textarea>
+                                                        <div class="invalid-feedback">
+                                                            Please enter a comment
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">edit comment</button>
+                                                </form>
                                             </div>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
+                                <!--   Modals for delete comment  -->
                                 <div class="modal fade" id="deleteCommentModal" data-backdrop="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" style="color: black">Confirm delete comment</h5>
+                                                <h5 class="modal-title">Confirm delete comment</h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -199,6 +208,14 @@
     </div>
 </div>
 </div>
+<script>
+    function noFirstSpace(input) {
+        if (/^\s/.test(input.value))
+            input.value = ''
+    }
+</script>
+<script src="/js/form-validation.js"></script>
+<script src="/js/modal-autofocus.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>

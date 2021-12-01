@@ -22,7 +22,8 @@
                     <form method="post" action="/add-task">
                         <div>
                             <input required type="text" name="name" class="form-control form-control-dark"
-                                   placeholder="Quick create task..." style="margin-left: 15px">
+                                   placeholder="Quick create task..." style="margin-left: 15px"
+                                   oninput="noFirstSpace(this)">
                         </div>
                     </form>
                 </li>
@@ -47,7 +48,8 @@
         <form th:object="${task}" method="post" action="/add-task" class="needs-validation" novalidate>
             <div class="col-md-5 mb-3">
                 <label for="taskName">Task name</label>
-                <input type="text" name="name" id="taskName" class="form-control" placeholder="Task..." required>
+                <input type="text" name="name" id="taskName" class="form-control" placeholder="Task..." required
+                       oninput="noFirstSpace(this)">
                 <div class="invalid-feedback">
                     Please enter task name.
                 </div>
@@ -70,7 +72,7 @@
 
             <div class="col-md-5 mb-3">
                 <label>Due date</label>
-                <input type="datetime-local" name="dueDate" th:field="*{dueDate}"/>
+                <input class="form-control" type="datetime-local" name="dueDate" th:field="*{dueDate}"/>
             </div>
             <div class="col-md-5 mb-3">
                 <label>Project</label>
@@ -85,6 +87,12 @@
         </form>
     </div>
 </div>
+<script>
+    function noFirstSpace(input) {
+        if (/^\s/.test(input.value))
+            input.value = ''
+    }
+</script>
 <script src="js/form-validation.js"></script>
 </body>
 </html>
