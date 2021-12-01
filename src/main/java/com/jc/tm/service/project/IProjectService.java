@@ -6,7 +6,7 @@ import com.jc.tm.db.entity.Task;
 import java.util.List;
 
 public interface IProjectService {
-    public Project saveProject(/*Task task, */Project newProject);
+    public Project saveProject(Project newProject);
 
     Project removeProject(Long id);
 

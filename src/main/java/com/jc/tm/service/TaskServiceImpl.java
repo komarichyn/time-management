@@ -83,6 +83,7 @@ public class TaskServiceImpl implements ITaskService {
             oldTask.setDescription(freshTask.getDescription());
             oldTask.setDueDate(freshTask.getDueDate());
             oldTask.setProgress(freshTask.getProgress());
+            oldTask.setProjects(freshTask.getProjects());
             if (freshTask.getProgress() >= 10 && oldTask.getStatus() == Status.TODO) {
                 oldTask.setStatus(Status.IN_PROGRESS);
             }

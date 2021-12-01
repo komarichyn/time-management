@@ -11,13 +11,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            $(".showSortedBybtn").click(function () {
-                $(".dropDown-show").toggle();
-            });
-            $(".search-string").keydown(function (event) {
-                event.which(13)
-            });
-
             $("td.status").click(function () {
                 var point = $(this).text();
                 var taskId = $(this).parent().get(0).id;

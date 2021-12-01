@@ -73,7 +73,7 @@
                 <input type="datetime-local" name="dueDate" th:field="*{dueDate}"/>
             </div>
             <div class="col-md-5 mb-3">
-                <label>Add project</label>
+                <label>Project</label>
                 <select class="form-select" name="project" th:field="*{projects}">
                     <option value="">Choose project</option>
                     <option th:value="${project.id}" th:each="project : ${projects}">

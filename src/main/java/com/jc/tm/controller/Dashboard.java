@@ -12,14 +12,11 @@ import com.jc.tm.service.TaskServiceImpl;
 import com.jc.tm.service.project.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+
 import java.util.Collection;
-import java.util.List;
 
 /**
  * this class is controller and it merge database with UI
@@ -78,11 +75,11 @@ public class Dashboard {
 
     @GetMapping("/create-task")
     public String create(Model model) {
+        log.debug("create task page");
         Task task = new Task();
         var projects = projectService.loadProject();
         model.addAttribute("projects", projects);
         model.addAttribute("task", task);
-        log.debug("create task page");
         return "create-task";
     }
 
@@ -108,8 +105,10 @@ public class Dashboard {
     @GetMapping(value = {"/task/edit/{taskId}"})
     public String showEditTask(Model model, @PathVariable long taskId) {
         log.debug("Change task with id={}", taskId);
+        var projects = projectService.loadProject();
         Task task = service.getTask(taskId);
         model.addAttribute("task", task);
+        model.addAttribute("projects", projects);
         return "update-task";
     }
 
@@ -166,15 +165,15 @@ public class Dashboard {
 
     @GetMapping("/create-project")
     public String createProject(Model model) {
+        log.debug("Create project page");
         Project project = new Project();
         model.addAttribute("project", project);
-        log.info("Create project page");
         return "create-project";
     }
 
     @PostMapping("/add-project")
     public String addProject(@ModelAttribute Project project) {
-        log.info("Add project page. Project={}", project);
+        log.debug("Add project page. Project={}", project);
         projectService.saveProject(project);
         return "redirect:/create-task";
     }
