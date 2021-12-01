@@ -1,97 +1,81 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="/css/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Time management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF"
+          crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<div class="toolbar-container">
-    <div class="toolbar">
-        <div class="logo">
-            <a href="/index">
-                <img src="/img/site-icon.ico">
-            </a>
-        </div>
-        <nav class="site-menu">
-            <ul class="toolbar-links">
-                <li><a href="/create-task">Create task</a></li>
-                <li><a href="/create-project">Create project</a></li>
-                <li><a href="/show-tasks/page/1">Show tasks</a></li>
-                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
-                                                                                      src="/img/search-white.png"></a>
-                </li>
+<header class="p-3 bg-dark text-white">
+    <div class="container-fluid">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary">Time management</a></li>
+                <li><a href="/create-task" class="nav-link px-2 text-white">Create task</a></li>
+                <li><a href="/show-tasks/page/1" class="nav-link px-2 text-white">Task list</a></li>
                 <li>
-                    <form method="get" th:action="@{/show-tasks/page/1}">
-                        <input type="text" class="search-string" name="searchBy" placeholder="Search...">
+                    <form method="post" action="/add-task">
+                        <div>
+                            <input required type="text" name="name" class="form-control form-control-dark"
+                                   placeholder="Quick create task..." style="margin-left: 15px">
+                        </div>
                     </form>
                 </li>
             </ul>
+
+            <form method="get" th:action="@{/show-tasks/page/1}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="text" name="searchBy" class="form-control form-control-dark" placeholder="Search..."
+                       aria-label="Search">
+            </form>
+
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="col-md-8 order-md-1">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/show-tasks/page/1}">Back to task list</a></li>
+                <li class="breadcrumb-item active" aria-current="page">create task</li>
+            </ol>
         </nav>
+        <form th:object="${task}" method="post" action="/add-task" class="needs-validation" novalidate>
+            <div class="col-md-5 mb-3">
+                <label for="taskName">Task name</label>
+                <input type="text" name="name" id="taskName" class="form-control" placeholder="Task..." required>
+                <div class="invalid-feedback">
+                    Please enter task name.
+                </div>
+            </div>
+            <div class="col-md-5 mb-3">
+                <label>Description<span class="text-muted">(Optional)</span></label>
+                <textarea name="description" class="form-control" placeholder="Description.."
+                          style="height:150px"></textarea>
+            </div>
+
+            <div class="col-md-5 mb-3">
+                <label>Priority</label>
+                <select class="form-select" name="priority" th:field="*{priority}">
+                    <option value="NORMAL">Normal</option>
+                    <option value="HIGH">High</option>
+                    <option value="LOW">Low</option>
+                    <option value="PAUSE">Pause</option>
+                </select>
+            </div>
+
+            <div class="col-md-5 mb-3">
+                <label>Due date</label>
+                <input type="datetime-local" name="dueDate" th:field="*{dueDate}"/>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
     </div>
 </div>
-<div class="main-page">
-    <h1>Create task page</h1>
-    <form th:object="${task}" method="post" action="/add-task">
-        <div class="input-string">
-            <label class="name-string">
-                Name
-            </label>
-            <input required type="text" name="name" class="input-data">
-        </div>
-        <div class="input-string">
-            <label class="name-string">
-                Description
-            </label>
-            <textarea name="description" style="height:150px"></textarea>
-        </div>
-        <div class="input-string">
-            <label class="name-string">
-                Status
-            </label>
-            <select name="status" th:field="*{status}">
-                <option value="TODO">To do</option>
-                <option value="IN_PROGRESS">In progress</option>
-                <option value="COMPLETE">Complete</option>
-                <option value="PAUSE">Pause</option>
-            </select>
-        </div>
-        <div class="input-string">
-            <label class="name-string">
-                Due date
-            </label>
-            <input type="datetime-local" name="dueDate" placeholder="Enter due date" th:field="*{dueDate}"/>
-        </div>
-        <div class="input-string">
-            <label class="name-string">
-                Priority
-            </label>
-            <select name="priority" th:field="*{priority}">
-                <option value="NORMAL">Normal</option>
-                <option value="HIGH">High</option>
-                <option value="LOW">Low</option>
-                <option value="PAUSE">Pause</option>
-            </select>
-        </div>
-        <div class="input-string">
-            <label class="name-string">
-                Add project
-            </label>
-            <select th:field="*{projects}">
-                <option value="">Choose project</option>
-
-                <option th:value="${project.id}" th:each="project : ${projects}">
-                    <label th:value="${project.id}" th:text="${project.name}">Project name</label>
-                </option>
-            </select>
-        </div>
-        <div class="submit-button-div">
-            <input class="submit-button" type="submit" value="Create task">
-        </div>
-    </form>
-</div>
+<script src="js/form-validation.js"></script>
 </body>
 </html>

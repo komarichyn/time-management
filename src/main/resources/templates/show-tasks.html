@@ -1,21 +1,20 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Time management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF"
+          crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
             $(".showSortedBybtn").click(function () {
                 $(".dropDown-show").toggle();
             });
             $(".search-string").keydown(function (event) {
-                event.which(13)
-            });
-            $(".input-data-project").keydown(function (event) {
                 event.which(13)
             });
 
@@ -65,52 +64,58 @@
     </script>
 </head>
 <body>
-<div class="toolbar-container">
-    <div class="toolbar">
-        <div class="logo">
-            <a href="/index">
-                <img src="/img/site-icon.ico">
-            </a>
-        </div>
-        <nav class="site-menu">
-            <ul class="toolbar-links">
-                <li><a href="/create-task">Create task</a></li>
-                <li><a href="/show-tasks/page/1">Show tasks</a></li>
-                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
-                                                                                      src="/img/search-white.png"></a>
-                </li>
+<header class="p-3 bg-dark text-white">
+    <div class="container-fluid">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary">Time management</a></li>
+                <li><a href="/create-task" class="nav-link px-2 text-white">Create task</a></li>
+                <li><a href="/show-tasks/page/1" class="nav-link px-2 text-white">Task list</a></li>
                 <li>
-                    <form method="get" th:action="@{/show-tasks/page/1}">
-                        <input type="text" class="search-string" name="searchBy" placeholder="Search...">
+                    <form method="post" action="/add-task">
+                        <div>
+                            <input required type="text" name="name" class="form-control form-control-dark"
+                                   placeholder="Quick create task..." style="margin-left: 15px">
+                        </div>
                     </form>
                 </li>
             </ul>
-        </nav>
-    </div>
-</div>
-<div class="main-page">
-    <h1 class="show-task-page-name">Show tasks page</h1>
+            <form method="get" th:action="@{/show-tasks/page/1}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="text" name="searchBy" class="form-control form-control-dark" placeholder="Search..."
+                       aria-label="Search">
+            </form>
 
-    <div class="sorting-div">
-        <button class="showSortedBybtn" type="button">Sort by▼</button>
-        <div class="dropDown-show">
-            <a th:href="@{${pagination.getIndex()}}">Name</a>
-            <a th:href="@{${pagination.getIndex()} + '?sortBy=status'}">Status</a>
-            <a th:href="@{${pagination.getIndex()} + '?sortBy=due_date'}">Due date</a>
-            <a th:href="@{${pagination.getIndex()} + '?sortBy=priority'}">Priority</a>
         </div>
     </div>
+</header>
+<div class="container">
+    <!--TODO sort button-->
+    <div class="dropdown sortBy">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            Sort by
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <a class="dropdown-item" th:href="@{${pagination.getIndex()}}">Name</a>
+            <a class="dropdown-item" th:href="@{${pagination.getIndex()} + '?sortBy=status'}">Status</a>
+            <a class="dropdown-item" th:href="@{${pagination.getIndex()} + '?sortBy=due_date'}">Due date</a>
+            <a class="dropdown-item" th:href="@{${pagination.getIndex()} + '?sortBy=priority'}">Priority</a>
+        </ul>
+    </div>
 
-    <table class="table-list">
+    <table class="table">
+        <thead>
         <tr>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Progress</th>
-            <th>Due date</th>
-            <th>Priority</th>
-            <th>Delete task</th>
-            <th>Projects</th>
+            <th scope="col">Name</th>
+            <th scope="col">Status</th>
+            <th scope="col">Progress</th>
+            <th scope="col">Due date</th>
+            <th scope="col">Priority</th>
+            <th scope="col">Delete</th>
         </tr>
+        </thead>
+        <tbody>
         <tr th:id="${task.id}" th:each="task : ${service}">
             <td><a th:href="@{/task/{taskId}(taskId=${task.id})}" th:text="${task.name}">Task name</a></td>
             <td class="status" th:text="${task.status}">Task status</td>
@@ -126,12 +131,13 @@
             <td><a th:href="@{/delete-task/{taskId}(taskId=${task.id})}"
                    onclick="return confirm('Are you sure you want to delete this task')">Delete</a>
             </td>
-            <td th:text="${task.project}">Projects</td>
         </tr>
         <tr th:if="${#lists.isEmpty(service)}">
             <td>Nothing found</td>
         </tr>
+        </tbody>
     </table>
+
     <div th:if="${pagination.getPage()> 1}">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
@@ -170,5 +176,11 @@
         </nav>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
 </body>
 </html>

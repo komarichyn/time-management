@@ -3,97 +3,83 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
-            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/task.css">
 </head>
 <body>
-<div class="toolbar-container">
-    <div class="toolbar">
-        <div class="logo">
-            <a href="/index">
-                <img src="/img/site-icon.ico">
-            </a>
-        </div>
-        <nav class="site-menu">
-            <ul class="toolbar-links">
-                <li><a href="/create-task">Create task</a></li>
-                <li><a href="/show-tasks/page/1">Show tasks</a></li>
-                <li class="search-li-element"><a class="search-tag-link" href=""><img class="search-button"
-                                                                                      src="/img/search-white.png"></a>
-                </li>
+<header class="p-3 bg-dark text-white">
+    <div class="container-fluid">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary">Time management</a></li>
+                <li><a href="/create-task" class="nav-link px-2 text-white">Create task</a></li>
+                <li><a href="/show-tasks/page/1" class="nav-link px-2 text-white">Task list</a></li>
                 <li>
-                    <form method="get" th:action="@{/show-tasks/page/1}">
-                        <input type="text" class="search-string" name="searchBy" placeholder="Search...">
+                    <form method="post" action="/add-task">
+                        <div>
+                            <input required type="text" name="name" class="form-control form-control-dark"
+                                   placeholder="Quick create task..." style="margin-left: 15px">
+                        </div>
                     </form>
                 </li>
             </ul>
-        </nav>
+            <form method="get" th:action="@{/show-tasks/page/1}" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="text" name="searchBy" class="form-control form-control-dark" placeholder="Search..."
+                       aria-label="Search">
+            </form>
+        </div>
     </div>
-</div>
-<div class="main-page">
-    <h2 style="margin: 5px">Task edit page</h2>
-    <h3 style="margin: 3px"><a th:href="@{/show-tasks/page/1}">Back to tasks</a></h3>
+</header>
+
+<div class="container">
+    <div class="col-md-8 order-md-1">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/show-tasks/page/1}">Back to task list</a></li>
+                <li class="breadcrumb-item active">Update task - <span th:text="${task.name}"></span></li>
+            </ol>
+        </nav>
         <form th:action="@{/task/update/{taskId}(taskId=${task.id})}"
               th:object="${task}" method="Post">
-            <div class="input-string">
-                <label class="name-string">
-                    Name
-                </label>
-                <input type="text" name="name" class="input-data" th:field="*{name}">
+            <div class="col-md-5 mb-3">
+                <label>Task name</label>
+                <input type="text" name="name" class="form-control" th:field="*{name}">
             </div>
-            <div class="input-string">
-                <label class="name-string">
-                    Description
-                </label>
-                <textarea name="description" th:field="*{description}" style="height:150px"></textarea>
+            <div class="col-md-5 mb-3">
+                <label>Description</label>
+                <textarea name="description" class="form-control" th:field="*{description}"
+                          style="height:150px"></textarea>
             </div>
-            <div class="input-string">
-                <label class="name-string">
-                    Status
-                </label>
-                <select th:field="*{status}">
+            <div class="col-md-5 mb-3">
+                <label>Status</label>
+                <select class="form-control" th:field="*{status}">
                     <option value="TODO">To do</option>
                     <option value="IN_PROGRESS">In progress</option>
                     <option value="COMPLETE">Complete</option>
                     <option value="PAUSE">Pause</option>
                 </select>
             </div>
-            <div class="input-string">
-                <label class="name-string">
-                    Due date
-                </label>
-                <input type="datetime-local" name="dueDate" th:field="*{dueDate}"/>
-            </div>
-            <div class="input-string">
-                <label class="name-string">
-                    Priority
-                </label>
-                <select th:field="*{priority}">
+            <div class="col-md-5 mb-3">
+                <label>Priority</label>
+                <select class="form-control" th:field="*{priority}">
                     <option value="NORMAL">Normal</option>
                     <option value="HIGH">High</option>
                     <option value="LOW">Low</option>
                     <option value="PAUSE">Pause</option>
                 </select>
             </div>
-            <div class="input-string">
-                <label class="name-string">
-                    Add project
-                </label>
-                <select>
-                    <option th:each="project : ${projects}">
-                        <label th:text="${project.name}">Project name</label>
-                    </option>
-                </select>
+
+            <div class="col-md-5 mb-3">
+                <label>Due date</label>
+                <input class="form-control" type="datetime-local" name="dueDate" th:field="*{dueDate}"/>
             </div>
-            <div class="input-string">
-                <label class="name-string">
-                    Progress
-                </label>
-                <select name="progress" th:field="*{progress}">
+
+            <div class="col-md-5 mb-3">
+                <label>Progress</label>
+                <select class="form-control" name="progress" th:field="*{progress}">
                     <option value="0">0%</option>
                     <option value="10">10%</option>
                     <option value="20">20%</option>
@@ -107,10 +93,9 @@
                     <option value="100">100%</option>
                 </select>
             </div>
-            <div class="submit-button-div">
-                <input class="submit-button" type="submit" value="Update task">
-            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
+    </div>
 </div>
 </body>
 </html>
