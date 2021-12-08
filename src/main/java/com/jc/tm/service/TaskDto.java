@@ -1,12 +1,10 @@
 package com.jc.tm.service;
 
 import com.jc.tm.db.Status;
-import com.jc.tm.db.entity.Comment;
-import com.jc.tm.db.entity.Project;
+import com.jc.tm.service.project.ProjectDto;
 import lombok.Data;
 
 import java.util.Collection;
-import java.util.List;
 
 @Data
 public class TaskDto {
@@ -19,5 +17,5 @@ public class TaskDto {
     private String dueDate;
     private Priority priority = Priority.NORMAL;
     private int progress;
-    private String projectName;
+    private ProjectDto projectName;
 }
