@@ -4,6 +4,7 @@ import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.CommentDto;
 import com.jc.tm.service.TaskDto;
+import com.jc.tm.service.project.ProjectDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -44,8 +45,11 @@ public class Converter {
         taskDto.setPriority(task.getPriority());
         taskDto.setComments(parsingCommentDataToCommentDTO(task.getComments()));
         taskDto.setProgress(task.getProgress());
+
         if (task.getProjects() != null) {
-            taskDto.setProjectName(task.getProjects().getName());
+            ProjectDto projectDTO = new ProjectDto();
+            projectDTO.setName(task.getProjects().getName());
+            taskDto.setProjectName(projectDTO);
         }
         return taskDto;
     }
