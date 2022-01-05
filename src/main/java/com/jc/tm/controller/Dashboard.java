@@ -9,10 +9,10 @@ import com.jc.tm.service.CommentDto;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskDto;
 import com.jc.tm.service.TaskServiceImpl;
+import com.jc.tm.service.project.ProjectDto;
 import com.jc.tm.service.project.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,10 @@ import java.util.Collection;
  */
 
 @Slf4j
-@Controller
+@CrossOrigin("http://localhost:3000/")
+@RestController
+@RequestMapping("/time-management")
+
 public class Dashboard {
     private final int pageSize = 10;
 
@@ -38,23 +41,22 @@ public class Dashboard {
         this.converter = converter;
     }
 
-    @GetMapping("/index")
-    public String mainPage(Model model) {
+    @GetMapping
+    public Collection<TaskDto> mainPage() {
         log.debug("Show last five tasks");
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setPage(0);
         paginationDto.setSize(5);
         Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
         Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
-        model.addAttribute("lastFive", result);
-        return "index";
+        return result;
     }
 
     @GetMapping("show-tasks/page/{pageNumber}")
     public String show(Model model,
-                           String searchBy,
-                           @PathVariable(value = "pageNumber") int pageNumber,
-                           @RequestParam(name="sortBy", required = false) String sortBy) {
+                       String searchBy,
+                       @PathVariable(value = "pageNumber") int pageNumber,
+                       @RequestParam(name = "sortBy", required = false) String sortBy) {
         log.debug("Show tasks page with params: searchBy={}, pageNumber={}, sortBy={}", searchBy, pageNumber, sortBy);
         SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
         PaginationDto paginationDto = new PaginationDto();
@@ -63,28 +65,21 @@ public class Dashboard {
         var taskList = service.loadTask(paginationDto, searchBy, sortBy);
         int tm = (int) taskList.getTotalElements();
         var result = converter.parsingTaskDataToTaskDTO(taskList.getContent());
-
         paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
-
         model.addAttribute("pagination", paginationDto);
         model.addAttribute("sortSearch", sortnSearch);
         model.addAttribute("service", result);
-
         return "show-tasks";
     }
 
-    @GetMapping("/create-task")
-    public String create(Model model) {
-        log.debug("create task page");
-        Task task = new Task();
-        var projects = projectService.loadProject();
-        model.addAttribute("projects", projects);
-        model.addAttribute("task", task);
-        return "create-task";
+    @PostMapping
+    public Task createTask(@RequestBody Task task) {
+        log.debug("Add task page. Task={}", task);
+        return service.saveTask(task);
     }
 
     @PostMapping("/add-task")
-    public String createTask(@ModelAttribute Task task) {
+    public String createTask1(@ModelAttribute Task task) {
         log.debug("Add task page. Task={}", task);
         service.saveTask(task);
         Long taskId = task.getId();
@@ -177,4 +172,13 @@ public class Dashboard {
         projectService.saveProject(project);
         return "redirect:/create-task";
     }
+
+    @GetMapping("/get-all-projects")
+    public Collection<ProjectDto> loadProjects() {
+        log.debug("loading all projects");
+        Collection<ProjectDto> projectDtoList = converter.parsingProjectDataToProjectDTO(projectService.loadProject());
+        return projectDtoList;
+    }
+
+
 }
