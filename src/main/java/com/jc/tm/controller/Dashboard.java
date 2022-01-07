@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+
 /**
  * this class is controller and it merge database with UI
  */
 
 @Slf4j
-@Controller
+@RestController
+@CrossOrigin("*")
+//@RequestMapping("/")
 public class Dashboard {
     private final int pageSize = 10;
 
@@ -39,7 +42,7 @@ public class Dashboard {
     }
 
     @GetMapping("/index")
-    public String mainPage(Model model) {
+    public Collection<TaskDto> mainPage(Model model) {
         log.debug("Show last five tasks");
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setPage(0);
@@ -47,14 +50,14 @@ public class Dashboard {
         Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
         Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
         model.addAttribute("lastFive", result);
-        return "index";
+        return result;
     }
 
     @GetMapping("show-tasks/page/{pageNumber}")
-    public String show(Model model,
-                           String searchBy,
-                           @PathVariable(value = "pageNumber") int pageNumber,
-                           @RequestParam(name="sortBy", required = false) String sortBy) {
+    public Collection<TaskDto> show(Model model,
+                                    String searchBy,
+                                    @PathVariable(value = "pageNumber") int pageNumber,
+                                    @RequestParam(name="sortBy", required = false) String sortBy) {
         log.debug("Show tasks page with params: searchBy={}, pageNumber={}, sortBy={}", searchBy, pageNumber, sortBy);
         SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
         PaginationDto paginationDto = new PaginationDto();
@@ -66,29 +69,31 @@ public class Dashboard {
 
         paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
 
-        model.addAttribute("pagination", paginationDto);
-        model.addAttribute("sortSearch", sortnSearch);
-        model.addAttribute("service", result);
+//        model.addAttribute("pagination", paginationDto);
+//        model.addAttribute("sortSearch", sortnSearch);
+//        model.addAttribute("service", result);
 
-        return "show-tasks";
+        return result;
     }
 
     @GetMapping("/create-task")
-    public String create(Model model) {
+    public Collection<Project> create(Model model) {
         log.debug("create task page");
         Task task = new Task();
         var projects = projectService.loadProject();
         model.addAttribute("projects", projects);
         model.addAttribute("task", task);
-        return "create-task";
+//        return "create-task";
+        return projectService.loadProject();
     }
 
     @PostMapping("/add-task")
-    public String createTask(@ModelAttribute Task task) {
+    public Task createTask(@RequestBody Task task) {
         log.debug("Add task page. Task={}", task);
-        service.saveTask(task);
+//        service.saveTask(task);
         Long taskId = task.getId();
-        return "redirect:/task/" + taskId;
+//        return "redirect:/task/" + taskId;
+        return service.saveTask(task);
     }
 
     @GetMapping("/task/{taskId}")
