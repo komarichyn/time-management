@@ -51,6 +51,7 @@ public class Converter {
         if (task.getProjects() != null) {
             ProjectDto projectDTO = new ProjectDto();
             projectDTO.setName(task.getProjects().getName());
+            projectDTO.setId(task.getProjects().getId());
             taskDto.setProjectName(projectDTO);
         }
         return taskDto;

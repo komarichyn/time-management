@@ -8,15 +8,16 @@ const CreateTask = () => {
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('NORMAL');
     const [dueDate, setDueDate] = useState('');
-    const [projects, setProject] = useState('');
+    const [project, setProject] = useState('');
 
     const [listProjects, setListProjects] = useState([]);
     const history = useNavigate();
 
-
     const saveTask = (e) => {
         e.preventDefault();
-        const task = {name, description, priority, dueDate,projects}
+        let projects = JSON.parse(project);
+        console.log(projects);
+        const task = {name, description, priority, dueDate, projects}
         console.log(task);
         TasksService.saveTask(task).then((response) => {
             console.log(response.data);
