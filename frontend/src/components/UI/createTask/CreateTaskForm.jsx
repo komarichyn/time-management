@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TasksService from "../../../TasksService";
+import TasksService from "../../../services/TasksService";
 
 const CreateTaskForm = () => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("");
     const [dueDate, setDueDate] = useState("");
-    const [project, setProject] = useState("");
+    const [projects, setProjects] = useState("");
+
+    const [ListProjects, setListProjects] = useState([]);
     const navigate = useNavigate();
 
     const saveTask = (e) => { //TODO:Add this method to new seperate component
         e.preventDefault();
-        const task = { name, description, priority, dueDate, project };
+        const task = { name, description, priority, dueDate, projects };
         TasksService.createTask(task).then((res) => {
             console.log(res.data);
             navigate("/show-tasks");
-        }).catch(error => {
+        })/*.catch(error => {
             console.log(error);
-        })
+        })*/
         console.log(task);
     };
 
     // const [project, setProject] = useState([]);
     useEffect(() => {
-        TasksService.getProjects().then((res) => {
+        TasksService.getAllProjects().then((res) => {
+            setListProjects(res.data);
             console.log(res);
         });
     }, [])
@@ -45,11 +48,11 @@ const CreateTaskForm = () => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                        <div class="invalid-feedback">Please enter task name.</div>
+                        <div className="invalid-feedback">Please enter task name.</div>
                     </div>
-                    <div class="col-md-5 mb-3">
+                    <div className="col-md-5 mb-3">
                         <label>
-                            Description<span class="text-muted">(Optional)</span>
+                            Description<span className="text-muted">(Optional)</span>
                         </label>
                         <textarea
                             name="description"
@@ -58,10 +61,10 @@ const CreateTaskForm = () => {
                             style={{ height: "150px" }}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                        ></textarea>
+                        >Description</textarea>
                     </div>
 
-                    <div class="col-md-5 mb-3">
+                    <div className="col-md-5 mb-3">
                         <label>Priority</label>
                         <select
                             className="form-select"
@@ -75,7 +78,7 @@ const CreateTaskForm = () => {
                             <option value="PAUSE">Pause</option>
                         </select>
                     </div>
-                    <div class="col-md-5 mb-3">
+                    <div className="col-md-5 mb-3">
                         <label>Due date</label>
                         <input
                             className="form-control"
@@ -85,23 +88,21 @@ const CreateTaskForm = () => {
                             onChange={(e) => setDueDate(e.target.value)}
                         />
                     </div>
-                    <div class="col-md-5 mb-3">
+                    <div className="col-md-5 mb-3">
                         <label>Project</label>
-                        <select className="form-select" name="project" field="*{projects}">
+                        <select className="form-select" name="taskProject"
+                                onChange={(e) => setProjects(e.target.value)}>
                             <option value="">Choose project</option>
-                            <option
-                                value={project}
-                                onChange={(e) => setProject(e.target.value)}
-                            >
-                                <label value="${project.id}" text="${project.name}">
-                                    Project name
-                                </label>
-                            </option>
+                            {ListProjects.map((project) =>
+                                <option key={project.id} value={JSON.stringify(project)}>
+                                    {project.name}
+                                </option>
+                            )}
                         </select>
                     </div>
                     <button
                         type="submit"
-                        class="btn btn-primary"
+                        className="btn btn-primary"
                         onClick={(e) => saveTask(e)}
                     >
                         Save

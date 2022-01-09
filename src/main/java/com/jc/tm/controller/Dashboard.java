@@ -9,6 +9,7 @@ import com.jc.tm.service.CommentDto;
 import com.jc.tm.service.PaginationDto;
 import com.jc.tm.service.TaskDto;
 import com.jc.tm.service.TaskServiceImpl;
+import com.jc.tm.service.project.ProjectDto;
 import com.jc.tm.service.project.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ import java.util.Collection;
 
 @Slf4j
 @RestController
-@CrossOrigin("*")
-//@RequestMapping("/")
+@CrossOrigin("http://localhost:3000/")
+@RequestMapping("/")
 public class Dashboard {
     private final int pageSize = 10;
 
@@ -41,7 +42,7 @@ public class Dashboard {
         this.converter = converter;
     }
 
-    @GetMapping("/index")
+    @GetMapping
     public Collection<TaskDto> mainPage(Model model) {
         log.debug("Show last five tasks");
         PaginationDto paginationDto = new PaginationDto();
@@ -57,7 +58,7 @@ public class Dashboard {
     public Collection<TaskDto> show(Model model,
                                     String searchBy,
                                     @PathVariable(value = "pageNumber") int pageNumber,
-                                    @RequestParam(name="sortBy", required = false) String sortBy) {
+                                    @RequestParam(name = "sortBy", required = false) String sortBy) {
         log.debug("Show tasks page with params: searchBy={}, pageNumber={}, sortBy={}", searchBy, pageNumber, sortBy);
         SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
         PaginationDto paginationDto = new PaginationDto();
@@ -77,21 +78,21 @@ public class Dashboard {
     }
 
     @GetMapping("/create-task")
-    public Collection<Project> create(Model model) {
+    public Task create(@ModelAttribute Task task) {
         log.debug("create task page");
-        Task task = new Task();
-        var projects = projectService.loadProject();
-        model.addAttribute("projects", projects);
-        model.addAttribute("task", task);
+//        Task task = new Task();
+//        var projects = projectService.loadProject();
+//        model.addAttribute("projects", projects);
+//        model.addAttribute("task", task);
 //        return "create-task";
-        return projectService.loadProject();
+        return service.saveTask(task);
     }
 
     @PostMapping("/add-task")
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(@ModelAttribute Task task) {
         log.debug("Add task page. Task={}", task);
 //        service.saveTask(task);
-        Long taskId = task.getId();
+//        Long taskId = task.getId();
 //        return "redirect:/task/" + taskId;
         return service.saveTask(task);
     }
@@ -146,7 +147,7 @@ public class Dashboard {
     @PostMapping("/task/{taskId}/added-comment")
     public String addComment(@ModelAttribute("comment") Comment comment, @PathVariable("taskId") long taskId) {
         log.debug("Add comment={} in task with id={}", comment, taskId);
-        service.addComment(taskId,comment);
+        service.addComment(taskId, comment);
         return "redirect:/task/" + taskId;
     }
 
@@ -181,5 +182,12 @@ public class Dashboard {
         log.debug("Add project page. Project={}", project);
         projectService.saveProject(project);
         return "redirect:/create-task";
+    }
+
+    @GetMapping("/get-all-projects")
+    public Collection<ProjectDto> loadProjects() {
+        log.debug("loading all projects");
+        Collection<ProjectDto> projectDtoList = converter.parsingProjectDataToProjectDTO(projectService.loadProject());
+        return projectDtoList;
     }
 }

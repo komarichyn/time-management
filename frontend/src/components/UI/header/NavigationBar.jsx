@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import TasksService from "../../../TasksService";
+import TasksService from "../../../services/TasksService";
 
 const NavagationBar = () => {
     /*   const removeEmptySpaces = stringVal => {

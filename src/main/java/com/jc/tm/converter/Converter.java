@@ -1,6 +1,7 @@
 package com.jc.tm.converter;
 
 import com.jc.tm.db.entity.Comment;
+import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.CommentDto;
 import com.jc.tm.service.TaskDto;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -48,6 +50,7 @@ public class Converter {
 
         if (task.getProjects() != null) {
             ProjectDto projectDTO = new ProjectDto();
+            projectDTO.setId(task.getProjects().getId());
             projectDTO.setName(task.getProjects().getName());
             taskDto.setProjectName(projectDTO);
         }
@@ -86,5 +89,23 @@ public class Converter {
             commentResult.add(commentDto);
         }
         return commentResult;
+    }
+
+    public ProjectDto projectToProjectDto(Project project) {
+        log.debug("converting project to project DTO", project);
+        ProjectDto projectDto = new ProjectDto();
+        projectDto.setId(project.getId());
+        projectDto.setName(project.getName());
+        return projectDto;
+    }
+
+    public List<ProjectDto> parsingProjectDataToProjectDTO(List<Project> projects) {
+        log.debug("parsing ProjectData to Project DTO");
+        List<ProjectDto> projectDtoList = new ArrayList<>();
+        for (Project project : projects) {
+            ProjectDto projectDto = projectToProjectDto(project);
+            projectDtoList.add(projectDto);
+        }
+        return projectDtoList;
     }
 }

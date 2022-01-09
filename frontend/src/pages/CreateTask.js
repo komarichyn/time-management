@@ -5,8 +5,8 @@ import CreateTaskForm from '../components/UI/createTask/CreateTaskForm';
 const CreateTask = () => {
     return (
         <div>
-            <NavagationBar />
-            <CreateTaskForm />
+            <NavagationBar/>
+            <CreateTaskForm/>
         </div>
     )
 }
