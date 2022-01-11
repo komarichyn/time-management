@@ -1,25 +1,31 @@
 import React, {useState} from "react";
-import TasksService from "../services/TasksService";
 
-
-const Task = () => {
-
-
-
-    // const saveTask = (e) => {
-    //     e.preventDefault();
-    //     const task = {id}
-    //     TasksService.getTask(id).then((response) => {
-    //         console.log(response.data);
-    //         history("/");
-    //     })
-    // }
+const Task = ({task: {id, name, description, created, status, progress, dueDate, priority, projectName}}) => {
 
     return (
-        <div className="container">
-
-        </div>
-
+        <tr>
+            <td><a href={id}>{name}</a></td>
+            <td>{description}</td>
+            <td>{created}</td>
+            <td>{status}</td>
+            <td>
+                <div className="progress">
+                    <div className="progress-bar" role="progressbar"
+                         style={{width: progress + '%'}}
+                    >{progress}%
+                    </div>
+                </div>
+            </td>
+            <td>{dueDate}</td>
+            <td>{priority}</td>
+            {
+                projectName !== null
+                    ?
+                    <td>{projectName['name']}</td>
+                    :
+                    <td></td>
+            }
+        </tr>
     )
 }
 

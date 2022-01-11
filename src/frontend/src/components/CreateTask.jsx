@@ -15,20 +15,27 @@ const CreateTask = () => {
 
     const saveTask = (e) => {
         e.preventDefault();
-        let projects = JSON.parse(project);
-        console.log(projects);
-        const task = {name, description, priority, dueDate, projects}
-        console.log(task);
-        TasksService.saveTask(task).then((response) => {
-            console.log(response.data);
-            history("/");
-        })
+        if (project === '') {
+            const task = {name, description, priority, dueDate}
+            console.log(task, project);
+            TasksService.saveTask(task).then((response) => {
+                history("/");
+            })
+        } else {
+            JSON.stringify(project);
+            let projects = JSON.parse(project);
+            const task = {name, description, priority, dueDate, projects}
+            console.log(task, projects);
+            TasksService.saveTask(task).then((response) => {
+                history("/");
+            })
+        }
     }
 
     useEffect(() => {
         TasksService.getAllProjects().then(response => {
             setListProjects(response.data);
-            console.log(response.data)
+            // console.log(response.data)
         });
     }, [])
 

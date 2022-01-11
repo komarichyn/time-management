@@ -1,17 +1,16 @@
 import React, {useEffect, useState} from "react";
 import TasksService from "../services/TasksService";
-import {Link} from "react-router-dom";
+import Task from "./Task";
 
-const Tasks = () => {
+const TasksTable = () => {
 
     const [tasks, setTasks] = useState([]);
 
     useEffect(() => {
         TasksService.getMainPage().then(response => {
             setTasks(response.data);
-            console.log(response.data)
         });
-    },[])
+    }, [])
 
     return (
         <div className="container">
@@ -31,29 +30,12 @@ const Tasks = () => {
                         <th>Due date</th>
                         <th>Priority</th>
                         <th>Project</th>
-
                     </tr>
                     </thead>
                     <tbody>
                     {
-                        tasks.map(task =>
-                            <tr key={task.id}>
-                                <td><a href={task.id}>{task.name}</a></td>
-                                <td>{task.description}</td>
-                                <td>{task.created}</td>
-                                <td>{task.status}</td>
-                                <td>
-                                    <div className="progress">
-                                        <div className="progress-bar" role="progressbar"
-                                             style={{width: task.progress + '%'}}
-                                        >{task.progress}%
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{task.dueDate}</td>
-                                <td>{task.priority}</td>
-                                <td>{task.projects}</td>
-                            </tr>
+                        tasks.map((task) =>
+                            <Task key={task.id} task={task}/>
                         )
                     }
                     </tbody>
@@ -63,4 +45,5 @@ const Tasks = () => {
         </div>
     )
 }
-export default Tasks;
+
+export default TasksTable;
