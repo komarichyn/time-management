@@ -1,9 +1,9 @@
 package com.jc.tm.ui.subMenu;
 
-import com.jc.tm.db.Status;
+import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.service.ITaskService;
-import com.jc.tm.service.PaginationDto;
+import com.jc.tm.dto.PaginationDto;
 import com.jc.tm.ui.console.MyDevice;
 import lombok.extern.slf4j.Slf4j;
 

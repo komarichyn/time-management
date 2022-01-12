@@ -1,7 +1,7 @@
-package com.jc.tm.service;
+package com.jc.tm.dto;
 
-import com.jc.tm.db.Status;
-import com.jc.tm.service.project.ProjectDto;
+import com.jc.tm.util.Status;
+import com.jc.tm.util.Priority;
 import lombok.Data;
 
 import java.util.Collection;
