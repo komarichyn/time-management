@@ -13,7 +13,6 @@ import com.jc.tm.service.project.ProjectDto;
 import com.jc.tm.service.project.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,57 +42,35 @@ public class Dashboard {
     }
 
     @GetMapping
-    public Collection<TaskDto> mainPage(Model model) {
+    public Collection<TaskDto> mainPage() {
         log.debug("Show last five tasks");
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setPage(0);
         paginationDto.setSize(5);
         Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
-        Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
-        model.addAttribute("lastFive", result);
-        return result;
+        return converter.parsingTaskDataToTaskDTO(taskList);
     }
 
     @GetMapping("show-tasks/page/{pageNumber}")
-    public Collection<TaskDto> show(Model model,
-                                    String searchBy,
+    public Collection<TaskDto> show(String searchBy,
                                     @PathVariable(value = "pageNumber") int pageNumber,
                                     @RequestParam(name = "sortBy", required = false) String sortBy) {
         log.debug("Show tasks page with params: searchBy={}, pageNumber={}, sortBy={}", searchBy, pageNumber, sortBy);
-        SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
+//        SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setIndex(pageNumber);
         paginationDto.setSize(pageSize);
         var taskList = service.loadTask(paginationDto, searchBy, sortBy);
-        int tm = (int) taskList.getTotalElements();
+//        int tm = (int) taskList.getTotalElements();
         var result = converter.parsingTaskDataToTaskDTO(taskList.getContent());
 
-        paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
-
-//        model.addAttribute("pagination", paginationDto);
-//        model.addAttribute("sortSearch", sortnSearch);
-//        model.addAttribute("service", result);
-
+//        paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
         return result;
     }
 
-    @GetMapping("/create-task")
-    public Task create(@ModelAttribute Task task) {
+    @PostMapping("/create-task")
+    public Task create(@RequestBody Task task) {
         log.debug("create task page");
-//        Task task = new Task();
-//        var projects = projectService.loadProject();
-//        model.addAttribute("projects", projects);
-//        model.addAttribute("task", task);
-//        return "create-task";
-        return service.saveTask(task);
-    }
-
-    @PostMapping("/add-task")
-    public Task createTask(@ModelAttribute Task task) {
-        log.debug("Add task page. Task={}", task);
-//        service.saveTask(task);
-//        Long taskId = task.getId();
-//        return "redirect:/task/" + taskId;
         return service.saveTask(task);
     }
 
@@ -107,6 +84,7 @@ public class Dashboard {
         model.addAttribute("comments", comments);
         return "task";
     }
+
 
     @GetMapping(value = {"/task/edit/{taskId}"})
     public String showEditTask(Model model, @PathVariable long taskId) {
@@ -169,25 +147,15 @@ public class Dashboard {
         return "redirect:/task/" + taskId;
     }
 
-    @GetMapping("/create-project")
-    public String createProject(Model model) {
-        log.debug("Create project page");
-        Project project = new Project();
-        model.addAttribute("project", project);
-        return "create-project";
-    }
-
     @PostMapping("/add-project")
-    public String addProject(@ModelAttribute Project project) {
+    public Project addProject(@RequestBody Project project) {
         log.debug("Add project page. Project={}", project);
-        projectService.saveProject(project);
-        return "redirect:/create-task";
+        return projectService.saveProject(project);
     }
 
     @GetMapping("/get-all-projects")
     public Collection<ProjectDto> loadProjects() {
         log.debug("loading all projects");
-        Collection<ProjectDto> projectDtoList = converter.parsingProjectDataToProjectDTO(projectService.loadProject());
-        return projectDtoList;
+        return converter.parsingProjectDataToProjectDTO(projectService.loadProject());
     }
 }

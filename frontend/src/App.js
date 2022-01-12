@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import Routers from "./pages/Routers";
+import React from "react";
+import Routers from "./Routers";
 
 function App() {
   return (
-      <div className="App">
-        <Routers />
-      </div>
+    <div className="App">
+      <Routers/>
+    </div>
   );
 }
 
