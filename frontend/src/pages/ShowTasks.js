@@ -1,12 +1,10 @@
 import React from 'react';
-import NavagationBar from '../components/UI/header/NavigationBar';
-import ShowTasksTable from '../components/UI/showTasks/ShowTasksTable';
+import ShowTasksTable2 from '../components/UI/showTasks/ShowTasksTable2';
 
 const ShowTasks = () => {
   return (
     <div>
-      <NavagationBar/>
-      <ShowTasksTable/>
+      <ShowTasksTable2/>
     </div>
   )
 }

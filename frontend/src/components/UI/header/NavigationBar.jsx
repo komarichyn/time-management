@@ -1,20 +1,34 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useLocation} from "react-router-dom";
 import TasksService from "../../../services/TasksService";
+import DataTable from "../showTasks/DataTable";
 
 const NavagationBar = () => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const location = useLocation().pathname;
 
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+
   const saveTask = (e) => {
     e.preventDefault();
     const task = {name};
-    TasksService.createTask(task)
-      .then((res) => {
+    TasksService.createTask(task).then((res) => {
         navigate("/show-tasks"); //FIXME:navigate to task page
       })
   };
+
+  // const searchFunc = (rows) => {
+  //   return rows.filter((row) => row.name.toLowerCase().indexOf(search) > -1);
+  // }
+
+  // const find = (e) => {
+  //   e.preventDefault();
+  //   TasksService.getShowTasksPage(search).then(() => {
+  //
+  //   })
+  // }
 
   return (
     <div className="p-3 bg-dark text-white">
@@ -62,17 +76,30 @@ const NavagationBar = () => {
               </form>
             </li>
           </ul>
-          <form
-            method="get"
-            // action="@{/show-tasks/page/1}"
-            className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
-          >
+          <form className="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
             <input
               type="text"
               name="searchBy"
               className="form-control form-control-dark"
               placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              // onKeyPress={(e) => e.key === "Enter" && find(e)}
             />
+
+            {/*{name.filter((val) => {
+              if(searchTerm === "") {
+                return val;
+              } else if (val.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                return val;
+              }
+            }).map((val, key) => {
+              return (
+                <div key={key}>
+                  {val.name}
+                </div>
+              )
+            })}*/}
           </form>
         </div>
       </div>

@@ -5,7 +5,6 @@ import CreateProjectForm from "../components/UI/createProject/CreateProjectForm"
 const CreateProject = () => {
   return (
     <div>
-      <NavagationBar/>
       <CreateProjectForm/>
     </div>
   )

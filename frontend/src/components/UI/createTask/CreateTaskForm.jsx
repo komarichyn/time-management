@@ -7,24 +7,22 @@ const CreateTaskForm = () => {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('NORMAL');
   const [dueDate, setDueDate] = useState('');
-  const [projects, setProjects] = useState('');
+  const [project, setProject] = useState({});
 
   const [ListProjects, setListProjects] = useState([]);
   const navigate = useNavigate();
 
   const saveTask = (e) => {
     e.preventDefault();
-    if (projects === '') {
+    if (project === '') {
       const task = {name, description, priority, dueDate}
-      console.log(task, projects);
+      console.log(task, project);
       TasksService.createTask(task).then((response) => {
         navigate("/show-tasks");
       })
     } else {
-      JSON.stringify(projects);
-      let projects = JSON.parse(projects);
-      const task = {name, description, priority, dueDate, projects}
-      console.log(task, projects);
+      const task = {name, description, priority, dueDate, project}
+      console.log(task, project);
       TasksService.createTask(task).then((response) => {
         navigate("/show-tasks");
       })
@@ -94,7 +92,7 @@ const CreateTaskForm = () => {
           <div className="col-md-5 mb-3">
             <label>Project</label>
             <select className="form-select" name="taskProject"
-                    onChange={(e) => setProjects(e.target.value)}>
+                    onChange={(e) => setProject(e.target.value)}>
               <option value="">Choose project</option>
               {ListProjects.map((project) =>
                 <option key={project.id} value={JSON.stringify(project)}>

@@ -5,7 +5,6 @@ import LastFiveElemetns from "../components/UI/home/LastFiveElements";
 const Home = () => {
   return (
     <div>
-      <NavagationBar/>
       <LastFiveElemetns/>
     </div>
   )
