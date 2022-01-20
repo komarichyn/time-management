@@ -1,12 +1,11 @@
 import React from "react";
 
 const DataTable = ({tasks}) => {
-  // const columns = tasks[0] && Object.keys(tasks[0]);
   return (
     <div className="container">
-      <table className="table">
-        <thead>
-          {/*<tr>{tasks[0] && columns.map((heading) => <th>{heading}</th>)}</tr>*/}
+      {tasks.length ?
+        <table className="table">
+          <thead>
           <tr>
             <th scope="col">Name</th>
             <th scope="col">Status</th>
@@ -16,16 +15,9 @@ const DataTable = ({tasks}) => {
             <th scope="col">Projects</th>
             <th scope="col">Delete</th>
           </tr>
-        </thead>
-        <tbody>
-        {/*{tasks.map((row) =>*/}
-        {/*  <tr>*/}
-        {/*    {columns.map((column) =>*/}
-        {/*    <td>{row[column]}</td>)}*/}
-        {/*  </tr>*/}
-        {/*)}*/}
-        {tasks.map((task) =>
-          tasks.length ? (
+          </thead>
+          <tbody>
+          {tasks.map((task) =>
             <tr key={task.id}>
               <td>{task.name}</td>
               <td>{task.status}</td>
@@ -45,12 +37,11 @@ const DataTable = ({tasks}) => {
               <td>{task.priority}</td>
               <td>{task.project}</td>
             </tr>
-          ) : (
-            <tr>No</tr>
-          )
-        )}
-        </tbody>
-      </table>
+          )}
+          </tbody>
+        </table>
+        : <h2>You have no tasks to do</h2>
+      }
     </div>
   );
 }

@@ -68,17 +68,6 @@ public class Dashboard {
         return result;
     }
 
-    @GetMapping("show-tasks/searchBy={searchBy}")
-    public Collection<TaskDto> findByName2(@PathVariable String searchBy) {
-        String sortBy = "";
-        int pageNumber = 1;
-        PaginationDto paginationDto = new PaginationDto();
-        paginationDto.setIndex(pageNumber);
-        paginationDto.setSize(pageSize);
-        var taskList = service.loadTask(paginationDto, searchBy, sortBy);
-        return converter.parsingTaskDataToTaskDTO(taskList.getContent());
-    }
-
 //    @GetMapping("show-tasks/{searchBy}")
     @GetMapping("show-tasks/searchBy={searchBy}")
     public Collection<TaskDto> findByName(@PathVariable String searchBy) {

@@ -1,15 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {Link, useNavigate, useLocation} from "react-router-dom";
+import React, {useState} from "react";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import TasksService from "../../../services/TasksService";
-import DataTable from "../showTasks/DataTable";
 
-const NavagationBar = () => {
+const NavigationBar = ({search, onChange}) => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const location = useLocation().pathname;
-
-  const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
 
   const saveTask = (e) => {
     e.preventDefault();
@@ -18,17 +14,6 @@ const NavagationBar = () => {
         navigate("/show-tasks"); //FIXME:navigate to task page
       })
   };
-
-  // const searchFunc = (rows) => {
-  //   return rows.filter((row) => row.name.toLowerCase().indexOf(search) > -1);
-  // }
-
-  // const find = (e) => {
-  //   e.preventDefault();
-  //   TasksService.getShowTasksPage(search).then(() => {
-  //
-  //   })
-  // }
 
   return (
     <div className="p-3 bg-dark text-white">
@@ -83,23 +68,9 @@ const NavagationBar = () => {
               className="form-control form-control-dark"
               placeholder="Search..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => onChange(e.target.value)}
               // onKeyPress={(e) => e.key === "Enter" && find(e)}
             />
-
-            {/*{name.filter((val) => {
-              if(searchTerm === "") {
-                return val;
-              } else if (val.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-                return val;
-              }
-            }).map((val, key) => {
-              return (
-                <div key={key}>
-                  {val.name}
-                </div>
-              )
-            })}*/}
           </form>
         </div>
       </div>
@@ -107,4 +78,4 @@ const NavagationBar = () => {
   );
 };
 
-export default NavagationBar;
+export default NavigationBar;

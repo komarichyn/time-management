@@ -1,10 +1,10 @@
 import React from 'react';
-import ShowTasksTable2 from '../components/UI/showTasks/ShowTasksTable2';
+import ShowTasksTable from '../components/UI/showTasks/ShowTasksTable';
 
-const ShowTasks = () => {
+const ShowTasks = ({search}) => {
   return (
     <div>
-      <ShowTasksTable2/>
+      <ShowTasksTable search={search}/>
     </div>
   )
 }
