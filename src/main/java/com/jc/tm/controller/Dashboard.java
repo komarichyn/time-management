@@ -41,6 +41,7 @@ public class Dashboard {
         this.converter = converter;
     }
 
+    //TODO - DONE
     @GetMapping
     public Collection<TaskDto> mainPage() {
         log.debug("Show last five tasks");
@@ -72,29 +73,19 @@ public class Dashboard {
         return "show-tasks";
     }
 
+    //TODO - DONE
     @PostMapping
     public Task createTask(@RequestBody Task task) {
-        log.debug("Add task page. Task={}", task);
+        log.debug("Add task page. TaskTableRow={}", task);
         return service.saveTask(task);
     }
 
-    @PostMapping("/add-task")
-    public String createTask1(@ModelAttribute Task task) {
-        log.debug("Add task page. Task={}", task);
-        service.saveTask(task);
-        Long taskId = task.getId();
-        return "redirect:/task/" + taskId;
-    }
-
+    //TODO - DONE
     @GetMapping("/task/{taskId}")
-    public String getTaskById(Model model, @PathVariable long taskId) {
+    public TaskDto getTaskById(@PathVariable long taskId) {
         log.debug("Show one task with id={}", taskId);
         Task task = service.getTask(taskId);
-        TaskDto taskDto = converter.taskToTaskDto(task);
-        Collection<CommentDto> comments = taskDto.getComments();
-        model.addAttribute("task", taskDto);
-        model.addAttribute("comments", comments);
-        return "task";
+        return converter.taskToTaskDto(task);
     }
 
     @GetMapping(value = {"/task/edit/{taskId}"})
@@ -109,7 +100,7 @@ public class Dashboard {
 
     @PostMapping(value = {"show-tasks/task/update/{taskId}"}, produces = "application/json")
     public Task updateTaskStatus(@PathVariable long taskId, @RequestBody String status) {
-        log.debug("Update Task Status: {}" + status);
+        log.debug("Update TaskTableRow Status: {}" + status);
         Task task = service.getTask(taskId);
         task.setStatus(Status.valueOf(status));
         service.updateTask(task);
@@ -124,11 +115,11 @@ public class Dashboard {
         return "redirect:/task/" + task.getId();
     }
 
-    @GetMapping("/delete-task/{taskId}")
-    public String deleteTask(@PathVariable long taskId) {
+    //TODO - DONE
+    @DeleteMapping("/delete-task/{taskId}")
+    public void deleteTask(@PathVariable long taskId) {
         log.debug("Delete task with id={}", taskId);
         service.removeTask(taskId);
-        return "redirect:/show-tasks/page/1";
     }
 
     //Comment controllers
@@ -156,14 +147,6 @@ public class Dashboard {
         log.debug("Delete comment with id={} in task with id={}", commentId, taskId);
         service.removeComment(commentId);
         return "redirect:/task/" + taskId;
-    }
-
-    @GetMapping("/create-project")
-    public String createProject(Model model) {
-        log.debug("Create project page");
-        Project project = new Project();
-        model.addAttribute("project", project);
-        return "create-project";
     }
 
     @PostMapping("/add-project")

@@ -42,7 +42,7 @@ public interface ITaskService {
     /**
      * find task object by id
      * @param id idetnifier of task
-     * @return Task object or null if object was not found
+     * @return TaskTableRow object or null if object was not found
      */
     public Task getTask(Long id) ;
 
@@ -70,7 +70,7 @@ public interface ITaskService {
     public Task addComment(Long taskId, Comment newComment) ;
     public Task addComment(Task task, Comment newComment) ;
 
-//    Task addProject(Task task, Project project);
+//    TaskTableRow addProject(TaskTableRow task, Project project);
 
     public Comment removeComment(Long id) ;
     public Comment removeComment(Comment comment) ;

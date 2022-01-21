@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import TasksService from "../services/TasksService";
-import Task from "./Task";
+import TaskTableRow from "./TaskTableRow";
 
-const TasksTable = () => {
+const HomePageTable = () => {
 
     const [tasks, setTasks] = useState([]);
 
@@ -35,7 +35,7 @@ const TasksTable = () => {
                     <tbody>
                     {
                         tasks.map((task) =>
-                            <Task key={task.id} task={task}/>
+                            <TaskTableRow key={task.id} task={task} />
                         )
                     }
                     </tbody>
@@ -46,4 +46,4 @@ const TasksTable = () => {
     )
 }
 
-export default TasksTable;
+export default HomePageTable;

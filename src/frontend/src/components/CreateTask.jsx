@@ -15,19 +15,22 @@ const CreateTask = () => {
 
     const saveTask = (e) => {
         e.preventDefault();
+        let id;
+        console.log(typeof project)
         if (project === '') {
             const task = {name, description, priority, dueDate}
             console.log(task, project);
             TasksService.saveTask(task).then((response) => {
-                history("/");
+                id = response.data.id;
+                history(`/task/${id}`);
             })
         } else {
-            JSON.stringify(project);
             let projects = JSON.parse(project);
             const task = {name, description, priority, dueDate, projects}
-            console.log(task, projects);
+            console.log(task, typeof projects);
             TasksService.saveTask(task).then((response) => {
-                history("/");
+                id = response.data.id;
+                history(`/task/${id}`);
             })
         }
     }
@@ -35,7 +38,6 @@ const CreateTask = () => {
     useEffect(() => {
         TasksService.getAllProjects().then(response => {
             setListProjects(response.data);
-            // console.log(response.data)
         });
     }, [])
 
@@ -50,8 +52,8 @@ const CreateTask = () => {
                 </nav>
                 <form>
                     <div className="form-group mb-2">
-                        <label className='form-label'>Task name :</label>
-                        <input type="text" name="name" className="form-control" placeholder="Task..." value={name}
+                        <label className='form-label'>TaskTableRow name :</label>
+                        <input type="text" name="name" className="form-control" placeholder="TaskTableRow..." value={name}
                                onChange={(e) => setName(e.target.value)}/>
                     </div>
                     <div className="form-group mb-2">
