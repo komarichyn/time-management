@@ -8,7 +8,6 @@ import NavigationBar from "./components/UI/header/NavigationBar";
 
 const Routers = () => {
   const [searchWord, setSearchWord] = useState("");
-  // const onChange = useCallback((value) => setSearchWord(value), [setSearchWord]);
 
   return (
     <Router>
