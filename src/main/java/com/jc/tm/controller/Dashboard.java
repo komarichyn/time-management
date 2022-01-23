@@ -110,7 +110,7 @@ public class Dashboard {
 
     @PostMapping(value = {"show-tasks/task/update/{taskId}"}, produces = "application/json")
     public Task updateTaskStatus(@PathVariable long taskId, @RequestBody String status) {
-        log.debug("Update Task Status: {}" + status);
+        log.debug("Update TasksTableRows Status: {}" + status);
         Task task = service.getTask(taskId);
         task.setStatus(Status.valueOf(status));
         service.updateTask(task);
@@ -126,10 +126,9 @@ public class Dashboard {
     }
 
     @GetMapping("/delete-task/{taskId}")
-    public String deleteTask(@PathVariable long taskId) {
+    public Task deleteTask(@PathVariable long taskId) {
         log.debug("Delete task with id={}", taskId);
-        service.removeTask(taskId);
-        return "redirect:/show-tasks/page/1";
+        return service.removeTask(taskId);
     }
 
     //Comment controllers

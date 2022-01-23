@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import TasksService from "../../../services/TasksService";
 
 const CreateTaskForm = () => {
@@ -38,14 +38,20 @@ const CreateTaskForm = () => {
   return (
     <div className="container">
       <div className="col-md-8 order-md-1">
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item"><Link to="/show-tasks">Back to task list</Link></li>
+            <li className="breadcrumb-item active" aria-current="page">create task</li>
+          </ol>
+        </nav>
         <form>
           <div className="col-md-5 mb-3">
-            <label className="form-label">Task Name</label>
+            <label className="form-label">TasksTableRows Name</label>
             <input
               type="text"
               name="name"
               className="form-control"
-              placeholder="Task..."
+              placeholder="TasksTableRows..."
               value={name}
               onChange={(e) => setName(e.target.value)}
             />

@@ -31,8 +31,8 @@ const NavigationBar = ({search, onChange}) => {
               </Link>
             </li>
             <li>
-              {location === "/create-task" ?
-                <Link to="/create-project" className="nav-link px-2 text-white">
+              {location === "/create-task"
+                ? <Link to="/create-project" className="nav-link px-2 text-white">
                   Create project
                 </Link>
                 : ""
