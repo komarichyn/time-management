@@ -1,6 +1,6 @@
 import React from "react";
-// import {Badge} from "react-bootstrap";
-// import SetBadge from "../../../scripts/SetBadge";
+import {Badge} from "react-bootstrap";
+import SetBadge from "../../../scripts/SetBadge.js";
 
 const TasksTableRows = ({task: {id, name, description, created, status, progress, dueDate, priority, projectName}, deleteTask}) => {
   return (
@@ -18,9 +18,14 @@ const TasksTableRows = ({task: {id, name, description, created, status, progress
           </div>
         </div>
       </td>
-      <td>{dueDate}</td>
-      <td>{priority}</td>
-      {/*<td><Badge bg={SetBadge(priority)}>{priority}</Badge></td>*/}
+      <td>
+      {
+        dueDate !== null
+          ? <td>{dueDate}</td>
+          : <td>Not assigned</td>
+      }
+      </td>
+      <td><Badge bg={SetBadge(priority)}>{priority}</Badge></td>
       {projectName !== null
         ? <td>{projectName["name"]}</td>
         : <td></td>

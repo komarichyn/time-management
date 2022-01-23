@@ -7,7 +7,7 @@ const CreateTaskForm = () => {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('NORMAL');
   const [dueDate, setDueDate] = useState('');
-  const [project, setProject] = useState({});
+  const [project, setProject] = useState('');
 
   const [ListProjects, setListProjects] = useState([]);
   const navigate = useNavigate();
@@ -16,13 +16,12 @@ const CreateTaskForm = () => {
     e.preventDefault();
     if (project === '') {
       const task = {name, description, priority, dueDate}
-      console.log(task, project);
       TasksService.createTask(task).then((response) => {
         navigate("/show-tasks");
       })
     } else {
-      const task = {name, description, priority, dueDate, project}
-      console.log(task, project);
+      let projects = JSON.parse(project);
+      const task = {name, description, priority, dueDate, projects}
       TasksService.createTask(task).then((response) => {
         navigate("/show-tasks");
       })

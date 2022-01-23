@@ -1,16 +1,16 @@
 package com.jc.tm.controller;
 
 import com.jc.tm.converter.Converter;
-import com.jc.tm.db.Status;
+import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.service.CommentDto;
-import com.jc.tm.service.PaginationDto;
-import com.jc.tm.service.TaskDto;
-import com.jc.tm.service.TaskServiceImpl;
-import com.jc.tm.service.project.ProjectDto;
-import com.jc.tm.service.project.ProjectServiceImpl;
+import com.jc.tm.dto.CommentDto;
+import com.jc.tm.dto.PaginationDto;
+import com.jc.tm.dto.TaskDto;
+import com.jc.tm.service.impl.TaskServiceImpl;
+import com.jc.tm.dto.ProjectDto;
+import com.jc.tm.service.impl.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

@@ -3,9 +3,9 @@ package com.jc.tm.converter;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.service.CommentDto;
-import com.jc.tm.service.TaskDto;
-import com.jc.tm.service.project.ProjectDto;
+import com.jc.tm.dto.CommentDto;
+import com.jc.tm.dto.TaskDto;
+import com.jc.tm.dto.ProjectDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

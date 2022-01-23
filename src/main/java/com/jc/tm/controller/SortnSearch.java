@@ -1,7 +1,5 @@
 package com.jc.tm.controller;
 
-import com.jc.tm.service.PaginationDto;
-
 public class SortnSearch {
     private String searchBy;
     private String sortBy;

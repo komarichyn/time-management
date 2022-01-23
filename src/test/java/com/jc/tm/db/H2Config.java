@@ -1,9 +1,5 @@
 package com.jc.tm.db;
 
-import com.jc.tm.db.dao.jpa.CommentDao;
-import com.jc.tm.db.dao.jpa.TaskDao;
-import com.jc.tm.service.ITaskService;
-import com.jc.tm.service.TaskServiceImpl;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

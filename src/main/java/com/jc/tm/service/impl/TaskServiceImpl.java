@@ -1,17 +1,18 @@
-package com.jc.tm.service;
+package com.jc.tm.service.impl;
 
-import com.jc.tm.db.Status;
+import com.jc.tm.service.ITaskService;
+import com.jc.tm.util.Status;
 import com.jc.tm.db.dao.jpa.CommentDao;
 import com.jc.tm.db.dao.jpa.ProjectDao;
 import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.db.entity.Comment;
-import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
+import com.jc.tm.dto.PaginationDto;
+import com.jc.tm.util.Priority;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 

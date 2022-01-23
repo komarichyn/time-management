@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react";
 import TasksService from "../../../services/TasksService";
+import {Badge} from "react-bootstrap";
+import SetBadge from "../../../scripts/SetBadge";
 
 const LastFiveElemetns = () => {
   const [tasks, setTasks] = useState([]);
@@ -44,8 +46,12 @@ const LastFiveElemetns = () => {
                   </div>
                 </div>
               </td>
-              <td>{task.dueDate}</td>
-              <td>{task.priority}</td>
+              {
+                task.dueDate !== null
+                  ? <td>{task.dueDate}</td>
+                  : <td>Not assigned</td>
+              }
+              <td><Badge bg={SetBadge(task.priority)}>{task.priority}</Badge></td>
             </tr>
           ) : (
             <tr>No</tr>

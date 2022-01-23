@@ -1,4 +1,4 @@
-package com.jc.tm.service;
+package com.jc.tm.dto;
 
 import com.jc.tm.db.entity.Task;
 import lombok.Data;

@@ -1,12 +1,11 @@
 package com.jc.tm.controller;
 
 import com.jc.tm.converter.Converter;
-import com.jc.tm.db.Status;
+import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.service.Priority;
-import com.jc.tm.service.TaskServiceImpl;
-import org.junit.Before;
+import com.jc.tm.util.Priority;
+import com.jc.tm.service.impl.TaskServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -1,13 +1,12 @@
-package com.jc.tm.service.project;
+package com.jc.tm.service.impl;
 
 import com.jc.tm.db.dao.jpa.ProjectDao;
 import com.jc.tm.db.entity.Project;
-import com.jc.tm.db.entity.Task;
+import com.jc.tm.service.IProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
