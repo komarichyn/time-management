@@ -1,9 +1,10 @@
 package com.jc.tm.service;
 
-import com.jc.tm.db.Status;
+import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
-import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
+import com.jc.tm.dto.PaginationDto;
+import com.jc.tm.util.Priority;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;

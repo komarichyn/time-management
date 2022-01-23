@@ -1,29 +1,32 @@
 package com.jc.tm.controller;
 
 import com.jc.tm.converter.Converter;
-import com.jc.tm.db.Status;
+import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.service.CommentDto;
-import com.jc.tm.service.PaginationDto;
-import com.jc.tm.service.TaskDto;
-import com.jc.tm.service.TaskServiceImpl;
-import com.jc.tm.service.project.ProjectServiceImpl;
+import com.jc.tm.dto.CommentDto;
+import com.jc.tm.dto.PaginationDto;
+import com.jc.tm.dto.TaskDto;
+import com.jc.tm.service.impl.TaskServiceImpl;
+import com.jc.tm.dto.ProjectDto;
+import com.jc.tm.service.impl.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+
 
 /**
  * this class is controller and it merge database with UI
  */
 
 @Slf4j
-@Controller
+@RestController
+@CrossOrigin("http://localhost:3000/")
+@RequestMapping("/")
 public class Dashboard {
     private final int pageSize = 10;
 
@@ -38,57 +41,49 @@ public class Dashboard {
         this.converter = converter;
     }
 
-    @GetMapping("/index")
-    public String mainPage(Model model) {
+    @GetMapping
+    public Collection<TaskDto> mainPage() {
         log.debug("Show last five tasks");
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setPage(0);
         paginationDto.setSize(5);
         Collection<Task> taskList = service.sortedByDueDateDESCTasks(paginationDto);
-        Collection<TaskDto> result = converter.parsingTaskDataToTaskDTO(taskList);
-        model.addAttribute("lastFive", result);
-        return "index";
+        return converter.parsingTaskDataToTaskDTO(taskList);
     }
 
     @GetMapping("show-tasks/page/{pageNumber}")
-    public String show(Model model,
-                           String searchBy,
-                           @PathVariable(value = "pageNumber") int pageNumber,
-                           @RequestParam(name="sortBy", required = false) String sortBy) {
+    public Collection<TaskDto> show(String searchBy,
+                                    @PathVariable(value = "pageNumber") int pageNumber,
+                                    @RequestParam(name = "sortBy", required = false) String sortBy) {
         log.debug("Show tasks page with params: searchBy={}, pageNumber={}, sortBy={}", searchBy, pageNumber, sortBy);
-        SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
+//        SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setIndex(pageNumber);
         paginationDto.setSize(pageSize);
         var taskList = service.loadTask(paginationDto, searchBy, sortBy);
-        int tm = (int) taskList.getTotalElements();
+//        int tm = (int) taskList.getTotalElements();
         var result = converter.parsingTaskDataToTaskDTO(taskList.getContent());
 
-        paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
-
-        model.addAttribute("pagination", paginationDto);
-        model.addAttribute("sortSearch", sortnSearch);
-        model.addAttribute("service", result);
-
-        return "show-tasks";
+//        paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
+        return result;
     }
 
-    @GetMapping("/create-task")
-    public String create(Model model) {
+//    @GetMapping("show-tasks/{searchBy}")
+    @GetMapping("show-tasks/searchBy={searchBy}")
+    public Collection<TaskDto> findByName(@PathVariable String searchBy) {
+        String sortBy = "";
+        int pageNumber = 1;
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setIndex(pageNumber);
+        paginationDto.setSize(pageSize);
+        var taskList = service.loadTask(paginationDto, searchBy, sortBy);
+        return converter.parsingTaskDataToTaskDTO(taskList.getContent());
+    }
+
+    @PostMapping("/create-task")
+    public Task create(@RequestBody Task task) {
         log.debug("create task page");
-        Task task = new Task();
-        var projects = projectService.loadProject();
-        model.addAttribute("projects", projects);
-        model.addAttribute("task", task);
-        return "create-task";
-    }
-
-    @PostMapping("/add-task")
-    public String createTask(@ModelAttribute Task task) {
-        log.debug("Add task page. Task={}", task);
-        service.saveTask(task);
-        Long taskId = task.getId();
-        return "redirect:/task/" + taskId;
+        return service.saveTask(task);
     }
 
     @GetMapping("/task/{taskId}")
@@ -102,6 +97,7 @@ public class Dashboard {
         return "task";
     }
 
+
     @GetMapping(value = {"/task/edit/{taskId}"})
     public String showEditTask(Model model, @PathVariable long taskId) {
         log.debug("Change task with id={}", taskId);
@@ -114,7 +110,7 @@ public class Dashboard {
 
     @PostMapping(value = {"show-tasks/task/update/{taskId}"}, produces = "application/json")
     public Task updateTaskStatus(@PathVariable long taskId, @RequestBody String status) {
-        log.debug("Update Task Status: {}" + status);
+        log.debug("Update TasksTableRows Status: {}" + status);
         Task task = service.getTask(taskId);
         task.setStatus(Status.valueOf(status));
         service.updateTask(task);
@@ -130,10 +126,9 @@ public class Dashboard {
     }
 
     @GetMapping("/delete-task/{taskId}")
-    public String deleteTask(@PathVariable long taskId) {
+    public Task deleteTask(@PathVariable long taskId) {
         log.debug("Delete task with id={}", taskId);
-        service.removeTask(taskId);
-        return "redirect:/show-tasks/page/1";
+        return service.removeTask(taskId);
     }
 
     //Comment controllers
@@ -141,7 +136,7 @@ public class Dashboard {
     @PostMapping("/task/{taskId}/added-comment")
     public String addComment(@ModelAttribute("comment") Comment comment, @PathVariable("taskId") long taskId) {
         log.debug("Add comment={} in task with id={}", comment, taskId);
-        service.addComment(taskId,comment);
+        service.addComment(taskId, comment);
         return "redirect:/task/" + taskId;
     }
 
@@ -163,18 +158,15 @@ public class Dashboard {
         return "redirect:/task/" + taskId;
     }
 
-    @GetMapping("/create-project")
-    public String createProject(Model model) {
-        log.debug("Create project page");
-        Project project = new Project();
-        model.addAttribute("project", project);
-        return "create-project";
+    @PostMapping("/add-project")
+    public Project addProject(@RequestBody Project project) {
+        log.debug("Add project page. Project={}", project);
+        return projectService.saveProject(project);
     }
 
-    @PostMapping("/add-project")
-    public String addProject(@ModelAttribute Project project) {
-        log.debug("Add project page. Project={}", project);
-        projectService.saveProject(project);
-        return "redirect:/create-task";
+    @GetMapping("/get-all-projects")
+    public Collection<ProjectDto> loadProjects() {
+        log.debug("loading all projects");
+        return converter.parsingProjectDataToProjectDTO(projectService.loadProject());
     }
 }

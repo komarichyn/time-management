@@ -1,8 +1,6 @@
 package com.jc.tm.controller;
 
-import com.jc.tm.service.PaginationDto;
-
-public class SortnSearch {
+public class SortnSearch { //TODO delete later. Useless feature
     private String searchBy;
     private String sortBy;
     public SortnSearch(String searchBy, String sortBy) {
