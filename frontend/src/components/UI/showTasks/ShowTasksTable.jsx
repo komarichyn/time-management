@@ -17,8 +17,6 @@ const ShowTasksTable = ({search}) => {
 
   const deleteTask = (taskId) => {
     TasksService.deleteTask(taskId).then((res) => {
-      console.log("deleted");
-      console.log(taskId);
       showTasks();
     })
   }

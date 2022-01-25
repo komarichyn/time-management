@@ -5,7 +5,6 @@ import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
-import com.jc.tm.dto.CommentDto;
 import com.jc.tm.dto.PaginationDto;
 import com.jc.tm.dto.TaskDto;
 import com.jc.tm.service.impl.TaskServiceImpl;
@@ -68,7 +67,7 @@ public class Dashboard {
         return result;
     }
 
-//    @GetMapping("show-tasks/{searchBy}")
+//    @GetMapping("show-tasks/{searchBy}") TODO - search must work from all pages
     @GetMapping("show-tasks/searchBy={searchBy}")
     public Collection<TaskDto> findByName(@PathVariable String searchBy) {
         String sortBy = "";
@@ -80,23 +79,20 @@ public class Dashboard {
         return converter.parsingTaskDataToTaskDTO(taskList.getContent());
     }
 
+    //TODO - DONE
     @PostMapping("/create-task")
     public Task create(@RequestBody Task task) {
         log.debug("create task page");
         return service.saveTask(task);
     }
 
+    //TODO - DONE
     @GetMapping("/task/{taskId}")
-    public String getTaskById(Model model, @PathVariable long taskId) {
+    public TaskDto getTaskById(/*Model model, */@PathVariable long taskId) {
         log.debug("Show one task with id={}", taskId);
         Task task = service.getTask(taskId);
-        TaskDto taskDto = converter.taskToTaskDto(task);
-        Collection<CommentDto> comments = taskDto.getComments();
-        model.addAttribute("task", taskDto);
-        model.addAttribute("comments", comments);
-        return "task";
+        return converter.taskToTaskDto(task);
     }
-
 
     @GetMapping(value = {"/task/edit/{taskId}"})
     public String showEditTask(Model model, @PathVariable long taskId) {
@@ -125,6 +121,7 @@ public class Dashboard {
         return "redirect:/task/" + task.getId();
     }
 
+    //TODO - DONE
     @GetMapping("/delete-task/{taskId}")
     public Task deleteTask(@PathVariable long taskId) {
         log.debug("Delete task with id={}", taskId);
@@ -158,12 +155,14 @@ public class Dashboard {
         return "redirect:/task/" + taskId;
     }
 
+    //TODO - DONE
     @PostMapping("/add-project")
     public Project addProject(@RequestBody Project project) {
         log.debug("Add project page. Project={}", project);
         return projectService.saveProject(project);
     }
 
+    //TODO - DONE
     @GetMapping("/get-all-projects")
     public Collection<ProjectDto> loadProjects() {
         log.debug("loading all projects");

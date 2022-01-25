@@ -1,11 +1,12 @@
 import React from "react";
 import {Badge} from "react-bootstrap";
 import SetBadge from "../../../scripts/SetBadge.js";
+import {Link} from "react-router-dom";
 
 const TasksTableRows = ({task: {id, name, description, created, status, progress, dueDate, priority, projectName}, deleteTask}) => {
   return (
     <tr>
-      <td>{name}</td>
+      <td><Link to={`/task/${id}`}>{name}</Link></td>
       <td>{status}</td>
       <td>
         <div className="progress">
