@@ -88,29 +88,18 @@ public class Dashboard {
 
     //TODO - DONE
     @GetMapping("/task/{taskId}")
-    public TaskDto getTaskById(/*Model model, */@PathVariable long taskId) {
+    public TaskDto getTaskById(@PathVariable long taskId) {
         log.debug("Show one task with id={}", taskId);
         Task task = service.getTask(taskId);
         return converter.taskToTaskDto(task);
     }
 
-    @GetMapping(value = {"/task/edit/{taskId}"})
-    public String showEditTask(Model model, @PathVariable long taskId) {
-        log.debug("Change task with id={}", taskId);
-        var projects = projectService.loadProject();
+    //TODO - DONE
+    @PostMapping(value = {"show-tasks/task/update/{taskId}"})
+    public Task updateTaskStatus(@PathVariable long taskId, @RequestBody TaskDto status) {
+        log.info("Update TasksTableRows Status: {}", status);
         Task task = service.getTask(taskId);
-        model.addAttribute("task", task);
-        model.addAttribute("projects", projects);
-        return "update-task";
-    }
-
-    @PostMapping(value = {"show-tasks/task/update/{taskId}"}, produces = "application/json")
-    public Task updateTaskStatus(@PathVariable long taskId, @RequestBody String status) {
-        log.debug("Update TasksTableRows Status: {}" + status);
-        Task task = service.getTask(taskId);
-        task.setStatus(Status.valueOf(status));
-        service.updateTask(task);
-        return task;
+        return service.updateTaskStatus(task, status);
     }
 
     @PostMapping(value = {"/task/update/{taskId}"})

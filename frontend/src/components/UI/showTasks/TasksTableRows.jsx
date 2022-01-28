@@ -2,12 +2,14 @@ import React from "react";
 import {Badge} from "react-bootstrap";
 import SetBadge from "../../../scripts/SetBadge.js";
 import {Link} from "react-router-dom";
+import ChangeStatus from "../../../scripts/ChangeStatus.js";
 
-const TasksTableRows = ({task: {id, name, description, created, status, progress, dueDate, priority, projectName}, deleteTask}) => {
+const TasksTableRows = ({task: {id, name, description, created, status, progress, dueDate, priority, projectName}, deleteTask, setStatus}) => {
+
   return (
     <tr>
       <td><Link to={`/task/${id}`}>{name}</Link></td>
-      <td>{status}</td>
+      <td onClick={() => {ChangeStatus(id, status, setStatus)}}>{status}</td>
       <td>
         <div className="progress">
           <div

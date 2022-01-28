@@ -21,6 +21,12 @@ const ShowTasksTable = ({search}) => {
     })
   }
 
+  const setStatus = (id, newStatus) => {
+    TasksService.changeStatus(id, newStatus).then((res) => {
+      showTasks();
+    })
+  }
+
   const searchQ = (rows) => {
     return rows.filter((row) => row.name.toLowerCase().indexOf(search.toLowerCase()) > -1);
   }
@@ -28,7 +34,7 @@ const ShowTasksTable = ({search}) => {
   return (
     <div>
       <div>
-        <TasksTableTitles deleteTask={deleteTask} tasks={searchQ(tasks)}/>
+        <TasksTableTitles deleteTask={deleteTask} tasks={searchQ(tasks)} setStatus={setStatus}/>
       </div>
     </div>
   )

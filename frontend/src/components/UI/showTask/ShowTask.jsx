@@ -24,15 +24,10 @@ const ShowTask = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    showTask();
-  }, [])
-
-  const showTask = () => {
     TasksService.getTask(id).then((res) => {
       setTask(res.data);
-      console.log(res.data);
     })
-  }
+  }, [id])
 
   const deleteTask = (e) => {
     e.preventDefault();
