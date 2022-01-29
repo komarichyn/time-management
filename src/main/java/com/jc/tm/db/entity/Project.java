@@ -17,8 +17,8 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @OneToMany(mappedBy = "projects")
-//    private List<Task> tasks;
+    @OneToMany(mappedBy = "projects")
+    private List<Task> tasks;
     private String name;
 
     @Override

@@ -1,7 +1,6 @@
 package com.jc.tm.controller;
 
 import com.jc.tm.converter.Converter;
-import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Project;
 import com.jc.tm.db.entity.Task;
@@ -12,7 +11,6 @@ import com.jc.tm.dto.ProjectDto;
 import com.jc.tm.service.impl.ProjectServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -97,7 +95,7 @@ public class Dashboard {
     //TODO - DONE
     @PostMapping(value = {"show-tasks/task/update/{taskId}"})
     public Task updateTaskStatus(@PathVariable long taskId, @RequestBody TaskDto status) {
-        log.info("Update TasksTableRows Status: {}", status);
+        log.debug("Update TasksTableRows Status: {}", status);
         Task task = service.getTask(taskId);
         return service.updateTaskStatus(task, status);
     }
