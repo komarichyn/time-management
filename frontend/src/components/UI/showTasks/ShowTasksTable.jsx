@@ -17,8 +17,12 @@ const ShowTasksTable = ({search}) => {
 
   const deleteTask = (taskId) => {
     TasksService.deleteTask(taskId).then((res) => {
-      console.log("deleted");
-      console.log(taskId);
+      showTasks();
+    })
+  }
+
+  const setStatus = (id, newStatus) => {
+    TasksService.changeStatus(id, newStatus).then((res) => {
       showTasks();
     })
   }
@@ -30,7 +34,7 @@ const ShowTasksTable = ({search}) => {
   return (
     <div>
       <div>
-        <TasksTableTitles deleteTask={deleteTask} tasks={searchQ(tasks)}/>
+        <TasksTableTitles deleteTask={deleteTask} tasks={searchQ(tasks)} setStatus={setStatus}/>
       </div>
     </div>
   )

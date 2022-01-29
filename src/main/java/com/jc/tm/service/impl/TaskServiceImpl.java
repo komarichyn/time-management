@@ -1,5 +1,6 @@
 package com.jc.tm.service.impl;
 
+import com.jc.tm.dto.TaskDto;
 import com.jc.tm.service.ITaskService;
 import com.jc.tm.util.Status;
 import com.jc.tm.db.dao.jpa.CommentDao;
@@ -67,6 +68,15 @@ public class TaskServiceImpl implements ITaskService {
     public Task removeTask(Task task) {
         log.debug("removeTask input task:{}", task);
         return this.removeTask(task.getId());
+    }
+
+    @Override
+    public Task updateTaskStatus(Task freshTask, TaskDto status) {
+        log.info("updateTask input values:{}", status);
+        Status newStatus = status.getStatus();
+        freshTask.setStatus(newStatus);
+        taskDao.save(freshTask);
+        return freshTask;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.jc.tm.service;
 
+import com.jc.tm.dto.TaskDto;
 import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
@@ -31,6 +32,8 @@ public interface ITaskService {
      * @return removed task object of null if task does not exists
      */
     public Task removeTask(Task task) ;
+
+    Task updateTaskStatus(Task freshTask, TaskDto status);
 
     /**
      * update task. method do update or replace existing object into database. only identifier of object must be constant

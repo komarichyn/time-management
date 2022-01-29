@@ -1,7 +1,7 @@
 import React from "react";
 import TasksTableRows from "./TasksTableRows";
 
-const TasksTableTitles = ({tasks, deleteTask}) => {
+const TasksTableTitles = ({tasks, deleteTask, setStatus}) => {
   return (
     <div className="container">
       {tasks.length ?
@@ -19,7 +19,7 @@ const TasksTableTitles = ({tasks, deleteTask}) => {
           </thead>
           <tbody>
           {tasks.map((task) =>
-            <TasksTableRows deleteTask={deleteTask} key={task.id} task={task}/>
+            <TasksTableRows deleteTask={deleteTask} key={task.id} task={task} setStatus={setStatus}/>
           )}
           </tbody>
         </table>
