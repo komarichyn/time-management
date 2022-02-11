@@ -11,7 +11,13 @@ const NavigationBar = ({search, onChange}) => {
     e.preventDefault();
     const task = {name};
     TasksService.createTask(task).then((res) => {
-        navigate("/show-tasks"); //FIXME:navigate to task page
+        // navigate("/show-tasks", {replace : true}); //FIXME:navigate to task page
+      navigate(location === "/show-tasks" ? 0 : "/show-tasks" );
+      /*if(location === "/show-tasks") {
+        return null;
+      } else {
+
+      }*/
       })
   };
 

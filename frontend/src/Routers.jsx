@@ -6,6 +6,7 @@ import ShowTasks from "./pages/ShowTasks";
 import CreateProject from "./pages/CreateProject";
 import NavigationBar from "./components/UI/header/NavigationBar";
 import Task from "./pages/Task";
+import UpdateTask from "./pages/UpdateTask";
 
 const Routers = () => {
   const [searchWord, setSearchWord] = useState("");
@@ -19,6 +20,7 @@ const Routers = () => {
         <Route path="/create-project" element={<CreateProject/>}/>
         <Route path="/show-tasks" element={<ShowTasks search={searchWord}/>}/>
         <Route path="/task/:id" element={<Task/>}/>
+        <Route path="/task/update/:id" element={<UpdateTask/>}/>
       </Routes>
     </Router>
   )

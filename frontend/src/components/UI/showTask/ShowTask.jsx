@@ -84,7 +84,8 @@ const ShowTask = () => {
           </div>
         </div>
       </div>
-      <Link className="btn btn-primary" to="/">Update</Link>
+      {/*<Link className="btn btn-primary" to={`/task/update/${id}`}>Update</Link>*/}
+      <Link className="btn btn-primary" to={"/task/update/" + id}>Update</Link>
       <button className="btn btn-danger"
               onClick={(e) => deleteTask(e)}>Delete
       </button>

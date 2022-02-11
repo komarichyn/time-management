@@ -81,6 +81,7 @@ public class Dashboard {
     @PostMapping("/create-task")
     public Task create(@RequestBody Task task) {
         log.debug("create task page");
+        System.out.println(task);
         return service.saveTask(task);
     }
 
@@ -101,11 +102,14 @@ public class Dashboard {
     }
 
     @PostMapping(value = {"/task/update/{taskId}"})
-    public String updateTask(@PathVariable long taskId, @ModelAttribute Task task) {
-        log.debug("Update task={} with id={}", task, taskId);
-        task.setId(taskId);
-        service.updateTask(task);
-        return "redirect:/task/" + task.getId();
+    public Task updateTask(@PathVariable long taskId, @RequestBody TaskDto taskDto) {
+        log.info("Update task={} with id={}", taskDto, taskId);
+        Task task = service.getTask(taskId);
+        System.out.println("Task = " + task);
+        System.out.println("TaskDto = " + taskDto);
+        System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+        return service.updateTaskNew(task, taskDto);
+//        return "redirect:/task/" + task.getId();
     }
 
     //TODO - DONE

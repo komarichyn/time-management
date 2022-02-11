@@ -8,6 +8,7 @@ const CREATEPROJECT_URL = "http://localhost:8080/add-project";
 const DELETETASK_URL = "http://localhost:8080/delete-task";
 const SHOWTASKBYID_URL = "http://localhost:8080/task";
 const CHANGESTATUS_URL = "http://localhost:8080/show-tasks/task/update";
+const UPDATETASK_URL = "http://localhost:8080/task/update";
 // const SEARCHTASK_URL = "http://localhost:8080/show-tasks/searchBy={keyWord}"; //TODO
 
 
@@ -42,6 +43,10 @@ class TasksService {
 
   changeStatus(taskId, status) {
     return axios.post(CHANGESTATUS_URL + "/" + taskId, status);
+  }
+
+  updateTask(taskId, task) {
+    return axios.post(UPDATETASK_URL + "/" + taskId, task);
   }
 }
 

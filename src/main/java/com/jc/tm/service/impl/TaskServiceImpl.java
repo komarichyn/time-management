@@ -72,11 +72,34 @@ public class TaskServiceImpl implements ITaskService {
 
     @Override
     public Task updateTaskStatus(Task freshTask, TaskDto status) {
-        log.info("updateTask input values:{}", status);
+        log.debug("updateTask input values:{}", status);
         Status newStatus = status.getStatus();
         freshTask.setStatus(newStatus);
         taskDao.save(freshTask);
         return freshTask;
+    }
+
+    @Override
+    public Task updateTaskNew(Task task, TaskDto taskDto) {
+        log.info("updateTaskNew input values:{}\nTaskDto value: {}", task, taskDto);
+        var freshTask = taskDto;
+        task.setName(taskDto.getName());
+        task.setDescription(taskDto.getDescription());
+        task.setStatus(taskDto.getStatus());
+        task.setPriority(taskDto.getPriority());
+        task.setDueDate(LocalDateTime.parse(taskDto.getDueDate()));
+        task.setProgress(taskDto.getProgress());
+//        task.setProjects(taskDto.getProjectName());
+        if (taskDto.getProgress() >= 10 && task.getStatus() == Status.TODO) {
+            task.setStatus(Status.IN_PROGRESS);
+        }
+        if (taskDto.getProgress() == 100) {
+            if(task.getStatus() == Status.IN_PROGRESS || task.getStatus() == Status.PAUSE) {
+                task.setStatus(Status.COMPLETE);
+            }
+        }
+            taskDao.save(task);
+        return task;
     }
 
     @Override
