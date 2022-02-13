@@ -33,7 +33,9 @@ public interface ITaskService {
      */
     public Task removeTask(Task task) ;
 
-    Task updateTaskStatus(Task freshTask, TaskDto status);
+    public Task updateTaskStatus(Task freshTask, TaskDto status);
+
+    public Task updateTaskNew(Task task, TaskDto taskDto);
 
     /**
      * update task. method do update or replace existing object into database. only identifier of object must be constant

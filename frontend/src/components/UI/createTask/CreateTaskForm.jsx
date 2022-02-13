@@ -16,7 +16,9 @@ const CreateTaskForm = () => {
     e.preventDefault();
     if (project === '') {
       const task = {name, description, priority, dueDate}
+      console.log(task);
       TasksService.createTask(task).then((response) => {
+        console.log(response.data);
         navigate("/show-tasks");
       })
     } else {
@@ -45,12 +47,12 @@ const CreateTaskForm = () => {
         </nav>
         <form>
           <div className="col-md-5 mb-3">
-            <label className="form-label">TasksTableRows Name</label>
+            <label className="form-label">Name</label>
             <input
               type="text"
               name="name"
               className="form-control"
-              placeholder="TasksTableRows..."
+              placeholder="Name..."
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -103,6 +105,7 @@ const CreateTaskForm = () => {
                 <option key={project.id} value={JSON.stringify(project)}>
                   {project.name}
                 </option>
+                //TODO fix me use id instead of object
               )}
             </select>
           </div>
