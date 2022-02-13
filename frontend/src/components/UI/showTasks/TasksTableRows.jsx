@@ -4,12 +4,15 @@ import SetBadge from "../../../scripts/SetBadge.js";
 import {Link} from "react-router-dom";
 import ChangeStatus from "../../../scripts/ChangeStatus.js";
 
-const TasksTableRows = ({task: {id, name, description, created, status, progress, dueDate, priority, projectName}, deleteTask, setStatus}) => {
+const TasksTableRows = ({task: {id, name, description, created, status, progress, dueDate, priority, projectName},
+                          deleteTask, setStatus}) => {
 
   return (
     <tr>
       <td><Link to={`/task/${id}`}>{name}</Link></td>
-      <td onClick={() => {ChangeStatus(id, status, setStatus)}}>{status}</td>
+      <td onClick={() => {
+        ChangeStatus(id, status, setStatus)
+      }}>{status}</td>
       <td>
         <div className="progress">
           <div
@@ -31,7 +34,12 @@ const TasksTableRows = ({task: {id, name, description, created, status, progress
         ? <td>{projectName["name"]}</td>
         : <td></td>
       }
-      <td><button className="btn btn-danger" onClick={() => deleteTask(id)}>Delete</button></td>
+      <td>
+        <button type="button" className="btn btn-danger" onClick={() => {
+          if (window.confirm("Are you really want delete this task?")) deleteTask(id)
+        }}>Delete
+        </button>
+      </td>
     </tr>
   )
 }

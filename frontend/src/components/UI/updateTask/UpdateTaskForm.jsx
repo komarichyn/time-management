@@ -19,25 +19,11 @@ const UpdateTaskForm = () => {
       name: '',
     }
   });
-  let {id} = useParams(); //TODO question
+  let {id} = useParams();
 
-  let m = moment(task.dueDate, "YYYY-MM-DDTkk:mm").format("YYYY-MM-DDTkk:mm");
-  console.log(m);
+  let m = moment(task.dueDate).format("YYYY-MM-DDTkk:mm");
   task.dueDate = m;
 
-  // let m = moment(task.dueDate, "YYYY-MM-DDTkk:mm");
-  // console.log(m);
-  // task.dueDate = m.format("YYYY-MM-DDTkk:mm").toString();
-
-  // let q = moment(task.dueDate, moment.HTML5_FMT.DATETIME_LOCAL);
-  // console.log(q);
-  // task.dueDate = q.format("YYYY-MM-DDTkk:mm").toString();
-
-  // task.dueDate = m;
-  // let m = moment.HTML5_FMT.DATETIME_LOCAL;
-  // moment(task.dueDate).toISOString();
-  // let m = moment().toISOString(task.dueDate);
-  // console.log(m.toISOString(task.dueDate));
   const [listProjects, setListProjects] = useState([]);
   const navigate = useNavigate();
 
@@ -45,6 +31,7 @@ const UpdateTaskForm = () => {
     e.preventDefault();
     console.log(task, typeof(task));
     console.log(task.dueDate, typeof(task.dueDate));
+    console.log(task.projectName);
     TasksService.updateTask(id, task).then((res) => {
       console.log("WORK");
       console.log(res.data);
@@ -61,7 +48,7 @@ const UpdateTaskForm = () => {
     TasksService.getTask(id).then((res) => {
       setTask(res.data);
       console.log(task.dueDate);
-      console.log(task.name);
+      console.log(task.projectName);
     });
   }
 
@@ -92,7 +79,6 @@ const UpdateTaskForm = () => {
               value={task.name}
               onChange={(e) =>
                 setTask((state) => ({...state, name: e.target.value}))}
-              // setTask((state)=> ({...state, [name]: newValue}))
             />
             <div className="invalid-feedback">Please enter task name.</div>
           </div>
@@ -175,7 +161,9 @@ const UpdateTaskForm = () => {
           </div>
           <div className="col-md-5 mb-3">
             <label>Project</label>
-            <select className="form-select" name="taskProject"
+            <select className="form-select"
+                    name="taskProject"
+                    value={task.projectName}
                     onChange={(e) =>
                       setTask((state) => ({...state, projectName: e.target.value}))}>
               <option value="">Choose project</option>

@@ -107,7 +107,6 @@ public class Dashboard {
         Task task = service.getTask(taskId);
         System.out.println("Task = " + task);
         System.out.println("TaskDto = " + taskDto);
-        System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
         return service.updateTaskNew(task, taskDto);
 //        return "redirect:/task/" + task.getId();
     }
