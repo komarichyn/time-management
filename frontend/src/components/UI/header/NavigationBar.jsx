@@ -83,11 +83,6 @@ const NavigationBar = ({search, onChange}) => {
               className="form-control form-control-dark"
               placeholder="Search..."
               value={search}
-              onBlur={(e => {
-                if (e.target.value !== "") {
-                  //TODO clear input after lost focus
-                }
-              })}
               onChange={(e) => onChange(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && findTasks(e)}
             />

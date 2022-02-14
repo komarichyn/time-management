@@ -68,6 +68,7 @@ public class Dashboard {
 //    @GetMapping("show-tasks/{searchBy}") TODO - search must work from all pages
     @GetMapping("show-tasks/searchBy={searchBy}")
     public Collection<TaskDto> findByName(@PathVariable String searchBy) {
+        log.debug("Find task by name with value = {}", searchBy);
         String sortBy = "";
         int pageNumber = 1;
         PaginationDto paginationDto = new PaginationDto();
