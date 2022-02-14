@@ -9,7 +9,7 @@ const TasksTableRows = ({task: {id, name, description, created, status, progress
 
   return (
     <tr>
-      <td><Link to={`/task/${id}`}>{name}</Link></td>
+      <td><Link to={"/task/" + id}>{name}</Link></td>
       <td onClick={() => {
         ChangeStatus(id, status, setStatus)
       }}>{status}</td>

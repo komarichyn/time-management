@@ -101,14 +101,12 @@ public class Dashboard {
         return service.updateTaskStatus(task, status);
     }
 
+    //TODO = DONE
     @PostMapping(value = {"/task/update/{taskId}"})
     public Task updateTask(@PathVariable long taskId, @RequestBody TaskDto taskDto) {
         log.info("Update task={} with id={}", taskDto, taskId);
         Task task = service.getTask(taskId);
-        System.out.println("Task = " + task);
-        System.out.println("TaskDto = " + taskDto);
         return service.updateTaskNew(task, taskDto);
-//        return "redirect:/task/" + task.getId();
     }
 
     //TODO - DONE
