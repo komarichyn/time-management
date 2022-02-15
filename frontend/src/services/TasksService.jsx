@@ -9,7 +9,7 @@ const DELETETASK_URL = "http://localhost:8080/delete-task";
 const SHOWTASKBYID_URL = "http://localhost:8080/task";
 const CHANGESTATUS_URL = "http://localhost:8080/show-tasks/task/update";
 const UPDATETASK_URL = "http://localhost:8080/task/update";
-// const SEARCHTASK_URL = "http://localhost:8080/show-tasks/searchBy={keyWord}"; //TODO
+const SEARCHTASKS_URL = "http://localhost:8080/show-tasks/searchBy="; //TODO
 
 
 class TasksService {
@@ -47,6 +47,10 @@ class TasksService {
 
   updateTask(taskId, task) {
     return axios.post(UPDATETASK_URL + "/" + taskId, task);
+  }
+
+  findTasks(keyWord) {
+    return axios.get(SEARCHTASKS_URL + keyWord);
   }
 }
 

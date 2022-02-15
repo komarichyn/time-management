@@ -9,17 +9,22 @@ const NavigationBar = ({search, onChange}) => {
 
   const saveTask = (e) => {
     e.preventDefault();
+    if (name === "" || name === " ") {
+      alert("Name can't be empty!");
+      return;
+    }
     const task = {name};
     TasksService.createTask(task).then((res) => {
-        // navigate("/show-tasks", {replace : true}); //FIXME:navigate to task page
-      navigate(location === "/show-tasks" ? 0 : "/show-tasks" );
-      /*if(location === "/show-tasks") {
-        return null;
-      } else {
-
-      }*/
+      navigate(location === "/show-tasks" ? 0 : "/show-tasks"); //FIXME:navigate to task page
       })
   };
+
+  const findTasks = (e) => {
+    e.preventDefault();
+    TasksService.findTasks(search).then((res) => {
+      navigate("show-tasks");
+    })
+  }
 
   return (
     <div className="p-3 bg-dark text-white">
@@ -53,13 +58,17 @@ const NavigationBar = ({search, onChange}) => {
               <form>
                 <div>
                   <input
-                    required
                     type="text"
                     name="name"
                     className="form-control form-control-dark"
                     placeholder="Quick create task..."
                     style={{marginLeft: "15px"}}
                     value={name}
+                    onBlur={(e => {
+                      if (e.target.value !== "") {
+                        setName("");
+                      }
+                    })}
                     onChange={(e) => setName(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && saveTask(e)}
                   />
@@ -75,7 +84,7 @@ const NavigationBar = ({search, onChange}) => {
               placeholder="Search..."
               value={search}
               onChange={(e) => onChange(e.target.value)}
-              // onKeyPress={(e) => e.key === "Enter" && find(e)}
+              onKeyPress={(e) => e.key === "Enter" && findTasks(e)}
             />
           </form>
         </div>
