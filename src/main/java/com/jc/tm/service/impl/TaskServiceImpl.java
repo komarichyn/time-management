@@ -1,15 +1,13 @@
 package com.jc.tm.service.impl;
 
-import com.jc.tm.dto.TaskDto;
-import com.jc.tm.service.ITaskService;
-import com.jc.tm.util.Status;
 import com.jc.tm.db.dao.jpa.CommentDao;
-import com.jc.tm.db.dao.jpa.ProjectDao;
 import com.jc.tm.db.dao.jpa.TaskDao;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.dto.PaginationDto;
-import com.jc.tm.util.Priority;
+import com.jc.tm.dto.TaskDto;
+import com.jc.tm.service.ITaskService;
+import com.jc.tm.util.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,13 +30,11 @@ public class TaskServiceImpl implements ITaskService {
 
     private final TaskDao taskDao;
     private final CommentDao commentDao;
-    private final ProjectDao projectDao;
 
     @Autowired
-    public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao, ProjectDao projectDao) {
+    public TaskServiceImpl(TaskDao taskDao, CommentDao commentDao) {
         this.taskDao = taskDao;
         this.commentDao = commentDao;
-        this.projectDao = projectDao;
     }
 
     @Override
@@ -64,6 +60,8 @@ public class TaskServiceImpl implements ITaskService {
         return task;
     }
 
+
+    //TODO - not used
     @Override
     public Task removeTask(Task task) {
         log.debug("removeTask input task:{}", task);
@@ -94,14 +92,15 @@ public class TaskServiceImpl implements ITaskService {
             task.setStatus(Status.IN_PROGRESS);
         }
         if (taskDto.getProgress() == 100) {
-            if(task.getStatus() == Status.IN_PROGRESS || task.getStatus() == Status.PAUSE) {
+            if (task.getStatus() == Status.IN_PROGRESS || task.getStatus() == Status.PAUSE) {
                 task.setStatus(Status.COMPLETE);
             }
         }
-            taskDao.save(task);
+        taskDao.save(task);
         return task;
     }
 
+    // TODO - not used , need to delete this method
     @Override
     public Task updateTask(Task freshTask) {
         log.debug("updateTask input values:{}", freshTask);
@@ -142,12 +141,15 @@ public class TaskServiceImpl implements ITaskService {
         }
     }
 
+    //TODO - not used
     @Override
     public Task getTask(Task task) {
         log.debug("getTask input values:{}", task);
         return this.getTask(task.getId());
     }
 
+
+    // TODO - show tasks and find by name  method
     @Override
     public Page<Task> loadTask(PaginationDto paginationDto, String searchBy, String sortBy) {
         log.debug("loadTasks method with paginationDto={} searchBy={} sortBy={}", paginationDto, searchBy, sortBy);
@@ -158,28 +160,26 @@ public class TaskServiceImpl implements ITaskService {
         return pt;
     }
 
-    @Override
-    public Collection<Task> loadTasks() {
-        log.debug("load tasks with default pagination");
-        return this.taskDao.findAll();
+    private String checkSortBy(String sortBy) {
+        log.debug("Check sortBy={}", sortBy);
+        if (sortBy == null || sortBy.isBlank()) {
+            return "name";
+        } else if (sortBy.equals("status")) {
+            return "status";
+        } else if (sortBy.equals("due_date")) {
+            return "due_date";
+        } else if (sortBy.equals("priority")) {
+            return "priority";
+        }
+        return sortBy;
     }
 
-    @Override
-    public Collection<Task> loadTasks(PaginationDto page) {
-        log.debug("load task by pagination: {}", page);
-        Page<Task> pt = taskDao.findAll(PageRequest.of(page.getPage(), page.getSize()));
-        log.debug("result of call: {}", pt);
-        return pt.getContent();
-    }
-
-    @Override
-    public Collection<Task> loadTasksByDescPriority(PaginationDto page) {
-        return null;
-    }
-
-    @Override
-    public Collection<Task> loadTasksByAskPriority(PaginationDto page) {
-        return null;
+    private String checkSearchBy(String searchBy) {
+        log.debug("Check searchBy={}", searchBy);
+        if (searchBy == null || searchBy.isBlank()) {
+            return "";
+        }
+        return searchBy;
     }
 
     @Override
@@ -210,19 +210,6 @@ public class TaskServiceImpl implements ITaskService {
         commentDao.save(newComment);
         return task;
     }
-
-//    @Override
-//    public Task addProject(Task task, Project project) {
-//        log.info("It work");
-//        List<Project> projects = new ArrayList<>();
-//        List<Task> tasks = new ArrayList<>();
-//        tasks.add(task);
-//        projects.add(project);
-////        task.setProjects(projects);
-////        project.setTasks(tasks);
-//        projectDao.save(project);
-//        return task;
-//    }
 
     @Override
     public Comment removeComment(Long id) {
@@ -259,131 +246,10 @@ public class TaskServiceImpl implements ITaskService {
         return freshComment;
     }
 
-    @Override
-    public Task setDueDate(Task task, LocalDateTime time) {
-        return this.setDueDate(task.getId(), time);
-    }
-
-    @Override
-    public Task setDueDate(Long taskId, LocalDateTime time) {
-        log.debug("setDueDate input values: taskId {}, new time {}", taskId, time);
-        var task = getTask(taskId);
-        if (task == null) {
-            log.error("Task with id {} not found", taskId);
-            throw new NullPointerException();
-        } else {
-            task.setDueDate(time);
-            this.updateTask(task);
-        }
-        return task;
-    }
-
-    @Override
-    public Task updateDueDate(Task task, LocalDateTime time) {
-        log.debug("update due date:{} time for task: {}", time, task);
-        if (task == null) {
-            throw new NullPointerException("task must not be null");
-        }
-        return this.updateDueDate(task.getId(), time);
-    }
-
-    @Override
-    public Task updateDueDate(Long taskId, LocalDateTime time) {
-        log.debug("update due date:{} time for task id: {}", time, taskId);
-        Task freshTask = this.getTask(taskId);
-        if (freshTask == null) {
-            log.error("due date was not updated for task");
-            return null;
-        }
-        freshTask.setDueDate(time);
-        return this.updateTask(freshTask);
-    }
-
-    @Override
-    public Task setPriority(Task task, Priority priority) {
-        log.debug("update priority:{}  for task: {}", priority, task);
-        if (task == null) {
-            throw new NullPointerException("task must not be null");
-        }
-        Task freshTask = this.getTask(task.getId());
-        if (freshTask == null) {
-            log.error("priority was not updated for task");
-            return null;
-        }
-        freshTask.setPriority(priority);
-        return this.updateTask(freshTask);
-    }
-
-    @Override
-    public Task setParentTask(Task parent, Task current) {
-        log.debug("update parent task:{}  for task: {}", parent, current);
-        throw new RuntimeException("Not implemented yet");
-//        if(current == null){
-//            throw new NullPointerException("current task must not be null");
-//        }
-//        Task freshTask = this.getTask(current.getId());
-//        if(freshTask == null){
-//            log.error("current task was not found");
-//            return null;
-//        }
-//        if(parent != null){
-//            //refresh parent
-//            parent = this.getTask(parent);
-//        }
-////        freshTask.setParent(parent);
-//        return this.updateTask(freshTask);
-    }
-
-    @Override
-    public Task moveTaskToRoot(Task task) {
-        log.debug("move  task:{}  to root", task);
-        return this.setParentTask(null, task);
-    }
-
-    @Override
-    public Task toPauseState(Task task) {
-        log.debug("change state for task:{} to PAUSE", task);
-        return this.setState(task, Status.PAUSE);
-    }
-
-    @Override
-    public Task setState(Task task, Status newState) {
-        log.debug("set state:{}  for task: {}", newState, task);
-        if (task == null) {
-            throw new NullPointerException("task must not be null");
-        }
-        Task freshTask = this.getTask(task.getId());
-        if (freshTask == null) {
-            log.error("state was not updated for task");
-            return null;
-        }
-        freshTask.setStatus(newState);
-        return this.updateTask(freshTask);
-    }
-
-    public String sortedByNameASCTasks() {
-        log.debug("sortedByNameASCTasks");
-        return ("name");
-    }
-
-    public String sortedByStatusASCTasks() {
-        log.debug("sortedByStatusASCTasks");
-        return ("status");
-    }
-
-    public String sortedByDueDateASCTasks() {
-        log.debug("sortedByDueDateASCTasks");
-        return "due_date";
-    }
-
+    //index page load by due date
     public Collection<Task> sortedByDueDateDESCTasks(PaginationDto paginationDto) {
         log.debug("sortedByNameDESCTasks input values: {}", paginationDto);
         return this.sortedBy(paginationDto, "dueDate");
-    }
-
-    public String sortedByPriorityASCTasks() {
-        log.debug("sortedByPriorityASCTasks");
-        return ("priority");
     }
 
     @Override
@@ -392,27 +258,5 @@ public class TaskServiceImpl implements ITaskService {
         Sort sort = Sort.by(paginationDto.getSorDirectionASC(), sortBy);
         Page<Task> pt = taskDao.findAll(PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort));
         return pt.getContent();
-    }
-
-    private String checkSortBy(String sortBy) {
-        log.debug("Check sortBy={}", sortBy);
-        if (sortBy == null || sortBy.isBlank()) {
-            return this.sortedByNameASCTasks();
-        } else if (sortBy.equals("status")) {
-            return this.sortedByStatusASCTasks();
-        } else if (sortBy.equals("due_date")) {
-            return this.sortedByDueDateASCTasks();
-        } else if (sortBy.equals("priority")) {
-            return this.sortedByPriorityASCTasks();
-        }
-        return sortBy;
-    }
-
-    private String checkSearchBy(String searchBy) {
-        log.debug("Check searchBy={}", searchBy);
-        if (searchBy == null || searchBy.isBlank()) {
-            return "";
-        }
-        return searchBy;
     }
 }

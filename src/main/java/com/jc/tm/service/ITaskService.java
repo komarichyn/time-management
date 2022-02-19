@@ -1,14 +1,11 @@
 package com.jc.tm.service;
 
-import com.jc.tm.dto.TaskDto;
-import com.jc.tm.util.Status;
 import com.jc.tm.db.entity.Comment;
 import com.jc.tm.db.entity.Task;
 import com.jc.tm.dto.PaginationDto;
-import com.jc.tm.util.Priority;
+import com.jc.tm.dto.TaskDto;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface ITaskService {
@@ -58,56 +55,13 @@ public interface ITaskService {
      */
     public Task getTask(Task task) ;
 
-    /**
-     * default call for loading task list. but result will be split on 20 items
-     * @return list of tasks
-     */
-    public Collection<Task> loadTasks() ;
 
-    /**
-     * load task list by custom criteria. data should be loaded by pagination which passes via parameters
-     * @param page pagiantion configuraion
-     * @return list of tasks
-     */
-    public Collection<Task> loadTasks(PaginationDto page) ;
-    public Collection<Task> loadTasksByDescPriority(PaginationDto page);
-    public Collection<Task> loadTasksByAskPriority(PaginationDto page);
     public Task addComment(Long taskId, Comment newComment) ;
     public Task addComment(Task task, Comment newComment) ;
-
-//    Task addProject(Task task, Project project);
 
     public Comment removeComment(Long id) ;
     public Comment removeComment(Comment comment) ;
     public Comment updateComment(Comment freshComment) ;
-    public Task setDueDate(Task task, LocalDateTime time) ;
-    public Task setDueDate(Long taskId, LocalDateTime time) ;
-    public Task updateDueDate(Task task, LocalDateTime time) ;
-    public Task updateDueDate(Long taskId, LocalDateTime time) ;
-    public Task setPriority(Task task, Priority priority) ;
-    public Task setParentTask(Task parent, Task current) ;
-
-    /**
-     * remove link to parent task
-     * @param task current task whiich will be moved to root of task list
-     * @return updated task
-     */
-    public Task moveTaskToRoot(Task task);
-
-    /**
-     * move task to pause state
-     * @param task
-     * @return
-     */
-    public Task toPauseState(Task task) ;
-
-    /**
-     * change state of task, by default state of task should be Status.TODO
-     * @param task task
-     * @param newState new state
-     * @return updated task
-     */
-    public Task setState(Task task, Status newState) ;
 
     Collection<Task> sortedBy(PaginationDto paginationDto, String sortBy);
 

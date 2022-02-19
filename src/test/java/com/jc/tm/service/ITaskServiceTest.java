@@ -1,3 +1,4 @@
+/*
 package com.jc.tm.service;
 
 import com.jc.tm.service.impl.TaskServiceImpl;
@@ -260,3 +261,4 @@ public class ITaskServiceTest {
         verify(taskDao, atLeastOnce()).findAllBy(any(Pageable.class), anyString());
     }
 }
+*/

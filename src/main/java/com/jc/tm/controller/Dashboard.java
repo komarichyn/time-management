@@ -53,19 +53,14 @@ public class Dashboard {
                                     @PathVariable(value = "pageNumber") int pageNumber,
                                     @RequestParam(name = "sortBy", required = false) String sortBy) {
         log.debug("Show tasks page with params: searchBy={}, pageNumber={}, sortBy={}", searchBy, pageNumber, sortBy);
-//        SortnSearch sortnSearch = new SortnSearch(searchBy, sortBy);
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setIndex(pageNumber);
         paginationDto.setSize(pageSize);
         var taskList = service.loadTask(paginationDto, searchBy, sortBy);
-//        int tm = (int) taskList.getTotalElements();
         var result = converter.parsingTaskDataToTaskDTO(taskList.getContent());
-
-//        paginationDto.setPage((int) (Math.ceil((double) tm / pageSize)));
         return result;
     }
 
-//    @GetMapping("show-tasks/{searchBy}") TODO - search must work from all pages
     @GetMapping("show-tasks/searchBy={searchBy}")
     public Collection<TaskDto> findByName(@PathVariable String searchBy) {
         log.debug("Find task by name with value = {}", searchBy);
@@ -143,6 +138,8 @@ public class Dashboard {
         service.removeComment(commentId);
         return "redirect:/task/" + taskId;
     }
+
+    //Project controllers
 
     //TODO - DONE
     @PostMapping("/add-project")
